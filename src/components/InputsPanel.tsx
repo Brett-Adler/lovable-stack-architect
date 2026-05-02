@@ -256,6 +256,9 @@ export function InputsPanel({ inputs, onChange }: Props) {
           onValueChange={([v]) => update("ttmPriority", v)}
         />
       </div>
+          </div>
+        </CollapsibleContent>
+      </Collapsible>
     </aside>
   );
 }
