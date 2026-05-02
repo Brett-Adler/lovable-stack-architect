@@ -99,7 +99,7 @@ function Chip({
 }
 
 export function InputsPanel({ inputs, onChange }: Props) {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(true);
   const update = <K extends keyof Inputs>(key: K, value: Inputs[K]) =>
     onChange({ ...inputs, [key]: value });
 
