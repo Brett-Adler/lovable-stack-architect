@@ -7,7 +7,7 @@ import { CostEstimate } from "@/components/CostEstimate";
 import { ArchitectureDiagram } from "@/components/ArchitectureDiagram";
 import { ReportExport } from "@/components/ReportExport";
 import { Button } from "@/components/ui/button";
-import { Link2, Sparkles, SlidersHorizontal, Sparkle, Columns3 } from "lucide-react";
+import { Link2, SlidersHorizontal, Sparkle, Columns3 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { ARCHITECTURES, type ArchId } from "@/data/architectures";
@@ -101,12 +101,16 @@ const Index = () => {
       <header className="no-print sticky top-0 z-40 border-b border-border bg-background/85 backdrop-blur supports-[backdrop-filter]:bg-background/70">
         <div className="mx-auto flex max-w-[1400px] flex-wrap items-center justify-between gap-3 px-3 py-3 sm:px-6 sm:py-4">
           <div className="flex min-w-0 items-center gap-2">
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-gradient-primary text-primary-foreground">
-              <Sparkles className="h-5 w-5" />
-            </div>
+            <img
+              src="/logo-mark.svg"
+              alt="Lovable Stack Architect"
+              width={36}
+              height={36}
+              className="h-9 w-9 shrink-0 rounded-lg"
+            />
             <div className="min-w-0">
               <h1 className="truncate text-base font-semibold leading-tight text-foreground sm:text-lg">
-                Stack Architect
+                Lovable Stack Architect
               </h1>
               <p className="hidden text-xs text-muted-foreground sm:block">
                 Pick the right backend for your Lovable app
