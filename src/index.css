@@ -104,9 +104,17 @@
   * {
     @apply border-border;
   }
-  body {
+  html, body {
     @apply bg-background text-foreground;
+    overflow-x: hidden;
+    max-width: 100vw;
+  }
+  body {
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+  /* Prevent long unbreakable strings from forcing overflow */
+  h1, h2, h3, h4, h5, h6, p, li, span, a {
+    overflow-wrap: anywhere;
   }
 }
 
