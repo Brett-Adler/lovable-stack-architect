@@ -7,7 +7,8 @@ import { CostEstimate } from "@/components/CostEstimate";
 import { ArchitectureDiagram } from "@/components/ArchitectureDiagram";
 import { ReportExport } from "@/components/ReportExport";
 import { Button } from "@/components/ui/button";
-import { Link2, Sparkles } from "lucide-react";
+import { Link2, Sparkles, SlidersHorizontal, Sparkle, Columns3 } from "lucide-react";
+import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { ARCHITECTURES, type ArchId } from "@/data/architectures";
 import { DEFAULT_INPUTS, type Inputs, rank } from "@/lib/scoring";
@@ -45,6 +46,7 @@ function loadState(): PersistedState {
 
 const Index = () => {
   const [state, setState] = useState<PersistedState>(() => loadState());
+  const [mobileTab, setMobileTab] = useState<"inputs" | "recommendation" | "comparison">("recommendation");
   const { inputs, enabled } = state;
 
   useEffect(() => {
@@ -105,12 +107,17 @@ const Index = () => {
         </div>
       </header>
 
-      <main className="mx-auto grid w-full max-w-[1400px] gap-4 px-3 py-4 sm:gap-6 sm:px-6 sm:py-6 lg:grid-cols-[280px_minmax(0,1fr)_340px] xl:grid-cols-[300px_minmax(0,1fr)_360px]">
-        <div className="min-w-0">
+      <main className="mx-auto grid w-full max-w-[1400px] gap-4 px-3 py-4 pb-24 sm:gap-6 sm:px-6 sm:py-6 lg:grid-cols-[280px_minmax(0,1fr)_340px] lg:pb-6 xl:grid-cols-[300px_minmax(0,1fr)_360px]">
+        <div className={cn("min-w-0 lg:block", mobileTab === "inputs" ? "block" : "hidden")}>
           <InputsPanel inputs={inputs} onChange={setInputs} />
         </div>
 
-        <section className="order-3 min-w-0 space-y-4 sm:space-y-6 lg:order-none">
+        <section
+          className={cn(
+            "order-3 min-w-0 space-y-4 sm:space-y-6 lg:order-none lg:block",
+            mobileTab === "comparison" ? "block" : "hidden",
+          )}
+        >
           <div>
             <h2 className="text-base font-semibold text-foreground sm:text-lg">Side-by-side comparison</h2>
             <p className="text-xs text-muted-foreground sm:text-sm">
@@ -121,7 +128,12 @@ const Index = () => {
           {topId && <ArchitectureDiagram archId={topId} inputs={inputs} />}
         </section>
 
-        <aside className="order-2 min-w-0 space-y-4 sm:space-y-6 lg:order-none">
+        <aside
+          className={cn(
+            "order-2 min-w-0 space-y-4 sm:space-y-6 lg:order-none lg:block",
+            mobileTab === "recommendation" ? "block" : "hidden",
+          )}
+        >
           <RecommendationCard results={results} />
           {topId && <CostEstimate archId={topId} inputs={inputs} />}
           <p className="text-[11px] leading-relaxed text-muted-foreground">
@@ -130,6 +142,45 @@ const Index = () => {
           </p>
         </aside>
       </main>
+
+      {/* Mobile bottom tab nav */}
+      <nav
+        className="no-print fixed bottom-0 left-0 right-0 z-40 border-t border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80 lg:hidden"
+        aria-label="Section navigation"
+      >
+        <div
+          className="mx-auto grid max-w-[1400px] grid-cols-3"
+          style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
+        >
+          {([
+            { id: "inputs", label: "Inputs", Icon: SlidersHorizontal },
+            { id: "recommendation", label: "Pick", Icon: Sparkle },
+            { id: "comparison", label: "Compare", Icon: Columns3 },
+          ] as const).map(({ id, label, Icon }) => {
+            const active = mobileTab === id;
+            return (
+              <button
+                key={id}
+                type="button"
+                onClick={() => {
+                  setMobileTab(id);
+                  window.scrollTo({ top: 0, behavior: "smooth" });
+                }}
+                aria-current={active ? "page" : undefined}
+                className={cn(
+                  "flex flex-col items-center justify-center gap-0.5 py-2.5 text-[11px] font-medium transition-colors",
+                  active
+                    ? "text-primary"
+                    : "text-muted-foreground hover:text-foreground",
+                )}
+              >
+                <Icon className={cn("h-5 w-5", active && "drop-shadow-[0_0_8px_hsl(var(--primary)/0.4)]")} />
+                <span>{label}</span>
+              </button>
+            );
+          })}
+        </div>
+      </nav>
     </div>
   );
 };
