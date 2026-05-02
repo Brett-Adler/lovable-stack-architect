@@ -20,6 +20,9 @@ import {
   DEFAULT_INPUTS,
 } from "@/lib/scoring";
 import { cn } from "@/lib/utils";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { ChevronDown } from "lucide-react";
+import { useState } from "react";
 
 interface Props {
   inputs: Inputs;
@@ -93,6 +96,7 @@ function Chip({
 }
 
 export function InputsPanel({ inputs, onChange }: Props) {
+  const [open, setOpen] = useState(false);
   const update = <K extends keyof Inputs>(key: K, value: Inputs[K]) =>
     onChange({ ...inputs, [key]: value });
 
@@ -105,21 +109,31 @@ export function InputsPanel({ inputs, onChange }: Props) {
   );
 
   return (
-    <aside className="flex flex-col gap-6 rounded-2xl border border-border bg-card p-5 shadow-card">
-      <div className="flex items-center justify-between">
-        <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
-          Project inputs
-        </h2>
-        <Button
-          variant="ghost"
-          size="sm"
-          className="h-7 text-xs"
-          onClick={() => onChange(DEFAULT_INPUTS)}
-        >
-          Reset
-        </Button>
-      </div>
+    <aside className="rounded-2xl border border-border bg-card p-4 shadow-card sm:p-5">
+      <Collapsible open={open} onOpenChange={setOpen} className="lg:!block">
+        <div className="flex items-center justify-between gap-2">
+          <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+            Project inputs
+          </h2>
+          <div className="flex items-center gap-1">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-7 text-xs"
+              onClick={() => onChange(DEFAULT_INPUTS)}
+            >
+              Reset
+            </Button>
+            <CollapsibleTrigger asChild>
+              <Button variant="ghost" size="sm" className="h-7 w-7 p-0 lg:hidden" aria-label="Toggle inputs">
+                <ChevronDown className={cn("h-4 w-4 transition-transform", open && "rotate-180")} />
+              </Button>
+            </CollapsibleTrigger>
+          </div>
+        </div>
 
+        <CollapsibleContent forceMount className="hidden data-[state=open]:block lg:!block">
+          <div className="mt-5 flex flex-col gap-6">
       <div className="space-y-2">
         <Label className="text-xs">Stage</Label>
         <div className="flex flex-wrap gap-1.5">
@@ -242,6 +256,9 @@ export function InputsPanel({ inputs, onChange }: Props) {
           onValueChange={([v]) => update("ttmPriority", v)}
         />
       </div>
+          </div>
+        </CollapsibleContent>
+      </Collapsible>
     </aside>
   );
 }

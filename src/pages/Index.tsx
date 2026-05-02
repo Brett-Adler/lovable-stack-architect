@@ -82,36 +82,36 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-gradient-subtle">
       <header className="no-print border-b border-border bg-background/70 backdrop-blur">
-        <div className="mx-auto flex max-w-[1400px] items-center justify-between gap-4 px-4 py-4 sm:px-6">
-          <div className="flex items-center gap-2">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-primary text-primary-foreground">
+        <div className="mx-auto flex max-w-[1400px] flex-wrap items-center justify-between gap-3 px-3 py-3 sm:px-6 sm:py-4">
+          <div className="flex min-w-0 items-center gap-2">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-gradient-primary text-primary-foreground">
               <Sparkles className="h-5 w-5" />
             </div>
-            <div>
-              <h1 className="text-base font-semibold leading-tight text-foreground sm:text-lg">
+            <div className="min-w-0">
+              <h1 className="truncate text-base font-semibold leading-tight text-foreground sm:text-lg">
                 Stack Architect
               </h1>
-              <p className="text-xs text-muted-foreground">
+              <p className="hidden text-xs text-muted-foreground sm:block">
                 Pick the right backend for your Lovable app
               </p>
             </div>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             <Button onClick={shareLink} variant="outline" size="sm" className="gap-1.5">
-              <Link2 className="h-4 w-4" /> Share
+              <Link2 className="h-4 w-4" /> <span className="hidden sm:inline">Share</span>
             </Button>
             <ReportExport inputs={inputs} results={results} />
           </div>
         </div>
       </header>
 
-      <main className="mx-auto grid max-w-[1400px] gap-6 px-4 py-6 sm:px-6 lg:grid-cols-[300px_minmax(0,1fr)_360px]">
+      <main className="mx-auto grid max-w-[1400px] gap-4 px-3 py-4 sm:gap-6 sm:px-6 sm:py-6 lg:grid-cols-[280px_minmax(0,1fr)_340px] xl:grid-cols-[300px_minmax(0,1fr)_360px]">
         <InputsPanel inputs={inputs} onChange={setInputs} />
 
-        <section className="space-y-6">
+        <section className="order-3 space-y-4 sm:space-y-6 lg:order-none">
           <div>
-            <h2 className="text-lg font-semibold text-foreground">Side-by-side comparison</h2>
-            <p className="text-sm text-muted-foreground">
+            <h2 className="text-base font-semibold text-foreground sm:text-lg">Side-by-side comparison</h2>
+            <p className="text-xs text-muted-foreground sm:text-sm">
               Scores reflect how each architecture handles each criterion. Toggle options below the table.
             </p>
           </div>
@@ -119,7 +119,7 @@ const Index = () => {
           {topId && <ArchitectureDiagram archId={topId} inputs={inputs} />}
         </section>
 
-        <aside className="space-y-6">
+        <aside className="order-2 space-y-4 sm:space-y-6 lg:order-none">
           <RecommendationCard results={results} />
           {topId && <CostEstimate archId={topId} inputs={inputs} />}
           <p className="text-[11px] leading-relaxed text-muted-foreground">
