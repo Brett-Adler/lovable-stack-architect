@@ -98,7 +98,7 @@ const Index = () => {
           </div>
           <div className="flex flex-wrap items-center gap-2">
             <Button onClick={shareLink} variant="outline" size="sm" className="gap-1.5">
-              <Link2 className="h-4 w-4" /> <span className="hidden xs:inline">Share</span>
+              <Link2 className="h-4 w-4" /> <span className="hidden sm:inline">Share</span>
             </Button>
             <ReportExport inputs={inputs} results={results} />
           </div>
