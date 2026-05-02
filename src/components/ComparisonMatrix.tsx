@@ -31,8 +31,8 @@ export function ComparisonMatrix({ enabled, topId, onToggle }: Props) {
 
   return (
     <TooltipProvider delayDuration={150}>
-      <div className="overflow-x-auto rounded-2xl border border-border bg-card shadow-card">
-        <table className="w-full min-w-[640px] border-collapse text-sm">
+      <div className="w-full max-w-full overflow-x-auto rounded-2xl border border-border bg-card shadow-card">
+        <table className="w-full min-w-[480px] border-collapse text-sm sm:min-w-[640px]">
           <thead>
             <tr className="border-b border-border bg-muted/30">
               <th className="sticky left-0 z-10 bg-muted/30 px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground">

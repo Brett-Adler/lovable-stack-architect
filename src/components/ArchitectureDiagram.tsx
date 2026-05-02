@@ -30,13 +30,13 @@ export function ArchitectureDiagram({ archId, inputs }: { archId: ArchId; inputs
   }, [archId, inputs]);
 
   return (
-    <div className="rounded-2xl border border-border bg-card p-5 shadow-card">
+    <div className="w-full max-w-full overflow-hidden rounded-2xl border border-border bg-card p-5 shadow-card">
       <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
         Architecture diagram
       </h3>
       <div
         ref={ref}
-        className="mt-3 flex justify-center overflow-x-auto"
+        className="mt-3 flex justify-center overflow-x-auto [&_svg]:max-w-full [&_svg]:h-auto"
         dangerouslySetInnerHTML={{ __html: svg }}
       />
     </div>
