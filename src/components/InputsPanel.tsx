@@ -134,15 +134,6 @@ export function InputsPanel({ inputs, onChange }: Props) {
 
         <CollapsibleContent forceMount className="hidden data-[state=open]:block lg:!block">
           <div className="mt-5 flex flex-col gap-6">
-          variant="ghost"
-          size="sm"
-          className="h-7 text-xs"
-          onClick={() => onChange(DEFAULT_INPUTS)}
-        >
-          Reset
-        </Button>
-      </div>
-
       <div className="space-y-2">
         <Label className="text-xs">Stage</Label>
         <div className="flex flex-wrap gap-1.5">
