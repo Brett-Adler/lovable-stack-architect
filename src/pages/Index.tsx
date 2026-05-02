@@ -149,7 +149,7 @@ const Index = () => {
               Scores reflect how each architecture handles each criterion. Toggle options below the table.
             </p>
           </div>
-          <ComparisonMatrix enabled={enabled} topId={topId} onToggle={toggleArch} />
+          <ComparisonMatrix enabled={enabled} topId={topId} onToggle={toggleArch} onSetEnabled={setEnabled} />
           {topId && <ArchitectureDiagram archId={topId} inputs={inputs} />}
         </section>
 
