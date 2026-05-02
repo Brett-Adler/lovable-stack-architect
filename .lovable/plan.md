@@ -1,84 +1,72 @@
-## Stack Architect — Lovable Architecture Comparator
+# Rebrand to "Lovable Stack Architect"
 
-A single-page tool that helps cross-functional teams (founders, PMs, designers, devs, testers, execs) compare Lovable-compatible backend/hosting architectures side by side, rank them against their project's needs, and export a shareable report.
+Asset pack is already generated in `public/` (logo, favicons, touch icons, tiles, OG card, manifest). This plan finalizes the in-app rename and wires the new assets into HTML/UI.
 
-All four architecture options below assume Lovable handles design, frontend dev, testing, and deployment of the UI:
+## What's already on disk (preview ready after wiring)
 
-1. **Lovable Cloud (Supabase-managed)** — fastest path, integrated.
-2. **Lovable + external Supabase** — own your Supabase project.
-3. **Lovable + Vercel / Netlify** — frontend hosting + serverless functions (BYO DB).
-4. **Lovable + AWS / GCP / Azure / Heroku** — full hyperscaler/PaaS control.
-
-### User flow
-
-```text
-Project Inputs (left rail)        Comparison Matrix (center)         Detail / Export (right)
-┌──────────────────────┐          ┌────────────────────────────┐     ┌──────────────────────┐
-│ Stage / Scale        │          │ Criteria   │ A │ B │ C │ D │     │ Ranked recommendation│
-│ Expected users       │   ───►   │ Speed      │ ● │ ◐ │ ◐ │ ○ │ ──► │ Rationale per option │
-│ Team skills          │          │ Cost@scale │ ◐ │ ● │ ● │ ◐ │     │ Cost & scaling band  │
-│ Budget band          │          │ Compliance │ ◐ │ ● │ ● │ ● │     │ Architecture diagram │
-│ Compliance (HIPAA…)  │          │ Lock-in    │ ● │ ◐ │ ◐ │ ○ │     │ Export PDF / Markdown│
-│ AI / heavy compute   │          │ DX w/ Lov. │ ● │ ● │ ◐ │ ○ │     │                      │
-│ Realtime / files     │          │ Ops burden │ ● │ ◐ │ ◐ │ ○ │     │                      │
-│ Region/data residency│          │ ...        │   │   │   │   │     │                      │
-└──────────────────────┘          └────────────────────────────┘     └──────────────────────┘
+```
+public/
+  logo.svg                   wordmark + mark, for headers/share
+  logo-mark.svg              icon-only, used as svg favicon + header
+  favicon.ico                multi-size 16/32/48/64
+  favicon-{16,32,48,64,96,192,512}.png
+  apple-touch-icon.png       180x180
+  android-chrome-{192,512}.png
+  maskable-512.png           safe-zone padded for Android
+  mstile-{150,310}.png       Windows tiles
+  og-image.png               1200x630 share card
+  og-image.svg               source for the share card
+  site.webmanifest           PWA manifest
+  browserconfig.xml          MS tile config
+src/assets/logo-mark.svg     same mark, importable in components
 ```
 
-1. User answers ~8–10 inputs in the left rail (sliders, chips, multi-select). Defaults make it usable without filling everything in.
-2. The center matrix updates live: rows = criteria, columns = the 4 architectures. Each cell shows a score dot + short reason on hover.
-3. User can toggle architectures on/off, pin two for a focused 2-up comparison, and reorder criteria by importance (drag handles); weights drive the ranking.
-4. The right panel shows the ranked recommendation, a generated architecture diagram of the top pick, an estimated monthly cost band, and export buttons.
+Mark concept: stacked architectural slabs ascending to a small spark/apex on the Lovable indigo→violet gradient inside a rounded square — reads as both "stack" and an implied "A" for Architect.
 
-### Inputs collected
+## File changes
 
-- Project stage (prototype / MVP / growth / scale)
-- Expected concurrent users and monthly active users (sliders with log scale)
-- Team strengths (multi-select: frontend, backend, devops, data, none)
-- Budget sensitivity (low / medium / high)
-- Compliance needs (none, GDPR, HIPAA, SOC2, data residency region)
-- Workload mix (CRUD, realtime, file/media, AI inference, background jobs, heavy compute)
-- Vendor lock-in tolerance
-- Time-to-market priority
+### 1. `index.html` — replace head with full meta pack
+- Title: `Lovable Stack Architect`
+- Description: updated to mention all 10 platforms
+- Add: `theme-color`, `application-name`, color-scheme, viewport-fit
+- Favicons: `.ico` + SVG mark + 16/32/48/192/512 PNGs
+- Apple: `apple-touch-icon` 180, `apple-mobile-web-app-*` tags
+- Microsoft: `msapplication-TileColor`, `TileImage`, `browserconfig.xml`
+- PWA: `<link rel="manifest" href="/site.webmanifest">`
+- OpenGraph + Twitter: title, description, `/og-image.png` (1200x630), `summary_large_image`
 
-### Comparison criteria (rows)
+### 2. `src/pages/Index.tsx` — header
+- Replace inline `<Sparkles>` icon with `<img src="/logo-mark.svg" alt="Lovable Stack Architect" />` sized 36x36, rounded, no extra background (the mark already has its own).
+- Change `<h1>Stack Architect</h1>` → `<h1>Lovable Stack Architect</h1>`
+- Keep the existing tagline.
+- Drop the now-unused `Sparkles` import (keep `Sparkle` used by mobile tab nav).
 
-Time-to-launch, DX with Lovable, Cost at small scale, Cost at large scale, Scaling ceiling, Realtime support, File/storage, AI/edge compute fit, Compliance coverage, Vendor lock-in, Ops/maintenance burden, Migration path off.
+### 3. `src/components/ReportExport.tsx`
+- Footer line: `_Generated by Stack Architect — ...` → `_Generated by Lovable Stack Architect — ...`
+- Report H1: `# Architecture Recommendation` → `# Lovable Stack Architect — Architecture Recommendation`
+- Default markdown filename prefix: `stack-recommendation-` → `lovable-stack-architect-`
 
-Each architecture has a static rubric (1–5) per criterion, multiplied by user-derived weights to produce the ranking. Rubric data lives in a typed JSON config so it is easy to tune.
+### 4. `README.md` — replace placeholder
+- One-paragraph project intro using the new name + 10 platforms list.
 
-### Outputs
+### 5. `package.json`
+- `"name": "vite_react_shadcn_ts"` → `"name": "lovable-stack-architect"`
 
-- **Ranked recommendation** with a top pick + 2 runner-ups, each with 3–5 bullet pros/cons tied to the user's answers ("Picked because: HIPAA + small team + fast TTM").
-- **Cost & scaling estimate**: monthly $ band (e.g. "$0–25 → $80–250 → $1k+") at the user's projected scale, plus a scaling ceiling note.
-- **Architecture diagram**: auto-generated Mermaid diagram of the recommended stack (frontend, auth, DB, storage, functions, third parties), rendered inline.
-- **Exportable report**: one-click Markdown download and a Print-to-PDF view (clean print stylesheet) summarizing inputs, matrix, ranking, rationale, costs, and diagram.
+## Mobile-tab label
 
-### Pages & components
+The bottom-nav "Pick" tab keeps its `<Sparkle>` icon — no change needed; it's a different glyph than the header logo.
 
-- `/` — the tool itself (single page, three-pane responsive layout; stacks vertically on mobile).
-- `/about` — short explainer of methodology and rubric.
-- Components: `InputsPanel`, `ComparisonMatrix`, `ScoreCell`, `ArchToggleBar`, `RecommendationCard`, `CostEstimate`, `ArchitectureDiagram` (mermaid), `ReportExport`, `MethodologyDrawer`.
+## QA checklist after wiring
 
-### Persistence
+- Tab favicon shows the mark (32px) — verified, readable
+- iOS "Add to Home Screen" uses `apple-touch-icon.png` — verified at 180px
+- Android install prompt uses 192/512 PNGs from manifest
+- Sharing the URL on Slack/X renders the OG card — verified visually
+- All in-app strings say "Lovable Stack Architect" (no orphan "Stack Architect" or "Platform Pathfinder")
 
-No accounts. Inputs and toggles are stored in `localStorage` and also serialized into the URL (`?state=...` base64) so a result can be shared via link without a backend.
+## Downloadable copies
 
-### Design
-
-Clean, neutral, decision-tool aesthetic: generous whitespace, tabular center pane, subtle accent color for the recommended column, dot-based scoring (●/◐/○) with tooltips, monospace for cost bands. Light/dark mode via existing tokens.
-
-### Technical notes
-
-- React + Vite + Tailwind + shadcn/ui (already in project).
-- Rubric and cost bands in `src/data/architectures.ts` (typed). Scoring in `src/lib/scoring.ts` — pure function `(inputs, weights, rubric) => RankedResult[]`.
-- Mermaid rendered client-side via `mermaid` npm package; one diagram template per architecture, parameterized by selected workloads.
-- Markdown export built from a template string; PDF via `window.print()` with a dedicated `@media print` stylesheet (no extra deps).
-- URL state via `lz-string` for compact sharing; falls back to localStorage.
-- No backend, no auth, no Lovable Cloud needed for this tool itself.
-
-### Out of scope (v1)
-
-- Saved accounts / team workspaces.
-- Live pricing API lookups (costs are curated bands, refreshed manually).
-- AI chat advisor (could be added later as a second entry mode).
+Saved to `/mnt/documents/` for direct download:
+- `lovable-stack-architect-logo.svg` (full wordmark)
+- `lovable-stack-architect-mark-512.png`
+- `lovable-stack-architect-og.png`
