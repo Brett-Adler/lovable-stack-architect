@@ -13,7 +13,18 @@ import { toast } from "sonner";
 import { ARCHITECTURES, type ArchId } from "@/data/architectures";
 import { DEFAULT_INPUTS, type Inputs, rank } from "@/lib/scoring";
 
-const STORAGE_KEY = "stack-architect:v1";
+const STORAGE_KEY = "stack-architect:v2";
+const DEFAULT_ENABLED: ArchId[] = [
+  "lovable-cloud",
+  "lovable-supabase",
+  "lovable-vercel",
+  "lovable-aws",
+];
+const VALID_IDS = new Set<ArchId>(ARCHITECTURES.map((a) => a.id));
+function sanitize(ids: ArchId[] | undefined): ArchId[] {
+  const filtered = (ids ?? []).filter((id) => VALID_IDS.has(id));
+  return filtered.length ? filtered : DEFAULT_ENABLED;
+}
 
 interface PersistedState {
   inputs: Inputs;
@@ -40,12 +51,15 @@ function loadState(): PersistedState {
   }
   return {
     inputs: DEFAULT_INPUTS,
-    enabled: ARCHITECTURES.map((a) => a.id),
+    enabled: DEFAULT_ENABLED,
   };
 }
 
 const Index = () => {
-  const [state, setState] = useState<PersistedState>(() => loadState());
+  const [state, setState] = useState<PersistedState>(() => {
+    const s = loadState();
+    return { ...s, enabled: sanitize(s.enabled) };
+  });
   const [mobileTab, setMobileTab] = useState<"inputs" | "recommendation" | "comparison">("recommendation");
   const { inputs, enabled } = state;
 
@@ -65,9 +79,10 @@ const Index = () => {
     setState((s) => {
       const has = s.enabled.includes(id);
       const next = has ? s.enabled.filter((x) => x !== id) : [...s.enabled, id];
-      // Always keep at least one
-      return { ...s, enabled: next.length ? next : s.enabled };
+      return { ...s, enabled: next };
     });
+  const setEnabled = (next: ArchId[]) =>
+    setState((s) => ({ ...s, enabled: next }));
 
   const shareLink = async () => {
     const compressed = LZString.compressToEncodedURIComponent(JSON.stringify(state));
@@ -134,7 +149,7 @@ const Index = () => {
               Scores reflect how each architecture handles each criterion. Toggle options below the table.
             </p>
           </div>
-          <ComparisonMatrix enabled={enabled} topId={topId} onToggle={toggleArch} />
+          <ComparisonMatrix enabled={enabled} topId={topId} onToggle={toggleArch} onSetEnabled={setEnabled} />
           {topId && <ArchitectureDiagram archId={topId} inputs={inputs} />}
         </section>
 
