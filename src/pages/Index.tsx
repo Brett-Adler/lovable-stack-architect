@@ -105,10 +105,12 @@ const Index = () => {
         </div>
       </header>
 
-      <main className="mx-auto grid max-w-[1400px] gap-4 px-3 py-4 sm:gap-6 sm:px-6 sm:py-6 lg:grid-cols-[280px_minmax(0,1fr)_340px] xl:grid-cols-[300px_minmax(0,1fr)_360px]">
-        <InputsPanel inputs={inputs} onChange={setInputs} />
+      <main className="mx-auto grid w-full max-w-[1400px] gap-4 px-3 py-4 sm:gap-6 sm:px-6 sm:py-6 lg:grid-cols-[280px_minmax(0,1fr)_340px] xl:grid-cols-[300px_minmax(0,1fr)_360px]">
+        <div className="min-w-0">
+          <InputsPanel inputs={inputs} onChange={setInputs} />
+        </div>
 
-        <section className="order-3 space-y-4 sm:space-y-6 lg:order-none">
+        <section className="order-3 min-w-0 space-y-4 sm:space-y-6 lg:order-none">
           <div>
             <h2 className="text-base font-semibold text-foreground sm:text-lg">Side-by-side comparison</h2>
             <p className="text-xs text-muted-foreground sm:text-sm">
@@ -119,7 +121,7 @@ const Index = () => {
           {topId && <ArchitectureDiagram archId={topId} inputs={inputs} />}
         </section>
 
-        <aside className="order-2 space-y-4 sm:space-y-6 lg:order-none">
+        <aside className="order-2 min-w-0 space-y-4 sm:space-y-6 lg:order-none">
           <RecommendationCard results={results} />
           {topId && <CostEstimate archId={topId} inputs={inputs} />}
           <p className="text-[11px] leading-relaxed text-muted-foreground">
