@@ -23,7 +23,7 @@ export function CostEstimate({ archId, inputs }: { archId: ArchId; inputs: Input
         <span className="text-xs text-muted-foreground">/ month</span>
       </div>
 
-      <div className="mt-4 grid grid-cols-4 gap-1 text-[11px]">
+      <div className="mt-4 grid grid-cols-2 gap-1 text-[11px] sm:grid-cols-4">
         {(["prototype", "mvp", "growth", "scale"] as const).map((s) => (
           <div
             key={s}
