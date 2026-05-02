@@ -83,8 +83,11 @@ function Chip({
     <button
       type="button"
       onClick={onClick}
+      role="switch"
+      aria-checked={active}
       className={cn(
         "rounded-full border px-3 py-1 text-xs font-medium transition-colors",
+        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background",
         active
           ? "border-primary bg-primary text-primary-foreground"
           : "border-border bg-secondary text-secondary-foreground hover:bg-muted",
@@ -112,27 +115,41 @@ export function InputsPanel({ inputs, onChange }: Props) {
     <aside className="rounded-2xl border border-border bg-card p-4 shadow-card sm:p-5">
       <Collapsible open={open} onOpenChange={setOpen} className="lg:!block">
         <div className="flex items-center justify-between gap-2">
-          <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+          <h2 id="inputs-heading" className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
             Project inputs
           </h2>
           <div className="flex items-center gap-1">
             <Button
               variant="ghost"
               size="sm"
-              className="h-7 text-xs"
+              className="h-7 text-xs focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
               onClick={() => onChange(DEFAULT_INPUTS)}
+              aria-label="Reset all project inputs to defaults"
             >
               Reset
             </Button>
             <CollapsibleTrigger asChild>
-              <Button variant="ghost" size="sm" className="h-7 w-7 p-0 lg:hidden" aria-label="Toggle inputs">
-                <ChevronDown className={cn("h-4 w-4 transition-transform", open && "rotate-180")} />
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-9 w-9 p-0 lg:hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                aria-label={open ? "Collapse project inputs" : "Expand project inputs"}
+                aria-expanded={open}
+                aria-controls="inputs-content"
+              >
+                <ChevronDown aria-hidden="true" className={cn("h-4 w-4 transition-transform", open && "rotate-180")} />
               </Button>
             </CollapsibleTrigger>
           </div>
         </div>
 
-        <CollapsibleContent forceMount className="hidden data-[state=open]:block lg:!block">
+        <CollapsibleContent
+          forceMount
+          id="inputs-content"
+          role="region"
+          aria-labelledby="inputs-heading"
+          className="hidden data-[state=open]:block lg:!block"
+        >
           <div className="mt-5 flex flex-col gap-6">
       <div className="space-y-2">
         <Label className="text-xs">Stage</Label>
