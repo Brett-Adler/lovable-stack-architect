@@ -160,12 +160,18 @@ function buildRationale(id: ArchId, inputs: Inputs): string[] {
   const arch = ARCH_BY_ID[id];
   const rs: string[] = [];
   const earlyStage = inputs.stage === "prototype" || inputs.stage === "mvp";
+  const noOps = inputs.team.includes("none") || !inputs.team.includes("devops");
+  const strictCompliance =
+    inputs.compliance.includes("hipaa") ||
+    inputs.compliance.includes("soc2") ||
+    inputs.compliance.includes("residency");
+  const heavyAI =
+    inputs.workloads.includes("heavy-compute") || inputs.workloads.includes("ai");
 
   if (id === "lovable-cloud") {
     if (earlyStage) rs.push("Fastest path to a live MVP — zero infra setup.");
     if (inputs.budget === "low") rs.push("Stays in the free or near-free band early on.");
-    if (inputs.team.includes("none") || !inputs.team.includes("devops"))
-      rs.push("No DevOps required; Lovable manages the backend.");
+    if (noOps) rs.push("No DevOps required; Lovable manages the backend.");
     if (inputs.compliance.includes("hipaa"))
       rs.push("HIPAA-grade workloads typically need an external Supabase or hyperscaler tier.");
     if (inputs.mau >= 200_000)
@@ -181,19 +187,51 @@ function buildRationale(id: ArchId, inputs: Inputs): string[] {
       rs.push("Easier to leave: it's standard Postgres you can dump and migrate.");
   }
   if (id === "lovable-vercel") {
-    rs.push("Great if you want global edge functions and your own DB choice.");
-    if (inputs.workloads.includes("ai")) rs.push("Edge runtimes help with low-latency AI proxies.");
+    rs.push("Global edge functions and a polished deploy pipeline.");
+    if (heavyAI) rs.push("Edge runtimes help with low-latency AI proxies.");
     if (!inputs.team.includes("backend"))
       rs.push("Caveat: you still need to choose and run a database somewhere.");
   }
-  if (id === "lovable-hyperscaler") {
-    if (inputs.compliance.includes("hipaa") || inputs.compliance.includes("soc2") || inputs.compliance.includes("residency"))
-      rs.push("Strongest fit for strict compliance, SSO, and data residency.");
-    if (inputs.workloads.includes("heavy-compute") || inputs.workloads.includes("ai"))
-      rs.push("Access to GPUs, queues, and managed AI services.");
-    if (earlyStage) rs.push("Overkill for an early MVP — slower to first deploy.");
-    if (inputs.team.includes("none") || !inputs.team.includes("devops"))
-      rs.push("Needs experienced backend/DevOps to operate well.");
+  if (id === "lovable-netlify") {
+    rs.push("Strong fit for marketing + app combos with edge functions.");
+    if (inputs.workloads.includes("background-jobs"))
+      rs.push("Background jobs need an external service (e.g. Inngest).");
+  }
+  if (id === "lovable-aws") {
+    if (strictCompliance) rs.push("Broadest compliance coverage and BAA options.");
+    if (heavyAI) rs.push("Bedrock, SageMaker, and GPU instances cover most AI needs.");
+    if (earlyStage) rs.push("Overkill for an early MVP — slowest to first deploy.");
+    if (noOps) rs.push("Needs experienced backend/DevOps to operate well.");
+  }
+  if (id === "lovable-gcp") {
+    if (heavyAI) rs.push("Vertex AI and Gemini models are first-class on GCP.");
+    if (inputs.workloads.includes("background-jobs"))
+      rs.push("Cloud Run + Pub/Sub make event-driven workloads simple.");
+    if (earlyStage) rs.push("Heavier setup than managed-backend options.");
+    if (noOps) rs.push("Requires DevOps to wire IAM, networking, and CI/CD.");
+  }
+  if (id === "lovable-azure") {
+    if (inputs.compliance.includes("soc2") || inputs.compliance.includes("residency"))
+      rs.push("Strong fit for enterprises on Microsoft 365 / Entra ID.");
+    if (heavyAI) rs.push("Azure OpenAI gives enterprise SLAs on GPT models.");
+    if (earlyStage) rs.push("Overkill for an early MVP.");
+    if (noOps) rs.push("Steepest learning curve outside the Microsoft ecosystem.");
+  }
+  if (id === "lovable-heroku") {
+    rs.push("Push-to-deploy simplicity with managed Postgres add-ons.");
+    if (inputs.mau >= 100_000) rs.push("Watch the dyno bill at scale — cheaper alternatives exist.");
+    if (noOps) rs.push("Friendly for teams without dedicated DevOps.");
+  }
+  if (id === "lovable-render") {
+    rs.push("Modern Heroku-style PaaS with friendlier pricing.");
+    if (inputs.workloads.includes("background-jobs"))
+      rs.push("First-class workers and cron jobs out of the box.");
+    if (noOps) rs.push("Low ops burden — close to PaaS-grade simplicity.");
+  }
+  if (id === "lovable-fly") {
+    rs.push("Run containers near your users for low latency.");
+    if (inputs.workloads.includes("realtime")) rs.push("Anycast edge helps realtime workloads.");
+    if (strictCompliance) rs.push("Smaller compliance catalog than the hyperscalers.");
   }
 
   if (rs.length === 0) rs.push(arch.tagline);
