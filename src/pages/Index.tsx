@@ -108,13 +108,23 @@ const Index = () => {
       </header>
 
       <main className="mx-auto grid w-full max-w-[1400px] gap-4 px-3 py-4 pb-24 sm:gap-6 sm:px-6 sm:py-6 lg:grid-cols-[280px_minmax(0,1fr)_340px] lg:pb-6 xl:grid-cols-[300px_minmax(0,1fr)_360px]">
-        <div className={cn("min-w-0 lg:block", mobileTab === "inputs" ? "block" : "hidden")}>
+        <div
+          id="panel-inputs"
+          role="tabpanel"
+          aria-labelledby="tab-inputs"
+          hidden={mobileTab !== "inputs"}
+          className={cn("min-w-0 lg:!block", mobileTab === "inputs" ? "block" : "hidden")}
+        >
           <InputsPanel inputs={inputs} onChange={setInputs} />
         </div>
 
         <section
+          id="panel-comparison"
+          role="tabpanel"
+          aria-labelledby="tab-comparison"
+          hidden={mobileTab !== "comparison"}
           className={cn(
-            "order-3 min-w-0 space-y-4 sm:space-y-6 lg:order-none lg:block",
+            "order-3 min-w-0 space-y-4 sm:space-y-6 lg:order-none lg:!block",
             mobileTab === "comparison" ? "block" : "hidden",
           )}
         >
@@ -129,8 +139,12 @@ const Index = () => {
         </section>
 
         <aside
+          id="panel-recommendation"
+          role="tabpanel"
+          aria-labelledby="tab-recommendation"
+          hidden={mobileTab !== "recommendation"}
           className={cn(
-            "order-2 min-w-0 space-y-4 sm:space-y-6 lg:order-none lg:block",
+            "order-2 min-w-0 space-y-4 sm:space-y-6 lg:order-none lg:!block",
             mobileTab === "recommendation" ? "block" : "hidden",
           )}
         >
@@ -146,11 +160,30 @@ const Index = () => {
       {/* Mobile bottom tab nav */}
       <nav
         className="no-print fixed bottom-0 left-0 right-0 z-40 border-t border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80 lg:hidden"
-        aria-label="Section navigation"
+        aria-label="Switch between Inputs, Recommendation, and Comparison sections"
       >
         <div
+          role="tablist"
+          aria-label="App sections"
           className="mx-auto grid max-w-[1400px] grid-cols-3"
           style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
+          onKeyDown={(e) => {
+            const order = ["inputs", "recommendation", "comparison"] as const;
+            const idx = order.indexOf(mobileTab);
+            if (e.key === "ArrowRight") {
+              e.preventDefault();
+              setMobileTab(order[(idx + 1) % order.length]);
+            } else if (e.key === "ArrowLeft") {
+              e.preventDefault();
+              setMobileTab(order[(idx - 1 + order.length) % order.length]);
+            } else if (e.key === "Home") {
+              e.preventDefault();
+              setMobileTab(order[0]);
+            } else if (e.key === "End") {
+              e.preventDefault();
+              setMobileTab(order[order.length - 1]);
+            }
+          }}
         >
           {([
             { id: "inputs", label: "Inputs", Icon: SlidersHorizontal },
@@ -161,21 +194,30 @@ const Index = () => {
             return (
               <button
                 key={id}
+                id={`tab-${id}`}
                 type="button"
+                role="tab"
+                aria-selected={active}
+                aria-controls={`panel-${id}`}
+                tabIndex={active ? 0 : -1}
                 onClick={() => {
                   setMobileTab(id);
                   window.scrollTo({ top: 0, behavior: "smooth" });
                 }}
-                aria-current={active ? "page" : undefined}
                 className={cn(
-                  "flex flex-col items-center justify-center gap-0.5 py-2.5 text-[11px] font-medium transition-colors",
+                  "flex min-h-[48px] flex-col items-center justify-center gap-0.5 py-2.5 text-[11px] font-medium transition-colors",
+                  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring",
                   active
                     ? "text-primary"
                     : "text-muted-foreground hover:text-foreground",
                 )}
               >
-                <Icon className={cn("h-5 w-5", active && "drop-shadow-[0_0_8px_hsl(var(--primary)/0.4)]")} />
+                <Icon
+                  aria-hidden="true"
+                  className={cn("h-5 w-5", active && "drop-shadow-[0_0_8px_hsl(var(--primary)/0.4)]")}
+                />
                 <span>{label}</span>
+                {active && <span className="sr-only"> (current section)</span>}
               </button>
             );
           })}
