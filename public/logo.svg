@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 280" role="img" aria-label="Lovable Stack Architect">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#5B2BE6"/>
+      <stop offset="55%" stop-color="#6E3CF1"/>
+      <stop offset="100%" stop-color="#A371FF"/>
+    </linearGradient>
+    <linearGradient id="sheen" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.18"/>
+      <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Mark -->
+  <g transform="translate(20,20)">
+    <rect x="0" y="0" width="240" height="240" rx="52" fill="url(#bg)"/>
+    <rect x="0" y="0" width="240" height="240" rx="52" fill="url(#sheen)"/>
+    <g fill="#FFFFFF">
+      <rect x="42" y="160" width="156" height="22" rx="11"/>
+      <rect x="62" y="124" width="116" height="22" rx="11" opacity="0.92"/>
+      <rect x="82" y="88"  width="76"  height="22" rx="11" opacity="0.84"/>
+      <path d="M120 42 L130 70 L120 80 L110 70 Z" opacity="0.96"/>
+      <circle cx="120" cy="60" r="3.2" opacity="0.9"/>
+    </g>
+  </g>
+
+  <!-- Wordmark -->
+  <g font-family="Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" fill="#0F172A">
+    <text x="296" y="138" font-size="64" font-weight="700" letter-spacing="-1.5">Lovable Stack</text>
+    <text x="296" y="206" font-size="64" font-weight="400" letter-spacing="-1.2" fill="#475569">Architect</text>
+  </g>
+</svg>
