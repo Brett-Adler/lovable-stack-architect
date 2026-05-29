@@ -1,6 +1,6 @@
 # Lovable Stack Architect
 
-A side-by-side comparator that helps founders, PMs, designers and developers pick the best backend stack for a Lovable-built app.
+A side-by-side comparator that helps founders, PMs, designers and developers pick the best backend stack for a Lovable-built app. The home page (`/`) is a marketing landing; the live tool is at `/app`.
 
 Compare 10 popular hosting and backend platforms across cost, scaling, lock-in, time-to-market, AI capabilities, and more:
 
