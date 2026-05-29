@@ -14,7 +14,8 @@ import { SiteFooter } from "@/components/SiteFooter";
 import { SeoHead } from "@/components/SeoHead";
 import { toast } from "sonner";
 import { ARCHITECTURES, type ArchId } from "@/data/architectures";
-import { DEFAULT_INPUTS, type Inputs, rank } from "@/lib/scoring";
+import { DEFAULT_INPUTS, type Inputs, rankFull } from "@/lib/scoring";
+import { track } from "@/lib/analytics";
 
 const STORAGE_KEY = "stack-architect:v2";
 const DEFAULT_ENABLED: ArchId[] = [
@@ -79,8 +80,9 @@ const Index = () => {
     }
   }, [state]);
 
-  const results = useMemo(() => rank(inputs), [inputs]);
+  const { results, excluded } = useMemo(() => rankFull(inputs), [inputs]);
   const topId = results[0]?.arch.id;
+  const isNonTechnical = inputs.team.length === 0 || (inputs.team.length === 1 && inputs.team[0] === "none");
 
   const setInputs = (next: Inputs) => setState((s) => ({ ...s, inputs: next }));
   const toggleArch = (id: ArchId) =>
@@ -95,6 +97,7 @@ const Index = () => {
   const shareLink = async () => {
     const compressed = LZString.compressToEncodedURIComponent(JSON.stringify(state));
     const url = `${window.location.origin}${window.location.pathname}?s=${compressed}`;
+    track("Share link", { top: topId ?? "none" });
     try {
       await navigator.clipboard.writeText(url);
       toast.success("Share link copied to clipboard");
@@ -164,7 +167,12 @@ const Index = () => {
             mobileTab === "recommendation" ? "block" : "hidden",
           )}
         >
-          <RecommendationCard results={results} inputs={inputs} />
+          <RecommendationCard
+            results={results}
+            inputs={inputs}
+            excluded={excluded}
+            isNonTechnical={isNonTechnical}
+          />
           {topId && <CostEstimate archId={topId} inputs={inputs} />}
           <p className="text-[11px] leading-relaxed text-muted-foreground">
             All four options assume Lovable handles design, frontend dev, testing, and deployment.

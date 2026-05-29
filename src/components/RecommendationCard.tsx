@@ -1,20 +1,33 @@
 import type { Inputs, RankedResult } from "@/lib/scoring";
 import { tradeoffVs } from "@/lib/scoring";
+import type { Architecture } from "@/data/architectures";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { Link } from "react-router-dom";
-import { CheckCircle2, Info } from "lucide-react";
+import { CheckCircle2, Info, ShieldAlert, Users } from "lucide-react";
 
-export function RecommendationCard({
-  results,
-  inputs,
-}: {
+interface Props {
   results: RankedResult[];
   inputs: Inputs;
-}) {
-  if (!results.length) return null;
+  excluded?: { arch: Architecture; reason: string }[];
+  isNonTechnical?: boolean;
+}
+
+export function RecommendationCard({ results, inputs, excluded = [], isNonTechnical = false }: Props) {
+  if (!results.length) {
+    return (
+      <div className="rounded-2xl border border-dashed border-border bg-card p-6 text-sm text-muted-foreground">
+        No architecture meets your hard requirements. Loosen the compliance filter to see options.
+      </div>
+    );
+  }
   const top = results[0];
-  const runners = results.slice(1, 3);
+  // For non-technical teams, hide runners that require GitHub export + self-host.
+  const visibleRunners = (isNonTechnical
+    ? results.slice(1).filter((r) => r.arch.nativeIntegration)
+    : results.slice(1)
+  ).slice(0, 2);
+  const runners = visibleRunners;
   const tradeoff = runners[0] ? tradeoffVs(top, runners[0], inputs) : null;
 
   return (
@@ -22,6 +35,24 @@ export function RecommendationCard({
       <div aria-live="polite" aria-atomic="true" className="sr-only">
         Recommended: {top.arch.name} — score {Math.round(top.score)} of 100. {top.arch.tagline}
       </div>
+      {isNonTechnical && (
+        <div className="flex items-start gap-2 rounded-xl border border-border bg-muted/30 px-3 py-2 text-xs text-muted-foreground">
+          <Users className="mt-0.5 h-3.5 w-3.5 shrink-0 text-primary" />
+          <span>
+            Non-technical team detected — runners-up are limited to native Lovable integrations
+            so you don't have to manage GitHub exports or your own infra.
+          </span>
+        </div>
+      )}
+      {excluded.length > 0 && (
+        <div className="flex items-start gap-2 rounded-xl border border-warning/40 bg-warning/5 px-3 py-2 text-xs text-foreground/90">
+          <ShieldAlert className="mt-0.5 h-3.5 w-3.5 shrink-0 text-warning" />
+          <span>
+            <span className="font-medium">{excluded.length}</span> option{excluded.length === 1 ? "" : "s"} hidden by your compliance requirement
+            ({excluded.map((e) => e.arch.short).join(", ")}). Adjust compliance to compare them.
+          </span>
+        </div>
+      )}
       <div className="rounded-2xl border border-primary/30 bg-gradient-primary p-[1px] shadow-elegant">
         <div className="rounded-[calc(theme(borderRadius.2xl)-1px)] bg-card p-5">
           <div className="flex items-start justify-between gap-3">

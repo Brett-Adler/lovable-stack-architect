@@ -1,18 +1,21 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, useEffect } from "react";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import Landing from "./pages/Landing.tsx";
 import NotFound from "./pages/NotFound.tsx";
+import { initAnalytics } from "@/lib/analytics";
 
 const Index = lazy(() => import("./pages/Index.tsx"));
 const Methodology = lazy(() => import("./pages/Methodology.tsx"));
 
 const queryClient = new QueryClient();
 
-const App = () => (
+const App = () => {
+  useEffect(() => { initAnalytics(); }, []);
+  return (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       <Toaster />
@@ -36,6 +39,7 @@ const App = () => (
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
-);
+  );
+};
 
 export default App;

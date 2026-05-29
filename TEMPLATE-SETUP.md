@@ -13,6 +13,7 @@ Everything you need to rebrand this template after remixing. Work top-to-bottom;
 - `LOVABLE_REMIX_URL` — `null` hides every "Use this template / Remix" CTA. Set to your project's public Remix URL to enable.
 - `GITHUB_URL` — `null` hides the footer GitHub link. Set to your repo URL to enable.
 - `IS_OFFICIAL` — keep `false` unless you actually represent the platform you're comparing.
+- `PLAUSIBLE_DOMAIN` — optional. Set to your Plausible domain to enable privacy-friendly analytics (loads `plausible.io/js/script.js`). Leave `null` to disable.
 
 ## 2. HTML head
 

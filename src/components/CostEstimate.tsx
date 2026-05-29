@@ -2,7 +2,8 @@ import { ARCH_BY_ID, type ArchId } from "@/data/architectures";
 import type { Inputs } from "@/lib/scoring";
 import { stageFromMau } from "@/lib/scoring";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { ExternalLink, Info } from "lucide-react";
+import { ExternalLink, Info, Flag } from "lucide-react";
+import { GITHUB_URL } from "@/lib/constants";
 
 export function CostEstimate({ archId, inputs }: { archId: ArchId; inputs: Inputs }) {
   const arch = ARCH_BY_ID[archId];
@@ -50,6 +51,20 @@ export function CostEstimate({ archId, inputs }: { archId: ArchId; inputs: Input
                 </li>
               ))}
             </ul>
+            {GITHUB_URL && (
+              <a
+                href={`${GITHUB_URL}/issues/new?title=${encodeURIComponent(
+                  `Cost correction: ${arch.name}`,
+                )}&body=${encodeURIComponent(
+                  `Stage: ${stageLabel}\nCurrent band: ${arch.costBands[stage]}\nSuggested band: \nSource: `,
+                )}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-2 inline-flex items-center gap-1 text-[11px] text-muted-foreground hover:text-foreground hover:underline"
+              >
+                <Flag className="h-3 w-3" /> Suggest a correction
+              </a>
+            )}
           </PopoverContent>
         </Popover>
       </div>

@@ -223,7 +223,20 @@ export function ComparisonMatrix({ enabled, topId, onToggle, onSetEnabled }: Pro
                           Top pick
                         </span>
                       )}
-                      <span className="whitespace-nowrap font-semibold text-foreground">{a.short}</span>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <span className="cursor-help whitespace-nowrap font-semibold text-foreground underline decoration-dotted decoration-muted-foreground/40 underline-offset-4">
+                            {a.short}
+                          </span>
+                        </TooltipTrigger>
+                        <TooltipContent side="top" className="max-w-xs">
+                          <div className="font-semibold">{a.name}</div>
+                          <div className="text-xs opacity-80">{a.tagline}</div>
+                          <div className="mt-1 text-[10px] uppercase tracking-wider opacity-70">
+                            Last reviewed {a.lastReviewed}
+                          </div>
+                        </TooltipContent>
+                      </Tooltip>
                       <span className="block max-w-[140px] text-[11px] font-normal leading-snug text-muted-foreground">
                         {a.tagline}
                       </span>

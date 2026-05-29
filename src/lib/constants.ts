@@ -7,3 +7,6 @@ export const SITE_URL = "https://lovable-stack-architect.lovable.app";
 export const AUTHOR_HANDLE = "@brettadler";
 export const AUTHOR_URL = "https://lovable.dev/@brettadler";
 export const IS_OFFICIAL = false;
+// Optional privacy-friendly analytics. Set to your Plausible domain
+// (e.g. "lovable-stack-architect.lovable.app") to enable. Leave null to disable.
+export const PLAUSIBLE_DOMAIN: string | null = null;
