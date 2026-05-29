@@ -80,8 +80,9 @@ const Index = () => {
     }
   }, [state]);
 
-  const results = useMemo(() => rank(inputs), [inputs]);
+  const { results, excluded } = useMemo(() => rankFull(inputs), [inputs]);
   const topId = results[0]?.arch.id;
+  const isNonTechnical = inputs.team.length === 0 || (inputs.team.length === 1 && inputs.team[0] === "none");
 
   const setInputs = (next: Inputs) => setState((s) => ({ ...s, inputs: next }));
   const toggleArch = (id: ArchId) =>
