@@ -9,6 +9,9 @@ import { ReportExport } from "@/components/ReportExport";
 import { Button } from "@/components/ui/button";
 import { Link2, SlidersHorizontal, Sparkle, Columns3 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { SiteHeader } from "@/components/SiteHeader";
+import { SiteFooter } from "@/components/SiteFooter";
+import { SeoHead } from "@/components/SeoHead";
 import { toast } from "sonner";
 import { ARCHITECTURES, type ArchId } from "@/data/architectures";
 import { DEFAULT_INPUTS, type Inputs, rank } from "@/lib/scoring";
@@ -98,34 +101,19 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-gradient-subtle">
-      <header className="no-print sticky top-0 z-40 border-b border-border bg-background/85 backdrop-blur supports-[backdrop-filter]:bg-background/70">
-        <div className="mx-auto flex max-w-[1800px] flex-wrap items-center justify-between gap-3 px-3 py-3 sm:px-6 sm:py-4 2xl:px-10">
-          <div className="flex min-w-0 items-center gap-2">
-            <img
-              src="/logo-mark.svg"
-              alt="Lovable Stack Architect"
-              width={36}
-              height={36}
-              className="h-9 w-9 shrink-0 rounded-lg"
-            />
-            <div className="min-w-0">
-              <h1 className="truncate text-base font-semibold leading-tight text-foreground sm:text-lg">
-                Lovable Stack Architect
-                <span className="sr-only"> — Pick the right backend stack for your Lovable app</span>
-              </h1>
-              <p className="hidden text-xs text-muted-foreground sm:block" aria-hidden="true">
-                Pick the right backend for your Lovable app
-              </p>
-            </div>
-          </div>
-          <div className="flex flex-wrap items-center gap-2">
-            <Button onClick={shareLink} variant="outline" size="sm" className="gap-1.5">
-              <Link2 className="h-4 w-4" /> <span className="hidden sm:inline">Share</span>
-            </Button>
-            <ReportExport inputs={inputs} results={results} />
-          </div>
-        </div>
-      </header>
+      <SeoHead
+        title="Stack comparator — Lovable Stack Architect"
+        description="Compare 10 hosting and backend platforms side by side. Tune to your stage, budget, team, and workloads."
+        path="/app"
+      />
+      <SiteHeader>
+        <Button onClick={shareLink} variant="outline" size="sm" className="gap-1.5">
+          <Link2 className="h-4 w-4" /> <span className="hidden sm:inline">Share</span>
+        </Button>
+        <ReportExport inputs={inputs} results={results} />
+      </SiteHeader>
+      <h1 className="sr-only">Lovable Stack Architect — Pick the right backend stack for your Lovable app</h1>
+
 
       <main className="mx-auto grid w-full max-w-[1800px] gap-4 px-3 py-4 pb-24 sm:gap-6 sm:px-6 sm:py-6 md:grid-cols-[240px_minmax(0,1fr)] md:pb-6 lg:grid-cols-[260px_minmax(0,1fr)_320px] xl:grid-cols-[300px_minmax(0,1fr)_360px] 2xl:gap-8 2xl:px-10 2xl:grid-cols-[320px_minmax(0,1fr)_400px]">
         <div
@@ -248,6 +236,8 @@ const Index = () => {
           })}
         </div>
       </nav>
+
+      <SiteFooter />
     </div>
   );
 };
