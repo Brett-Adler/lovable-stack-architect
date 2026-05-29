@@ -278,8 +278,8 @@ const Methodology = () => {
 
         {/* 5. Make it your own */}
         <section className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
-          <div className="rounded-3xl border border-primary/30 bg-gradient-primary p-[1px] shadow-elegant">
-            <div className="rounded-[calc(1.5rem-1px)] bg-card p-8 sm:p-12">
+          <div className="rounded-[2rem] bg-gradient-primary p-[1.5px] shadow-elegant">
+            <div className="rounded-[calc(2rem-1.5px)] bg-card p-8 sm:p-12">
               <div className="grid gap-8 lg:grid-cols-[1.1fr_1fr] lg:items-center">
                 <div>
                   <div className="text-xs font-semibold uppercase tracking-wider text-primary">
