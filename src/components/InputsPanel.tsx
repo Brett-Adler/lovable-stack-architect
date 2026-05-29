@@ -212,32 +212,46 @@ export function InputsPanel({ inputs, onChange }: Props) {
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-3">
-        <div className="space-y-2">
-          <Label className="text-xs">Budget</Label>
-          <Select value={inputs.budget} onValueChange={(v) => update("budget", v as BudgetBand)}>
-            <SelectTrigger className="h-9 text-sm"><SelectValue /></SelectTrigger>
-            <SelectContent>
-              <SelectItem value="low">Low — under ~$50/mo</SelectItem>
-              <SelectItem value="medium">Medium — $50–500/mo</SelectItem>
-              <SelectItem value="high">High — $500+/mo</SelectItem>
-            </SelectContent>
-          </Select>
+      <div className="space-y-2">
+        <Label className="text-xs">Budget</Label>
+        <div className="flex flex-wrap gap-1.5">
+          {BUDGETS.map((b) => (
+            <Chip
+              key={b.id}
+              active={inputs.budget.includes(b.id)}
+              onClick={() => {
+                const next = toggle(inputs.budget, b.id);
+                update("budget", (next.length ? next : [b.id]) as BudgetBand[]);
+              }}
+            >
+              {b.label}
+            </Chip>
+          ))}
         </div>
-        <div className="space-y-2">
-          <Label className="text-xs">Lock-in tolerance</Label>
-          <Select
-            value={inputs.lockInTolerance}
-            onValueChange={(v) => update("lockInTolerance", v as LockInTolerance)}
-          >
-            <SelectTrigger className="h-9 text-sm"><SelectValue /></SelectTrigger>
-            <SelectContent>
-              <SelectItem value="low">Low — must be portable</SelectItem>
-              <SelectItem value="medium">Medium</SelectItem>
-              <SelectItem value="high">High — fine to commit</SelectItem>
-            </SelectContent>
-          </Select>
+        <p className="text-[11px] text-muted-foreground">
+          Pick one or more bands if you're flexible on spend.
+        </p>
+      </div>
+
+      <div className="space-y-2">
+        <Label className="text-xs">Lock-in tolerance</Label>
+        <div className="flex flex-wrap gap-1.5">
+          {LOCK_INS.map((l) => (
+            <Chip
+              key={l.id}
+              active={inputs.lockInTolerance.includes(l.id)}
+              onClick={() => {
+                const next = toggle(inputs.lockInTolerance, l.id);
+                update("lockInTolerance", (next.length ? next : [l.id]) as LockInTolerance[]);
+              }}
+            >
+              {l.label}
+            </Chip>
+          ))}
         </div>
+        <p className="text-[11px] text-muted-foreground">
+          How portable does the stack need to be? Pick more than one if you're undecided.
+        </p>
       </div>
 
       <div className="space-y-2">
