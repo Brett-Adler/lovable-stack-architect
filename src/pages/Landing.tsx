@@ -100,7 +100,7 @@ const Landing = () => {
         <section className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
           <div className="grid gap-4 sm:grid-cols-3">
             {FEATURES.map(({ icon: Icon, title, body }) => (
-              <Card key={title} className="border-border/60">
+              <Card key={title} className="border-border bg-card shadow-card">
                 <CardContent className="p-6">
                   <div className="mb-3 inline-flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
                     <Icon className="h-5 w-5" />
