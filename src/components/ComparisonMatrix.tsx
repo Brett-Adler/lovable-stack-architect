@@ -330,6 +330,7 @@ export function ComparisonMatrix({ enabled, topId, onToggle, onSetEnabled, view 
             </div>
           </div>
         )}
+        </>)}
       </section>
     </TooltipProvider>
   );
