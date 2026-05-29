@@ -236,6 +236,8 @@ const Index = () => {
           })}
         </div>
       </nav>
+
+      <SiteFooter />
     </div>
   );
 };
