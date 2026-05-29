@@ -276,63 +276,6 @@ const Landing = () => {
           </div>
         </section>
 
-        {/* Platforms */}
-        <section className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
-          <div className="mb-8 text-center">
-            <h2 className="text-2xl font-bold text-foreground sm:text-3xl">Platforms covered</h2>
-            <p className="mt-2 text-sm text-muted-foreground">10 options across managed backends, frontend hosts, hyperscalers, and PaaS.</p>
-          </div>
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
-            {ARCHITECTURES.map((a) => (
-              <div key={a.id} className="rounded-xl border border-border bg-card p-4 text-center shadow-card">
-                <div className="text-sm font-semibold text-foreground">{a.short}</div>
-                <div className="mt-1 text-xs text-muted-foreground">{a.tagline}</div>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* Use as a template */}
-        <section className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
-          <div className="rounded-3xl border border-primary/30 bg-gradient-primary p-[1px] shadow-elegant">
-            <div className="rounded-[calc(1.5rem-1px)] bg-card p-8 sm:p-12">
-              <div className="grid gap-8 lg:grid-cols-[1.1fr_1fr] lg:items-center">
-                <div>
-                  <div className="text-xs font-semibold uppercase tracking-wider text-primary">For builders</div>
-                  <h2 className="mt-2 text-2xl font-bold text-foreground sm:text-3xl">
-                    Use this as a template for any decision
-                  </h2>
-                  <p className="mt-3 text-sm text-muted-foreground sm:text-base">
-                    The whole app is data-driven. Fork it, swap three files, and you have a decision tool for
-                    CMS picks, database picks, auth providers, AI models — anything you'd put in a comparison table.
-                  </p>
-                  <div className="mt-6 flex flex-wrap gap-3">
-                    <Button asChild size="lg" className="gap-2">
-                      <a href={LOVABLE_REMIX_URL} target="_blank" rel="noopener noreferrer">
-                        <ExternalLink className="h-4 w-4" /> Remix on Lovable
-                      </a>
-                    </Button>
-                    <Button asChild size="lg" variant="outline" className="gap-2">
-                      <Link to="/app">
-                        <SlidersHorizontal className="h-4 w-4" /> Try it first
-                      </Link>
-                    </Button>
-                  </div>
-                </div>
-                <div className="space-y-3">
-                  {TEMPLATE_BULLETS.map((b) => (
-                    <div key={b.file} className="rounded-xl border border-border bg-muted/40 p-4">
-                      <div className="flex items-center gap-2 font-mono text-xs text-primary">
-                        <FileText className="h-3.5 w-3.5" /> {b.file}
-                      </div>
-                      <div className="mt-1.5 text-sm text-foreground/90">{b.body}</div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
 
         {/* Use as a template */}
         <section className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
@@ -443,23 +386,7 @@ const Landing = () => {
             </div>
           </div>
         </section>
-            <p className="mt-2 text-sm text-muted-foreground sm:text-base">
-              Tell the tool about your project and get a ranked recommendation in under a minute.
-            </p>
-            <div className="mt-6 flex flex-wrap justify-center gap-3">
-              <Button asChild size="lg" className="gap-2">
-                <Link to="/app">
-                  Open the tool <ArrowRight className="h-4 w-4" />
-                </Link>
-              </Button>
-              <Button asChild size="lg" variant="outline" className="gap-2">
-                <a href={LOVABLE_REMIX_URL} target="_blank" rel="noopener noreferrer">
-                  <FileDown className="h-4 w-4" /> Use this template
-                </a>
-              </Button>
-            </div>
-          </div>
-        </section>
+
       </main>
 
       <SiteFooter />
