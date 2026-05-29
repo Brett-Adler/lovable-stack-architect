@@ -49,7 +49,7 @@ export const DEFAULT_INPUTS: Inputs = {
 // Methodology note: every criterion starts at a baseline weight of 1.0 so no
 // single criterion is structurally favored. Inputs then nudge weights up or
 // down. This avoids the bias that a high constant DX-with-Lovable baseline
-// (the tool is Lovable-authored) would otherwise introduce.
+// (the tool is built by a Lovable fan) would otherwise introduce.
 export function deriveWeights(inputs: Inputs): Record<CriterionId, number> {
   const w: Record<CriterionId, number> = {
     "time-to-launch": 1,

@@ -1,6 +1,9 @@
 # Lovable Stack Architect
 
-> Side-by-side comparator that helps founders, PMs, designers and developers pick the best backend stack for a Lovable-built app. Free, open-source Lovable template.
+> Side-by-side comparator that helps founders, PMs, designers and developers pick the best backend stack for a Lovable-built app. Free, open-source community template.
+
+Independent, community-built template by @brettadler — not affiliated with, endorsed by, or representing Lovable.
+
 
 Lovable Stack Architect scores 10 popular hosting and backend platforms across 12 criteria — time-to-launch, DX with Lovable, cost at small and large scale, scaling ceiling, realtime, storage, AI/heavy compute, compliance, vendor lock-in, ops burden, and migration path. Inputs (stage, expected MAU, team strengths, budget, compliance needs, workloads, lock-in tolerance, time-to-market priority) drive a ranked recommendation, side-by-side matrix, architecture diagram, and exportable report. Every criterion starts at the same baseline weight; the recommendation card surfaces which criteria drove the top score and what trade-off you make versus the runner-up.
 

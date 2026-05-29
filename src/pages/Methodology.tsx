@@ -40,8 +40,8 @@ function SectionHead({
 
 const BIASES = [
   {
-    title: "Lovable-authored",
-    body: "This tool is built by a Lovable user and lives on a Lovable-hosted site. The rubric reflects Lovable's perspective on developer experience. The DX-with-Lovable criterion has the same baseline weight as every other criterion to limit that bias, but it is still our judgement.",
+    title: "Built by a Lovable fan",
+    body: "This is an independent, community-built template — not affiliated with, endorsed by, or representing Lovable. I built it because I'm a Lovable user and fan, so the rubric has a perspective on what makes a good Lovable backend. The DX-with-Lovable criterion has the same baseline weight as every other criterion to limit that bias, but it's still my judgement.",
     accent: true,
   },
   {
