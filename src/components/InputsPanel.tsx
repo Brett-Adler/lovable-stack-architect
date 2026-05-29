@@ -61,6 +61,18 @@ const WORKLOADS: { id: Workload; label: string }[] = [
   { id: "heavy-compute", label: "Heavy compute / GPU" },
 ];
 
+const BUDGETS: { id: BudgetBand; label: string }[] = [
+  { id: "low", label: "Low — under ~$50/mo" },
+  { id: "medium", label: "Medium — $50–500/mo" },
+  { id: "high", label: "High — $500+/mo" },
+];
+
+const LOCK_INS: { id: LockInTolerance; label: string }[] = [
+  { id: "low", label: "Low — must be portable" },
+  { id: "medium", label: "Medium" },
+  { id: "high", label: "High — fine to commit" },
+];
+
 // Log scale slider for MAU
 const MAU_STEPS = [50, 200, 1_000, 5_000, 10_000, 50_000, 100_000, 500_000, 1_000_000];
 
