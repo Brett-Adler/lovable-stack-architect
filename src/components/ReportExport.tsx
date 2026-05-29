@@ -306,13 +306,13 @@ function ReportContent({ inputs, results, excluded = [] }: Props) {
       <section className="mb-6">
         <h2 className="text-lg font-bold">Project inputs</h2>
         <ul className="mt-2 grid grid-cols-2 gap-x-4 gap-y-1 text-xs">
-          <li><strong>Stage:</strong> {inputs.stage}</li>
+          <li><strong>Stage:</strong> {fmtList(inputs.stage)}</li>
           <li><strong>Expected MAU:</strong> {inputs.mau.toLocaleString()}</li>
           <li><strong>Team strengths:</strong> {fmtList(inputs.team)}</li>
-          <li><strong>Budget:</strong> {inputs.budget}</li>
+          <li><strong>Budget:</strong> {fmtList(inputs.budget)}</li>
           <li><strong>Compliance:</strong> {fmtList(inputs.compliance)}</li>
           <li><strong>Workloads:</strong> {fmtList(inputs.workloads)}</li>
-          <li><strong>Lock-in tolerance:</strong> {inputs.lockInTolerance}</li>
+          <li><strong>Lock-in tolerance:</strong> {fmtList(inputs.lockInTolerance)}</li>
           <li><strong>Time-to-market priority:</strong> {inputs.ttmPriority}/5</li>
         </ul>
       </section>
