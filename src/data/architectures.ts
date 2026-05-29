@@ -1,5 +1,19 @@
+// ---------------------------------------------------------------------------
 // Architectures, criteria, rubric, and curated cost bands.
-// Scores are 1 (poor) to 5 (excellent) for each criterion.
+//
+// This file is the single source of truth for what gets compared and how it
+// scores. To repurpose this template for a different decision space:
+//
+//   1. Replace the `ArchId` union and the `ARCHITECTURES` array with your
+//      own options (name, tagline, description, best-for, watch-outs, cost
+//      bands per stage).
+//   2. Edit `CRITERIA` to the dimensions you want to score on.
+//   3. Fill in `RUBRIC` with a 1 (poor) – 5 (excellent) score for every
+//      (architecture × criterion) pair. Missing entries will break ranking.
+//
+// Scoring weights and input handling live in `src/lib/scoring.ts`.
+// Cost bands last reviewed: May 2026. Re-verify against vendor pricing.
+// ---------------------------------------------------------------------------
 
 export type ArchId =
   | "lovable-cloud"
