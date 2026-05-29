@@ -255,7 +255,7 @@ function buildRationale(id: ArchId, inputs: Inputs): string[] {
 
   if (id === "lovable-cloud") {
     if (earlyStage) rs.push("Fastest path to a live MVP — zero infra setup.");
-    if (inputs.budget === "low") rs.push("Stays in the free or near-free band early on.");
+    if (inputs.budget.includes("low")) rs.push("Stays in the free or near-free band early on.");
     if (noOps) rs.push("No DevOps required; Lovable manages the backend.");
     if (heavyAI && !inputs.workloads.includes("heavy-compute"))
       rs.push("AI Gateway gives managed access to Gemini/Claude/GPT — no API keys to rotate.");
