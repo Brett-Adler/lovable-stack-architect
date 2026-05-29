@@ -12,7 +12,7 @@ import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SeoHead } from "@/components/SeoHead";
 import { ARCHITECTURES } from "@/data/architectures";
-import { LAST_REVIEWED, LOVABLE_REMIX_URL } from "@/lib/constants";
+import { AUTHOR_HANDLE, AUTHOR_URL, LAST_REVIEWED, LOVABLE_REMIX_URL } from "@/lib/constants";
 import { PRESETS, presetShareUrl } from "@/lib/presets";
 
 const FEATURES = [
@@ -46,8 +46,9 @@ const TEMPLATE_BULLETS = [
 ];
 
 const FAQ = [
+  { q: "Is this an official Lovable product?", a: "No. It's an independent, community-built template by @brettadler, inspired by Lovable's design language. Not affiliated with, endorsed by, or representing Lovable. The Lovable name and brand belong to Lovable." },
   { q: "Where does the data come from?", a: "Curated from public vendor pricing pages, docs, and hands-on experience. Every score is editable in one file, and every cost band links to its source on the Methodology page." },
-  { q: "How is bias handled?", a: "This tool is Lovable-authored, so it has a perspective. Every criterion starts at the same baseline weight to avoid structurally favoring Lovable Cloud, and the recommendation card shows the top criteria that drove the score so you can sanity-check it. Full disclosure on the Methodology page." },
+  { q: "How is bias handled?", a: "I built this and I'm a Lovable fan, so it has a perspective. Every criterion starts at the same baseline weight to avoid structurally favoring Lovable Cloud, and the recommendation card shows the top criteria that drove the score so you can sanity-check it. Full disclosure on the Methodology page." },
   { q: "What's actually in Lovable Cloud?", a: "Postgres database, auth, file storage, edge functions, and the Lovable AI Gateway (managed Gemini/Claude/GPT calls — no API keys to rotate). It's powered by Supabase under the hood, so if you outgrow Cloud you can detach to a self-owned Supabase project." },
   { q: "Do the other 8 platforms work with Lovable too?", a: "Not as native integrations. Only Lovable Cloud and external Supabase are wired in. For Vercel, Netlify, AWS, GCP, Azure, Heroku, Render, and Fly.io you export your Lovable project to GitHub and deploy the backend yourself." },
   { q: "How fresh is it?", a: `Cost bands and rubric were last reviewed ${LAST_REVIEWED}. Always verify against current vendor pricing before committing.` },
@@ -61,7 +62,7 @@ const Landing = () => {
     <div className="min-h-dvh bg-background">
       <SeoHead
         title="Lovable Stack Architect — Pick the right backend for your Lovable app"
-        description="Compare 10 hosting and backend platforms side by side. Free, open-source Lovable template you can rebrand for any decision space."
+        description="An independent, community-built comparator for picking a backend for your Lovable app. Free, MIT — remix it."
         path="/"
       />
       <SiteHeader />
@@ -79,7 +80,7 @@ const Landing = () => {
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-brand-magenta opacity-60" />
                 <span className="relative inline-flex h-2 w-2 rounded-full bg-gradient-primary" />
               </span>
-              Free Lovable template · Last reviewed {LAST_REVIEWED}
+              Community template · Inspired by Lovable · Last reviewed {LAST_REVIEWED}
             </div>
             <h1 className="mx-auto max-w-4xl text-5xl font-extrabold leading-[0.95] tracking-[-0.04em] text-foreground sm:text-6xl md:text-7xl">
               Pick the right backend for{" "}
@@ -96,6 +97,18 @@ const Landing = () => {
                 openly published
               </Link>
               .
+            </p>
+            <p className="mx-auto mt-3 max-w-2xl text-xs italic text-muted-foreground/80">
+              An independent project by{" "}
+              <a
+                href={AUTHOR_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline decoration-dotted underline-offset-2 hover:text-foreground"
+              >
+                {AUTHOR_HANDLE}
+              </a>
+              {" "}— not affiliated with Lovable.
             </p>
             <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
               <div className="rounded-full bg-gradient-primary p-[1.5px] shadow-elegant transition-transform hover:scale-[1.02]">
@@ -290,9 +303,10 @@ const Landing = () => {
                     Use this as a template for any decision
                   </h2>
                   <p className="mt-3 text-sm text-muted-foreground sm:text-base">
-                    The whole app is data-driven. Fork it, swap three files, and you have a decision
-                    tool for CMS picks, database picks, auth providers, AI models — anything you'd
-                    put in a comparison table.
+                    A free, MIT-licensed community template you can remix on Lovable. The whole app
+                    is data-driven — fork it, swap three files, and you have a decision tool for CMS
+                    picks, database picks, auth providers, AI models, anything you'd put in a
+                    comparison table.
                   </p>
                   <div className="mt-6 flex flex-wrap gap-3">
                     <Button asChild size="lg" className="gap-2 rounded-full px-6">
@@ -347,6 +361,35 @@ const Landing = () => {
                 </AccordionItem>
               ))}
             </Accordion>
+          </div>
+        </section>
+
+        {/* About the builder */}
+        <section className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
+          <div className="rounded-3xl border border-border bg-card p-8 shadow-card sm:p-10">
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <div className="inline-flex items-center gap-1.5 rounded-full border border-border bg-muted/40 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">
+                  About the builder
+                </div>
+                <h3 className="mt-3 text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+                  Built by {AUTHOR_HANDLE}
+                </h3>
+                <p className="mt-2 max-w-xl text-sm text-muted-foreground sm:text-base">
+                  Independent builder. Big fan of Lovable — open to joining the team. Say hi.
+                </p>
+              </div>
+              <Button
+                asChild
+                size="lg"
+                variant="outline"
+                className="gap-2 rounded-full border-border bg-card px-6"
+              >
+                <a href={AUTHOR_URL} target="_blank" rel="noopener noreferrer">
+                  View Lovable profile <ArrowRight className="h-4 w-4" />
+                </a>
+              </Button>
+            </div>
           </div>
         </section>
 
