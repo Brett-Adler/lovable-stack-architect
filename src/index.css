@@ -152,6 +152,10 @@
   .print-block { display: block !important; }
   .print-break-before { page-break-before: always; }
   .shadow-card, .shadow-elegant { box-shadow: none !important; }
+  /* When a dedicated #print-root is mounted, print only that content. */
+  body:has(#print-root) > *:not(#print-root) { display: none !important; }
+  body:has(#print-root) #print-root { display: block !important; }
+  @page { margin: 0.6in; }
 }
 
 @media (prefers-reduced-motion: reduce) {
