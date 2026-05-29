@@ -26,10 +26,10 @@ function SectionHead({
 }) {
   return (
     <div className="mb-8 text-center">
-      <div className="mx-auto inline-flex h-8 w-8 items-center justify-center rounded-full bg-primary text-sm font-semibold text-primary-foreground">
+      <div className="mx-auto inline-flex h-10 w-10 items-center justify-center rounded-full bg-gradient-primary text-sm font-bold text-white shadow-card">
         {n}
       </div>
-      <h2 className="mt-3 text-2xl font-bold text-foreground sm:text-3xl">{title}</h2>
+      <h2 className="mt-3 text-2xl font-extrabold tracking-[-0.02em] text-foreground sm:text-3xl">{title}</h2>
       {subtitle ? (
         <p className="mx-auto mt-2 max-w-2xl text-sm text-muted-foreground sm:text-base">
           {subtitle}
@@ -65,7 +65,7 @@ const BIASES = [
 
 const Methodology = () => {
   return (
-    <div className="min-h-dvh bg-gradient-subtle">
+    <div className="min-h-dvh bg-background">
       <SeoHead
         title="Methodology — Lovable Stack Architect"
         description="How the Lovable Stack Architect scores 10 backend options across 12 criteria, including the rubric, weights, sources, and known biases."
@@ -75,23 +75,27 @@ const Methodology = () => {
 
       <main id="main-content">
         {/* Hero */}
-        <section className="mx-auto max-w-6xl px-4 pb-12 pt-12 sm:px-6 sm:pt-20 sm:pb-20">
-          <div className="mx-auto max-w-3xl text-center">
-            <div className="mb-4 inline-flex items-center gap-1.5 rounded-full border border-border bg-card/60 px-3 py-1 text-xs font-medium text-muted-foreground">
-              <Info className="h-3.5 w-3.5 text-primary" aria-hidden="true" />
+        <section className="relative overflow-hidden">
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute left-1/2 top-[-10%] -z-0 h-[500px] w-[900px] -translate-x-1/2 bg-gradient-glow blur-3xl"
+          />
+          <div className="relative z-10 mx-auto max-w-6xl px-4 pb-12 pt-16 text-center sm:px-6 sm:pt-24 sm:pb-20">
+            <div className="mx-auto mb-8 inline-flex items-center gap-2 rounded-full border border-border bg-card/70 px-3 py-1 text-xs font-medium text-muted-foreground backdrop-blur-sm">
+              <span className="h-2 w-2 rounded-full bg-gradient-primary" aria-hidden="true" />
               Methodology · Last reviewed {LAST_REVIEWED}
             </div>
-            <h1 className="text-4xl font-bold leading-tight tracking-tight text-foreground sm:text-5xl md:text-6xl">
-              How the recommendation is built
+            <h1 className="mx-auto max-w-4xl text-4xl font-extrabold leading-[1.05] tracking-[-0.03em] text-foreground sm:text-5xl md:text-6xl">
+              How the recommendation is <span className="text-gradient">built</span>
             </h1>
-            <p className="mt-5 text-base text-muted-foreground sm:text-lg">
+            <p className="mx-auto mt-5 max-w-2xl text-base text-muted-foreground sm:text-lg">
               The rubric, the weights, the sources, and where we know the tool is biased — all in
               one place.
             </p>
             <div className="mt-8">
               <Link
                 to="/"
-                className="inline-flex items-center gap-1.5 rounded text-sm font-medium text-primary transition-colors hover:text-primary/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                className="inline-flex items-center gap-1.5 rounded text-sm font-medium text-foreground/70 transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
               >
                 <ArrowLeft className="h-4 w-4" aria-hidden="true" /> Back home
               </Link>
