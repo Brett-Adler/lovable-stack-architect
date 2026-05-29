@@ -9,7 +9,6 @@ import {
   ArrowRight,
   AlertTriangle,
   ExternalLink,
-  Info,
   SlidersHorizontal,
   FileText,
 } from "lucide-react";
