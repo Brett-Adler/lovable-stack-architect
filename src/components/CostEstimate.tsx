@@ -5,10 +5,56 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { ExternalLink, Info, Flag } from "lucide-react";
 import { GITHUB_URL } from "@/lib/constants";
 
-export function CostEstimate({ archId, inputs }: { archId: ArchId; inputs: Inputs }) {
+function parseBand(band: string): number | null {
+  const cleaned = band.replace(/\$/g, "").replace(/\s/g, "");
+  const toNum = (s: string): number | null => {
+    if (!s) return null;
+    const m = s.match(/^([\d.]+)([km]?)\+?$/i);
+    if (!m) return null;
+    const n = parseFloat(m[1]);
+    if (isNaN(n)) return null;
+    const mult = m[2]?.toLowerCase() === "k" ? 1000 : m[2]?.toLowerCase() === "m" ? 1_000_000 : 1;
+    return n * mult;
+  };
+  if (cleaned.includes("–") || cleaned.includes("-")) {
+    const [a, b] = cleaned.split(/[–-]/);
+    const lo = toNum(a);
+    const hi = toNum(b);
+    if (lo != null && hi != null) return (lo + hi) / 2;
+    return hi ?? lo;
+  }
+  return toNum(cleaned);
+}
+
+export function CostEstimate({
+  archId,
+  inputs,
+  enabled,
+  topId,
+}: {
+  archId: ArchId;
+  inputs: Inputs;
+  enabled?: ArchId[];
+  topId?: ArchId;
+}) {
   const arch = ARCH_BY_ID[archId];
   const stage = stageFromMau(inputs.mau);
   const stageLabel = { prototype: "Prototype", mvp: "MVP", growth: "Growth", scale: "Scale" }[stage];
+
+  const compareRows = (enabled ?? [])
+    .map((id) => {
+      const a = ARCH_BY_ID[id];
+      const band = a.costBands[stage];
+      return { id, short: a.short, band, mid: parseBand(band) };
+    })
+    .sort((a, b) => {
+      if (a.mid == null && b.mid == null) return 0;
+      if (a.mid == null) return 1;
+      if (b.mid == null) return -1;
+      return a.mid - b.mid;
+    });
+  const maxMid = Math.max(...compareRows.map((r) => r.mid ?? 0), 1);
+
 
   return (
     <div className="rounded-2xl border border-border bg-card p-5 shadow-card">
