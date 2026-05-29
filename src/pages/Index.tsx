@@ -111,8 +111,9 @@ const Index = () => {
             <div className="min-w-0">
               <h1 className="truncate text-base font-semibold leading-tight text-foreground sm:text-lg">
                 Lovable Stack Architect
+                <span className="sr-only"> — Pick the right backend stack for your Lovable app</span>
               </h1>
-              <p className="hidden text-xs text-muted-foreground sm:block">
+              <p className="hidden text-xs text-muted-foreground sm:block" aria-hidden="true">
                 Pick the right backend for your Lovable app
               </p>
             </div>

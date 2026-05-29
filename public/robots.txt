@@ -12,3 +12,5 @@ Allow: /
 
 User-agent: *
 Allow: /
+
+Sitemap: https://lovable-stack-architect.lovable.app/sitemap.xml
