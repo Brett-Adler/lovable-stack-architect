@@ -5,6 +5,7 @@ import {
   RUBRIC,
   type ArchId,
   type Architecture,
+  type Criterion,
   type CriterionId,
 } from "@/data/architectures";
 
@@ -44,10 +45,15 @@ export const DEFAULT_INPUTS: Inputs = {
 };
 
 // Derive criterion weights (0–3) from inputs.
+//
+// Methodology note: every criterion starts at a baseline weight of 1.0 so no
+// single criterion is structurally favored. Inputs then nudge weights up or
+// down. This avoids the bias that a high constant DX-with-Lovable baseline
+// (the tool is Lovable-authored) would otherwise introduce.
 export function deriveWeights(inputs: Inputs): Record<CriterionId, number> {
   const w: Record<CriterionId, number> = {
     "time-to-launch": 1,
-    "dx-with-lovable": 1.5,
+    "dx-with-lovable": 1,
     "cost-small": 1,
     "cost-large": 1,
     "scaling-ceiling": 1,
@@ -137,6 +143,8 @@ export interface RankedResult {
   arch: Architecture;
   score: number; // 0–100 normalized
   rationale: string[];
+  /** Top weighted contributions to this architecture's score (criterion × weight × rubric). */
+  topContributors: { criterion: Criterion; contribution: number; rubricScore: number }[];
 }
 
 export function rank(inputs: Inputs): RankedResult[] {
@@ -145,15 +153,52 @@ export function rank(inputs: Inputs): RankedResult[] {
 
   const results = ARCHITECTURES.map((arch) => {
     let weighted = 0;
+    const contributions: { criterion: Criterion; contribution: number; rubricScore: number }[] = [];
     for (const c of CRITERIA) {
-      weighted += weights[c.id] * RUBRIC[arch.id][c.id];
+      const contribution = weights[c.id] * RUBRIC[arch.id][c.id];
+      weighted += contribution;
+      contributions.push({ criterion: c, contribution, rubricScore: RUBRIC[arch.id][c.id] });
     }
     // Normalize: max possible is totalWeight * 5
     const score = (weighted / (totalWeight * 5)) * 100;
-    return { arch, score, rationale: buildRationale(arch.id, inputs) };
+    const topContributors = contributions
+      .filter((c) => c.contribution > 0)
+      .sort((a, b) => b.contribution - a.contribution)
+      .slice(0, 3);
+    return { arch, score, rationale: buildRationale(arch.id, inputs), topContributors };
   });
 
   return results.sort((a, b) => b.score - a.score);
+}
+
+/**
+ * Given the top pick and runner-up, return a one-line tradeoff string:
+ * what criterion the runner-up wins on vs what the top pick wins on.
+ * Returns null if no meaningful tradeoff exists (e.g. top dominates).
+ */
+export function tradeoffVs(
+  top: RankedResult,
+  runnerUp: RankedResult,
+  inputs: Inputs,
+): { topWins: Criterion; runnerWins: Criterion } | null {
+  const weights = deriveWeights(inputs);
+  let bestRunnerGain: { criterion: Criterion; gain: number } | null = null;
+  let bestTopGain: { criterion: Criterion; gain: number } | null = null;
+
+  for (const c of CRITERIA) {
+    const w = weights[c.id];
+    if (w <= 0) continue;
+    const delta = (RUBRIC[runnerUp.arch.id][c.id] - RUBRIC[top.arch.id][c.id]) * w;
+    if (delta > (bestRunnerGain?.gain ?? 0)) {
+      bestRunnerGain = { criterion: c, gain: delta };
+    }
+    if (-delta > (bestTopGain?.gain ?? 0)) {
+      bestTopGain = { criterion: c, gain: -delta };
+    }
+  }
+
+  if (!bestRunnerGain || !bestTopGain) return null;
+  return { topWins: bestTopGain.criterion, runnerWins: bestRunnerGain.criterion };
 }
 
 function buildRationale(id: ArchId, inputs: Inputs): string[] {
@@ -172,15 +217,19 @@ function buildRationale(id: ArchId, inputs: Inputs): string[] {
     if (earlyStage) rs.push("Fastest path to a live MVP — zero infra setup.");
     if (inputs.budget === "low") rs.push("Stays in the free or near-free band early on.");
     if (noOps) rs.push("No DevOps required; Lovable manages the backend.");
+    if (heavyAI && !inputs.workloads.includes("heavy-compute"))
+      rs.push("AI Gateway gives managed access to Gemini/Claude/GPT — no API keys to rotate.");
     if (inputs.compliance.includes("hipaa"))
-      rs.push("HIPAA-grade workloads typically need an external Supabase or hyperscaler tier.");
+      rs.push("HIPAA workloads need an external Supabase or hyperscaler tier for BAA today.");
+    if (inputs.compliance.includes("residency"))
+      rs.push("Region pinning isn't exposed on Cloud — use external Supabase for that.");
     if (inputs.mau >= 200_000)
-      rs.push("At very high scale, consider moving to your own Supabase project for tuning.");
+      rs.push("At very high scale, consider detaching to your own Supabase project for tuning.");
   }
   if (id === "lovable-supabase") {
     rs.push("Same Postgres + auth + storage as Cloud, but on a project you own.");
     if (inputs.compliance.length && !inputs.compliance.includes("none"))
-      rs.push("Pick the region and add-ons you need for compliance.");
+      rs.push("Pick the region, BAA, and add-ons you need for compliance.");
     if (inputs.workloads.includes("realtime"))
       rs.push("Best-in-class realtime (Postgres changes, presence, broadcast).");
     if (inputs.lockInTolerance === "low")
@@ -188,12 +237,12 @@ function buildRationale(id: ArchId, inputs: Inputs): string[] {
   }
   if (id === "lovable-vercel") {
     rs.push("Global edge functions and a polished deploy pipeline.");
+    rs.push("Not a Lovable integration — requires GitHub export + your own DB choice.");
     if (heavyAI) rs.push("Edge runtimes help with low-latency AI proxies.");
-    if (!inputs.team.includes("backend"))
-      rs.push("Caveat: you still need to choose and run a database somewhere.");
   }
   if (id === "lovable-netlify") {
     rs.push("Strong fit for marketing + app combos with edge functions.");
+    rs.push("Not a Lovable integration — requires GitHub export + your own DB choice.");
     if (inputs.workloads.includes("background-jobs"))
       rs.push("Background jobs need an external service (e.g. Inngest).");
   }
@@ -202,6 +251,7 @@ function buildRationale(id: ArchId, inputs: Inputs): string[] {
     if (heavyAI) rs.push("Bedrock, SageMaker, and GPU instances cover most AI needs.");
     if (earlyStage) rs.push("Overkill for an early MVP — slowest to first deploy.");
     if (noOps) rs.push("Needs experienced backend/DevOps to operate well.");
+    rs.push("Not a Lovable integration — you own the deploy and ops story.");
   }
   if (id === "lovable-gcp") {
     if (heavyAI) rs.push("Vertex AI and Gemini models are first-class on GCP.");
@@ -209,6 +259,7 @@ function buildRationale(id: ArchId, inputs: Inputs): string[] {
       rs.push("Cloud Run + Pub/Sub make event-driven workloads simple.");
     if (earlyStage) rs.push("Heavier setup than managed-backend options.");
     if (noOps) rs.push("Requires DevOps to wire IAM, networking, and CI/CD.");
+    rs.push("Not a Lovable integration — requires GitHub export.");
   }
   if (id === "lovable-azure") {
     if (inputs.compliance.includes("soc2") || inputs.compliance.includes("residency"))
@@ -216,25 +267,34 @@ function buildRationale(id: ArchId, inputs: Inputs): string[] {
     if (heavyAI) rs.push("Azure OpenAI gives enterprise SLAs on GPT models.");
     if (earlyStage) rs.push("Overkill for an early MVP.");
     if (noOps) rs.push("Steepest learning curve outside the Microsoft ecosystem.");
+    rs.push("Not a Lovable integration — requires GitHub export.");
   }
   if (id === "lovable-heroku") {
     rs.push("Push-to-deploy simplicity with managed Postgres add-ons.");
+    rs.push("Not a Lovable integration — requires GitHub export.");
     if (inputs.mau >= 100_000) rs.push("Watch the dyno bill at scale — cheaper alternatives exist.");
     if (noOps) rs.push("Friendly for teams without dedicated DevOps.");
   }
   if (id === "lovable-render") {
     rs.push("Modern Heroku-style PaaS with friendlier pricing.");
+    rs.push("Not a Lovable integration — requires GitHub export.");
     if (inputs.workloads.includes("background-jobs"))
       rs.push("First-class workers and cron jobs out of the box.");
     if (noOps) rs.push("Low ops burden — close to PaaS-grade simplicity.");
   }
   if (id === "lovable-fly") {
     rs.push("Run containers near your users for low latency.");
+    rs.push("Not a Lovable integration — requires GitHub export.");
     if (inputs.workloads.includes("realtime")) rs.push("Anycast edge helps realtime workloads.");
     if (strictCompliance) rs.push("Smaller compliance catalog than the hyperscalers.");
   }
 
-  if (rs.length === 0) rs.push(arch.tagline);
+  if (rs.length === 0) {
+    rs.push(
+      "No specific reason to prefer or avoid this option for your inputs — it scored on baseline criteria only.",
+    );
+    rs.push(arch.tagline);
+  }
   return rs;
 }
 
