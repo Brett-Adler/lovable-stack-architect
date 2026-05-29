@@ -283,6 +283,9 @@ export function InputsPanel({ inputs, onChange }: Props) {
           value={[inputs.ttmPriority]}
           onValueChange={([v]) => update("ttmPriority", v)}
         />
+        <p className="text-[11px] text-muted-foreground">
+          Higher = boost options that ship fastest (managed backends). Lower = treat speed-to-launch as just one factor among many.
+        </p>
       </div>
           </div>
         </CollapsibleContent>
