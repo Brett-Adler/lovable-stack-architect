@@ -34,33 +34,38 @@ interface PersistedState {
   enabled: ArchId[];
 }
 
-function loadState(): PersistedState {
+function loadState(): { state: PersistedState; shareError: boolean } {
   // URL takes precedence
   const params = new URLSearchParams(window.location.search);
   const s = params.get("s");
   if (s) {
     try {
       const json = LZString.decompressFromEncodedURIComponent(s);
-      if (json) return JSON.parse(json) as PersistedState;
+      if (json) return { state: JSON.parse(json) as PersistedState, shareError: false };
+      return { state: { inputs: DEFAULT_INPUTS, enabled: DEFAULT_ENABLED }, shareError: true };
     } catch {
-      /* ignore */
+      return { state: { inputs: DEFAULT_INPUTS, enabled: DEFAULT_ENABLED }, shareError: true };
     }
   }
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw) return JSON.parse(raw) as PersistedState;
+    if (raw) return { state: JSON.parse(raw) as PersistedState, shareError: false };
   } catch {
     /* ignore */
   }
   return {
-    inputs: DEFAULT_INPUTS,
-    enabled: DEFAULT_ENABLED,
+    state: { inputs: DEFAULT_INPUTS, enabled: DEFAULT_ENABLED },
+    shareError: false,
   };
 }
 
 const Index = () => {
   const [state, setState] = useState<PersistedState>(() => {
-    const s = loadState();
+    const { state: s, shareError } = loadState();
+    if (shareError) {
+      // Defer toast until after mount
+      setTimeout(() => toast.error("Couldn't read that share link", { description: "It looks malformed. Starting from defaults." }), 0);
+    }
     return { ...s, enabled: sanitize(s.enabled) };
   });
   const [mobileTab, setMobileTab] = useState<"inputs" | "recommendation" | "comparison">("recommendation");

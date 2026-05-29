@@ -196,7 +196,7 @@ export function ComparisonMatrix({ enabled, topId, onToggle, onSetEnabled }: Pro
         </div>
       ) : (
         <div className="mt-4 w-full max-w-full overflow-x-auto rounded-2xl border border-border bg-card shadow-card sm:mt-6">
-          <table className="w-full min-w-[480px] border-collapse text-sm sm:min-w-[640px]">
+          <table className="w-full border-collapse text-sm" style={{ minWidth: `${180 + archs.length * 130}px` }}>
             <caption className="sr-only">
               Architecture scores by criterion, 1 (poor) to 5 (excellent).
             </caption>
@@ -213,18 +213,18 @@ export function ComparisonMatrix({ enabled, topId, onToggle, onSetEnabled }: Pro
                     key={a.id}
                     scope="col"
                     className={cn(
-                      "px-4 py-3 text-center align-bottom",
+                      "min-w-[120px] px-3 py-3 text-center align-bottom",
                       a.id === topId && "bg-primary/5",
                     )}
                   >
                     <div className="flex flex-col items-center gap-1">
                       {a.id === topId && (
-                        <span className="rounded-full bg-gradient-primary px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-primary-foreground">
+                        <span className="whitespace-nowrap rounded-full bg-gradient-primary px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-primary-foreground">
                           Top pick
                         </span>
                       )}
-                      <span className="font-semibold text-foreground">{a.short}</span>
-                      <span className="text-[11px] font-normal text-muted-foreground max-w-[140px]">
+                      <span className="whitespace-nowrap font-semibold text-foreground">{a.short}</span>
+                      <span className="block max-w-[140px] text-[11px] font-normal leading-snug text-muted-foreground">
                         {a.tagline}
                       </span>
                     </div>

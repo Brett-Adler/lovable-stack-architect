@@ -126,7 +126,7 @@ export function InputsPanel({ inputs, onChange }: Props) {
               onClick={() => onChange(DEFAULT_INPUTS)}
               aria-label="Reset all project inputs to defaults"
             >
-              Reset
+              Reset inputs
             </Button>
             <CollapsibleTrigger asChild>
               <Button
