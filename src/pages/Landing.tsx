@@ -100,7 +100,7 @@ const Landing = () => {
         <section className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
           <div className="grid gap-4 sm:grid-cols-3">
             {FEATURES.map(({ icon: Icon, title, body }) => (
-              <Card key={title} className="border-border/60">
+              <Card key={title} className="border-border bg-card shadow-card">
                 <CardContent className="p-6">
                   <div className="mb-3 inline-flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
                     <Icon className="h-5 w-5" />
@@ -115,7 +115,7 @@ const Landing = () => {
 
         {/* What's Lovable Cloud */}
         <section className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
-          <div className="rounded-2xl border border-border bg-card p-6 sm:p-8">
+          <div className="rounded-2xl border border-border bg-card p-6 shadow-card sm:p-8">
             <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:gap-6">
               <div className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
                 <Database className="h-5 w-5" />
@@ -148,7 +148,7 @@ const Landing = () => {
               <Link
                 key={p.id}
                 to={presetShareUrl(p)}
-                className="group rounded-2xl border border-border bg-card p-6 transition-colors hover:border-primary/40 hover:bg-card/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                className="group rounded-2xl border border-border bg-card p-6 shadow-card transition-all hover:border-primary/40 hover:shadow-elegant focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
               >
                 <div className="text-sm font-semibold text-foreground group-hover:text-primary">{p.label}</div>
                 <p className="mt-1.5 text-xs text-muted-foreground">{p.description}</p>
@@ -173,7 +173,7 @@ const Landing = () => {
           </div>
           <div className="grid gap-4 sm:grid-cols-3">
             {STEPS.map((s) => (
-              <div key={s.n} className="rounded-2xl border border-border bg-card p-6">
+              <div key={s.n} className="rounded-2xl border border-border bg-card p-6 shadow-card">
                 <div className="mb-3 inline-flex h-8 w-8 items-center justify-center rounded-full bg-primary text-sm font-semibold text-primary-foreground">
                   {s.n}
                 </div>
@@ -192,7 +192,7 @@ const Landing = () => {
           </div>
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
             {ARCHITECTURES.map((a) => (
-              <div key={a.id} className="rounded-xl border border-border bg-card p-4 text-center">
+              <div key={a.id} className="rounded-xl border border-border bg-card p-4 text-center shadow-card">
                 <div className="text-sm font-semibold text-foreground">{a.short}</div>
                 <div className="mt-1 text-xs text-muted-foreground">{a.tagline}</div>
               </div>
@@ -229,7 +229,7 @@ const Landing = () => {
                 </div>
                 <div className="space-y-3">
                   {TEMPLATE_BULLETS.map((b) => (
-                    <div key={b.file} className="rounded-xl border border-border bg-background/50 p-4">
+                    <div key={b.file} className="rounded-xl border border-border bg-muted/40 p-4">
                       <div className="flex items-center gap-2 font-mono text-xs text-primary">
                         <FileText className="h-3.5 w-3.5" /> {b.file}
                       </div>
