@@ -69,15 +69,20 @@ export function deriveWeights(inputs: Inputs): Record<CriterionId, number> {
   // Time to market
   w["time-to-launch"] += inputs.ttmPriority * 0.3;
 
-  // Stage shifts what matters
-  if (inputs.stage === "prototype" || inputs.stage === "mvp") {
-    w["time-to-launch"] += 0.8;
-    w["cost-small"] += 0.8;
-    w["ops-burden"] += 0.5;
-  } else {
-    w["scaling-ceiling"] += 1;
-    w["cost-large"] += 1;
-    w["compliance"] += 0.5;
+  // Stage shifts what matters. When multiple stages are selected we average
+  // the nudges so users on the cusp (e.g. prototype + MVP) get a blended view.
+  const stages = inputs.stage.length ? inputs.stage : (["mvp"] as Stage[]);
+  const stageScale = 1 / stages.length;
+  for (const st of stages) {
+    if (st === "prototype" || st === "mvp") {
+      w["time-to-launch"] += 0.8 * stageScale;
+      w["cost-small"] += 0.8 * stageScale;
+      w["ops-burden"] += 0.5 * stageScale;
+    } else {
+      w["scaling-ceiling"] += 1 * stageScale;
+      w["cost-large"] += 1 * stageScale;
+      w["compliance"] += 0.5 * stageScale;
+    }
   }
 
   // Scale
@@ -101,12 +106,16 @@ export function deriveWeights(inputs: Inputs): Record<CriterionId, number> {
     w["scaling-ceiling"] += 0.3;
   }
 
-  // Budget
-  if (inputs.budget === "low") {
-    w["cost-small"] += 0.8;
-    w["cost-large"] += 0.4;
-  } else if (inputs.budget === "high") {
-    w["cost-small"] -= 0.2;
+  // Budget — average nudges when multiple bands are selected.
+  const budgets = inputs.budget.length ? inputs.budget : (["low"] as BudgetBand[]);
+  const budgetScale = 1 / budgets.length;
+  for (const b of budgets) {
+    if (b === "low") {
+      w["cost-small"] += 0.8 * budgetScale;
+      w["cost-large"] += 0.4 * budgetScale;
+    } else if (b === "high") {
+      w["cost-small"] -= 0.2 * budgetScale;
+    }
   }
 
   // Compliance
@@ -124,12 +133,18 @@ export function deriveWeights(inputs: Inputs): Record<CriterionId, number> {
   }
   if (inputs.workloads.includes("background-jobs")) w["ai-compute"] += 0.5;
 
-  // Lock-in tolerance
-  if (inputs.lockInTolerance === "low") {
-    w["lock-in"] += 1.5;
-    w["migration"] += 1;
-  } else if (inputs.lockInTolerance === "high") {
-    w["lock-in"] -= 0.3;
+  // Lock-in tolerance — average nudges across selected values.
+  const tolerances = inputs.lockInTolerance.length
+    ? inputs.lockInTolerance
+    : (["medium"] as LockInTolerance[]);
+  const tolScale = 1 / tolerances.length;
+  for (const t of tolerances) {
+    if (t === "low") {
+      w["lock-in"] += 1.5 * tolScale;
+      w["migration"] += 1 * tolScale;
+    } else if (t === "high") {
+      w["lock-in"] -= 0.3 * tolScale;
+    }
   }
 
   // Clamp to >= 0
