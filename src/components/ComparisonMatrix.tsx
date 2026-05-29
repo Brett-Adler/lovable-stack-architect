@@ -47,7 +47,7 @@ function ScoreDot({ score }: { score: number }) {
 
 const ALL_IDS = ARCHITECTURES.map((a) => a.id);
 
-export function ComparisonMatrix({ enabled, topId, onToggle, onSetEnabled }: Props) {
+export function ComparisonMatrix({ enabled, topId, onToggle, onSetEnabled, view = "all" }: Props) {
   const archs = ARCHITECTURES.filter((a) => enabled.includes(a.id));
   const allSelected = enabled.length === ALL_IDS.length;
   const noneSelected = enabled.length === 0;
