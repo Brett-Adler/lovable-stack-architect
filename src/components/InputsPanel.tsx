@@ -209,9 +209,9 @@ export function InputsPanel({ inputs, onChange }: Props) {
           <Select value={inputs.budget} onValueChange={(v) => update("budget", v as BudgetBand)}>
             <SelectTrigger className="h-9 text-sm"><SelectValue /></SelectTrigger>
             <SelectContent>
-              <SelectItem value="low">Low</SelectItem>
-              <SelectItem value="medium">Medium</SelectItem>
-              <SelectItem value="high">High</SelectItem>
+              <SelectItem value="low">Low — under ~$50/mo</SelectItem>
+              <SelectItem value="medium">Medium — $50–500/mo</SelectItem>
+              <SelectItem value="high">High — $500+/mo</SelectItem>
             </SelectContent>
           </Select>
         </div>
