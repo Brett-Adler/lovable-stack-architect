@@ -30,6 +30,23 @@ function sanitize(ids: ArchId[] | undefined): ArchId[] {
   return filtered.length ? filtered : DEFAULT_ENABLED;
 }
 
+// Backwards-compat: older share links / localStorage had scalar values for
+// stage / budget / lockInTolerance. Coerce them into arrays.
+function migrateInputs(raw: unknown): Inputs {
+  const i = { ...DEFAULT_INPUTS, ...(raw as Partial<Inputs> & Record<string, unknown>) };
+  const arr = <T,>(v: unknown, fallback: T[]): T[] =>
+    Array.isArray(v) ? (v as T[]) : v != null ? [v as T] : fallback;
+  return {
+    ...i,
+    stage: arr(i.stage, DEFAULT_INPUTS.stage),
+    budget: arr(i.budget, DEFAULT_INPUTS.budget),
+    lockInTolerance: arr(i.lockInTolerance, DEFAULT_INPUTS.lockInTolerance),
+    team: Array.isArray(i.team) ? i.team : DEFAULT_INPUTS.team,
+    compliance: Array.isArray(i.compliance) ? i.compliance : DEFAULT_INPUTS.compliance,
+    workloads: Array.isArray(i.workloads) ? i.workloads : DEFAULT_INPUTS.workloads,
+  };
+}
+
 interface PersistedState {
   inputs: Inputs;
   enabled: ArchId[];
