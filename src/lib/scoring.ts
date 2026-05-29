@@ -244,7 +244,7 @@ export function tradeoffVs(
 function buildRationale(id: ArchId, inputs: Inputs): string[] {
   const arch = ARCH_BY_ID[id];
   const rs: string[] = [];
-  const earlyStage = inputs.stage === "prototype" || inputs.stage === "mvp";
+  const earlyStage = inputs.stage.includes("prototype") || inputs.stage.includes("mvp");
   const noOps = inputs.team.includes("none") || !inputs.team.includes("devops");
   const strictCompliance =
     inputs.compliance.includes("hipaa") ||
