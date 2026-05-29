@@ -7,12 +7,13 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { ArrowRight, Sparkles, ExternalLink, Gauge, Share2, FileDown, SlidersHorizontal, Trophy, FileText } from "lucide-react";
+import { ArrowRight, Sparkles, ExternalLink, Gauge, Share2, FileDown, SlidersHorizontal, Trophy, FileText, Database, Info } from "lucide-react";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SeoHead } from "@/components/SeoHead";
 import { ARCHITECTURES } from "@/data/architectures";
 import { LAST_REVIEWED, LOVABLE_REMIX_URL } from "@/lib/constants";
+import { PRESETS, presetShareUrl } from "@/lib/presets";
 
 const FEATURES = [
   {
@@ -45,7 +46,10 @@ const TEMPLATE_BULLETS = [
 ];
 
 const FAQ = [
-  { q: "Where does the data come from?", a: "Curated from public vendor pricing pages, docs, and hands-on experience. Every score is editable in one file." },
+  { q: "Where does the data come from?", a: "Curated from public vendor pricing pages, docs, and hands-on experience. Every score is editable in one file, and every cost band links to its source on the Methodology page." },
+  { q: "How is bias handled?", a: "This tool is Lovable-authored, so it has a perspective. Every criterion starts at the same baseline weight to avoid structurally favoring Lovable Cloud, and the recommendation card shows the top criteria that drove the score so you can sanity-check it. Full disclosure on the Methodology page." },
+  { q: "What's actually in Lovable Cloud?", a: "Postgres database, auth, file storage, edge functions, and the Lovable AI Gateway (managed Gemini/Claude/GPT calls — no API keys to rotate). It's powered by Supabase under the hood, so if you outgrow Cloud you can detach to a self-owned Supabase project." },
+  { q: "Do the other 8 platforms work with Lovable too?", a: "Not as native integrations. Only Lovable Cloud and external Supabase are wired in. For Vercel, Netlify, AWS, GCP, Azure, Heroku, Render, and Fly.io you export your Lovable project to GitHub and deploy the backend yourself." },
   { q: "How fresh is it?", a: `Cost bands and rubric were last reviewed ${LAST_REVIEWED}. Always verify against current vendor pricing before committing.` },
   { q: "Can I customize it for a different decision?", a: "Yes — that's the point. The whole app is data-driven. Edit architectures.ts and you have a picker for CMSs, databases, auth providers, AI models, anything." },
   { q: "Is it free?", a: "Yes, MIT licensed. Fork it, ship it, sell a branded version — all fine." },
@@ -74,8 +78,8 @@ const Landing = () => {
               Pick the right backend for your Lovable app
             </h1>
             <p className="mt-5 text-base text-muted-foreground sm:text-lg">
-              An interactive comparator across Lovable Cloud, Supabase, Vercel, Netlify, AWS, GCP, Azure,
-              Heroku, Render, and Fly.io. Tuned to your stage, budget, and workloads.
+              An interactive comparator across 10 hosting and backend options — Lovable Cloud, Supabase, Vercel, Netlify, AWS, GCP, Azure, Heroku, Render, and Fly.io — tuned to your stage, budget, and workloads. Methodology and sources are{" "}
+              <Link to="/methodology" className="underline decoration-dotted hover:text-foreground">openly published</Link>.
             </p>
             <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
               <Button asChild size="lg" className="gap-2">
@@ -109,11 +113,63 @@ const Landing = () => {
           </div>
         </section>
 
+        {/* What's Lovable Cloud */}
+        <section className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
+          <div className="rounded-2xl border border-border bg-card p-6 sm:p-8">
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:gap-6">
+              <div className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                <Database className="h-5 w-5" />
+              </div>
+              <div>
+                <h2 className="text-xl font-semibold text-foreground sm:text-2xl">What's Lovable Cloud?</h2>
+                <p className="mt-2 text-sm text-muted-foreground sm:text-base">
+                  Cloud is Lovable's integrated backend. You get a Postgres database, auth, file
+                  storage, edge functions, and the Lovable AI Gateway (managed Gemini/Claude/GPT
+                  calls — no API keys to rotate) provisioned automatically. It's powered by Supabase
+                  under the hood, so if you outgrow it you can detach to a self-owned Supabase project.
+                </p>
+                <p className="mt-2 text-xs text-muted-foreground">
+                  Lovable Cloud and external Supabase are the only native backend integrations. The
+                  other 8 options assume you export to GitHub and deploy the backend yourself.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Example scenarios */}
+        <section className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
+          <div className="mb-8 text-center">
+            <h2 className="text-2xl font-bold text-foreground sm:text-3xl">Try an example scenario</h2>
+            <p className="mt-2 text-sm text-muted-foreground">One click loads the tool with these inputs preset.</p>
+          </div>
+          <div className="grid gap-4 sm:grid-cols-3">
+            {PRESETS.map((p) => (
+              <Link
+                key={p.id}
+                to={presetShareUrl(p)}
+                className="group rounded-2xl border border-border bg-card p-6 transition-colors hover:border-primary/40 hover:bg-card/80"
+              >
+                <div className="text-sm font-semibold text-foreground group-hover:text-primary">{p.label}</div>
+                <p className="mt-1.5 text-xs text-muted-foreground">{p.description}</p>
+                <div className="mt-3 inline-flex items-center gap-1 text-xs text-primary opacity-80 group-hover:opacity-100">
+                  Open scenario <ArrowRight className="h-3 w-3" />
+                </div>
+              </Link>
+            ))}
+          </div>
+        </section>
+
         {/* How it works */}
         <section className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
           <div className="mb-8 text-center">
             <h2 className="text-2xl font-bold text-foreground sm:text-3xl">How it works</h2>
-            <p className="mt-2 text-sm text-muted-foreground">Three steps from a vague idea to a defensible pick.</p>
+            <p className="mt-2 inline-flex items-center justify-center gap-1 text-sm text-muted-foreground">
+              Three steps to a transparent, sourced recommendation.
+              <Link to="/methodology" className="inline-flex items-center gap-0.5 text-primary hover:underline">
+                <Info className="h-3 w-3" /> methodology
+              </Link>
+            </p>
           </div>
           <div className="grid gap-4 sm:grid-cols-3">
             {STEPS.map((s) => (

@@ -8,6 +8,7 @@ import Landing from "./pages/Landing.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
 const Index = lazy(() => import("./pages/Index.tsx"));
+const Methodology = lazy(() => import("./pages/Methodology.tsx"));
 
 const queryClient = new QueryClient();
 
@@ -21,6 +22,7 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Landing />} />
             <Route path="/app" element={<Index />} />
+            <Route path="/methodology" element={<Methodology />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

@@ -63,6 +63,12 @@ export function ComparisonMatrix({ enabled, topId, onToggle, onSetEnabled }: Pro
 
   return (
     <TooltipProvider delayDuration={150}>
+      <div className="mb-4 rounded-xl border border-border bg-muted/20 px-4 py-2.5 text-xs text-muted-foreground">
+        <span className="font-medium text-foreground">Heads up:</span>{" "}
+        Lovable Cloud and external Supabase are native Lovable integrations. The
+        other 8 options assume you export your Lovable project to GitHub and
+        deploy the backend yourself.
+      </div>
       {/* Selection panel — always visible above the matrix */}
       <div className="rounded-2xl border border-border bg-card p-4 shadow-card sm:p-5">
         <div className="flex flex-wrap items-center justify-between gap-3">

@@ -10,6 +10,7 @@ export function SiteFooter() {
         </p>
         <nav aria-label="Footer" className="flex flex-wrap items-center gap-x-4 gap-y-1">
           <Link to="/app" className="hover:text-foreground">Open the tool</Link>
+          <Link to="/methodology" className="hover:text-foreground">Methodology</Link>
           <a href={LOVABLE_REMIX_URL} target="_blank" rel="noopener noreferrer" className="hover:text-foreground">
             Use this template
           </a>

@@ -159,7 +159,7 @@ const Index = () => {
             mobileTab === "recommendation" ? "block" : "hidden",
           )}
         >
-          <RecommendationCard results={results} />
+          <RecommendationCard results={results} inputs={inputs} />
           {topId && <CostEstimate archId={topId} inputs={inputs} />}
           <p className="text-[11px] leading-relaxed text-muted-foreground">
             All four options assume Lovable handles design, frontend dev, testing, and deployment.
