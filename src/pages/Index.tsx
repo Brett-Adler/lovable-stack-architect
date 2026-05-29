@@ -100,7 +100,7 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-dvh bg-gradient-subtle">
+    <div className="min-h-dvh bg-background">
       <SeoHead
         title="Stack comparator — Lovable Stack Architect"
         description="Compare 10 hosting and backend platforms side by side. Tune to your stage, budget, team, and workloads."
