@@ -160,6 +160,7 @@ export function InputsPanel({ inputs, onChange }: Props) {
             </Chip>
           ))}
         </div>
+        <p className="text-[11px] text-muted-foreground">Product maturity — how polished the app needs to be.</p>
       </div>
 
       <div className="space-y-2">
@@ -177,6 +178,7 @@ export function InputsPanel({ inputs, onChange }: Props) {
           value={[mauIndex === -1 ? MAU_STEPS.length - 1 : mauIndex]}
           onValueChange={([i]) => update("mau", MAU_STEPS[i])}
         />
+        <p className="text-[11px] text-muted-foreground">Current or near-term load — drives cost and scaling weight.</p>
       </div>
 
       <div className="space-y-2">
@@ -186,7 +188,14 @@ export function InputsPanel({ inputs, onChange }: Props) {
             <Chip
               key={t.id}
               active={inputs.team.includes(t.id)}
-              onClick={() => update("team", toggle(inputs.team, t.id))}
+              onClick={() => {
+                // "Non-technical" is mutually exclusive with technical skills.
+                const next =
+                  t.id === "none"
+                    ? (["none"] as TeamSkill[])
+                    : toggle(inputs.team.filter((x) => x !== "none"), t.id);
+                update("team", next.length ? next : (["none"] as TeamSkill[]));
+              }}
             >
               {t.label}
             </Chip>
