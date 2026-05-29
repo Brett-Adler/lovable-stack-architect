@@ -23,24 +23,24 @@ export type Workload =
   | "heavy-compute";
 
 export interface Inputs {
-  stage: Stage;
+  stage: Stage[];
   mau: number; // monthly active users (log slider)
   team: TeamSkill[];
-  budget: BudgetBand;
+  budget: BudgetBand[];
   compliance: Compliance[];
   workloads: Workload[];
-  lockInTolerance: LockInTolerance;
+  lockInTolerance: LockInTolerance[];
   ttmPriority: number; // 1-5, how important is time-to-market
 }
 
 export const DEFAULT_INPUTS: Inputs = {
-  stage: "mvp",
+  stage: ["mvp"],
   mau: 1000,
   team: ["frontend"],
-  budget: "low",
+  budget: ["low"],
   compliance: ["none"],
   workloads: ["crud"],
-  lockInTolerance: "medium",
+  lockInTolerance: ["medium"],
   ttmPriority: 5,
 };
 
