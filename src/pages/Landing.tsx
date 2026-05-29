@@ -229,7 +229,7 @@ const Landing = () => {
                 </div>
                 <div className="space-y-3">
                   {TEMPLATE_BULLETS.map((b) => (
-                    <div key={b.file} className="rounded-xl border border-border bg-background/50 p-4">
+                    <div key={b.file} className="rounded-xl border border-border bg-muted/40 p-4">
                       <div className="flex items-center gap-2 font-mono text-xs text-primary">
                         <FileText className="h-3.5 w-3.5" /> {b.file}
                       </div>
