@@ -1,6 +1,8 @@
 import { ARCH_BY_ID, type ArchId } from "@/data/architectures";
 import type { Inputs } from "@/lib/scoring";
 import { stageFromMau } from "@/lib/scoring";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { ExternalLink, Info } from "lucide-react";
 
 export function CostEstimate({ archId, inputs }: { archId: ArchId; inputs: Inputs }) {
   const arch = ARCH_BY_ID[archId];
@@ -21,6 +23,35 @@ export function CostEstimate({ archId, inputs }: { archId: ArchId; inputs: Input
           {arch.costBands[stage]}
         </span>
         <span className="text-xs text-muted-foreground">/ month</span>
+        <Popover>
+          <PopoverTrigger
+            className="ml-1 inline-flex items-center gap-1 rounded-full px-1.5 py-0.5 text-[10px] text-muted-foreground hover:bg-muted hover:text-foreground"
+            aria-label="Show sources for cost bands"
+          >
+            <Info className="h-3 w-3" /> sources
+          </PopoverTrigger>
+          <PopoverContent side="top" className="w-72 p-3 text-xs">
+            <div className="font-semibold text-foreground">Curated cost bands</div>
+            <p className="mt-1 text-muted-foreground">
+              These are estimates from vendor pricing pages, not live quotes.
+              Always verify before committing. Last reviewed {arch.lastReviewed}.
+            </p>
+            <ul className="mt-2 space-y-1">
+              {arch.sources.map((s) => (
+                <li key={s.url}>
+                  <a
+                    href={s.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1 text-primary hover:underline"
+                  >
+                    <ExternalLink className="h-3 w-3" /> {s.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </PopoverContent>
+        </Popover>
       </div>
 
       <div className="mt-4 grid grid-cols-2 gap-1 text-[11px] sm:grid-cols-4">

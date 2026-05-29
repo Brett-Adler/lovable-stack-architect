@@ -1,11 +1,21 @@
-import type { RankedResult } from "@/lib/scoring";
+import type { Inputs, RankedResult } from "@/lib/scoring";
+import { tradeoffVs } from "@/lib/scoring";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
+import { Link } from "react-router-dom";
+import { CheckCircle2, Info } from "lucide-react";
 
-export function RecommendationCard({ results }: { results: RankedResult[] }) {
+export function RecommendationCard({
+  results,
+  inputs,
+}: {
+  results: RankedResult[];
+  inputs: Inputs;
+}) {
   if (!results.length) return null;
   const top = results[0];
   const runners = results.slice(1, 3);
+  const tradeoff = runners[0] ? tradeoffVs(top, runners[0], inputs) : null;
 
   return (
     <div className="space-y-4">
@@ -32,6 +42,39 @@ export function RecommendationCard({ results }: { results: RankedResult[] }) {
               </div>
             ))}
           </div>
+
+          {top.topContributors.length > 0 && (
+            <div className="mt-4 rounded-xl border border-border bg-muted/20 p-3">
+              <div className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+                Top reasons it scored well
+              </div>
+              <ul className="mt-1.5 space-y-1 text-xs text-foreground/90">
+                {top.topContributors.map((c) => (
+                  <li key={c.criterion.id} className="flex items-center gap-2">
+                    <CheckCircle2 className="h-3.5 w-3.5 text-primary" />
+                    <span>{c.criterion.label}</span>
+                    <span className="ml-auto font-mono text-muted-foreground">
+                      {c.rubricScore}/5
+                    </span>
+                  </li>
+                ))}
+              </ul>
+              <Link
+                to="/methodology"
+                className="mt-2 inline-flex items-center gap-1 text-[11px] text-primary hover:underline"
+              >
+                <Info className="h-3 w-3" /> How scoring works
+              </Link>
+            </div>
+          )}
+
+          {tradeoff && (
+            <p className="mt-3 rounded-xl border border-dashed border-border bg-background/40 p-3 text-xs text-muted-foreground">
+              <span className="font-medium text-foreground">Trade-off vs {runners[0].arch.short}:</span>{" "}
+              you gain <span className="font-medium text-foreground">{tradeoff.topWins.label.toLowerCase()}</span>{" "}
+              and give up some <span className="font-medium text-foreground">{tradeoff.runnerWins.label.toLowerCase()}</span>.
+            </p>
+          )}
 
           <div className="mt-4 grid grid-cols-1 gap-3 text-sm sm:grid-cols-2">
             <div>
