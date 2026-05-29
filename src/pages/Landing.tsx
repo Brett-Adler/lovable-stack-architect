@@ -115,7 +115,7 @@ const Landing = () => {
 
         {/* What's Lovable Cloud */}
         <section className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
-          <div className="rounded-2xl border border-border bg-card p-6 sm:p-8">
+          <div className="rounded-2xl border border-border bg-card p-6 shadow-card sm:p-8">
             <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:gap-6">
               <div className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
                 <Database className="h-5 w-5" />
