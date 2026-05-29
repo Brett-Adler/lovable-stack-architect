@@ -147,12 +147,6 @@ const Index = () => {
             mobileTab === "comparison" ? "block" : "hidden",
           )}
         >
-          <div>
-            <h2 className="text-base font-semibold text-foreground sm:text-lg">Side-by-side comparison</h2>
-            <p className="text-xs text-muted-foreground sm:text-sm">
-              Scores reflect how each architecture handles each criterion. Toggle options below the table.
-            </p>
-          </div>
           <ComparisonMatrix enabled={enabled} topId={topId} onToggle={toggleArch} onSetEnabled={setEnabled} />
           {topId && <ArchitectureDiagram archId={topId} inputs={inputs} />}
         </section>
