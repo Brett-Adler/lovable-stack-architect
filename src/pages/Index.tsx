@@ -193,13 +193,22 @@ const Index = () => {
       </main>
 
       <section
-        aria-label="Comparison matrix"
+        aria-labelledby="full-matrix-heading"
         hidden={mobileTab !== "comparison"}
         className={cn(
           "mx-auto w-full max-w-[1800px] px-3 pb-24 sm:px-6 md:pb-6 2xl:px-10",
+          "mt-4 border-t border-border pt-8 sm:mt-8 sm:pt-10",
           mobileTab === "comparison" ? "block" : "hidden md:block",
         )}
       >
+        <header className="mb-5 sm:mb-6">
+          <h2 id="full-matrix-heading" className="text-xl font-semibold tracking-tight sm:text-2xl">
+            Full comparison matrix
+          </h2>
+          <p className="mt-1 max-w-2xl text-sm text-muted-foreground">
+            See how every option scores on the same criteria. Your top pick is highlighted, and you can scroll horizontally to compare all enabled stacks side by side.
+          </p>
+        </header>
         <ComparisonMatrix view="matrix" enabled={enabled} topId={topId} onToggle={toggleArch} onSetEnabled={setEnabled} />
       </section>
 

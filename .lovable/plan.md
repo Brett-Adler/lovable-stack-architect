@@ -1,47 +1,64 @@
-## Problem
+## Goals
 
-The middle column's "Side-by-side comparison" title + description and the "Heads up" note float as loose text against the page background, while the Inputs (left) and Recommendation (right) columns are clean rounded cards. The asymmetry makes the panel feel heavier and harder to scan.
-
-## Direction (locked from your picks)
-
-- Lovable style — reuse existing tokens (`bg-card`, `border-border`, `rounded-2xl`, `shadow-card`, `text-foreground`, `text-muted-foreground`). No new colors or fonts.
-- Dashboard layout — one outer card frames the whole column. A header strip sits at the top with the title on the left and the toolbar (`Compare all` / `Popular 4` / `Clear`) on the right. Below it, two panels with consistent rhythm: option picker, then the matrix.
+1. Clearer header + visual break above the full-width comparison matrix.
+2. A real downloadable PDF (in addition to the existing Print → Save as PDF).
+3. An in-app "Summary" modal that shows a one-page recap of the recommendation.
 
 ## Changes
 
-### `src/pages/Index.tsx`
-- Remove the loose `<div>` with the `<h2>` + description above `<ComparisonMatrix>`.
-- Pass the title/description down by letting `ComparisonMatrix` own the header (cleaner — keeps toolbar + title together).
+### 1. `src/pages/Index.tsx` — divider + H2 above the matrix
 
-### `src/components/ComparisonMatrix.tsx`
-Restructure into one outer `rounded-2xl border bg-card shadow-card` container with three stacked regions divided by `border-b border-border`:
+Wrap the bottom matrix `<section>` content with a header block:
 
 ```text
-┌─ Comparison card ─────────────────────────────┐
-│ Header strip                                  │
-│  Side-by-side comparison      [all][pop][clr] │
-│  Scores reflect how each…                     │
-├───────────────────────────────────────────────┤
-│ Heads up: Lovable Cloud and external Supabase │  (compact inline note, muted bg)
-├───────────────────────────────────────────────┤
-│ Choose options to compare                     │
-│  [category chip groups…]                      │
-├───────────────────────────────────────────────┤
-│ Matrix table                                  │
-│  …                                            │
-│  Legend                                       │
-└───────────────────────────────────────────────┘
+─────────────────────────────────  (border-t border-border, full inner width)
+Full comparison matrix             (h2, text-xl sm:text-2xl font-semibold)
+See how every option scores on the same criteria. Top pick is highlighted.
+                                   (text-sm text-muted-foreground)
+[ existing <ComparisonMatrix view="matrix" /> ]
 ```
 
-Specific moves:
-- Header strip: `px-4 sm:px-5 py-4` with `flex items-start justify-between gap-3`. Title `text-base sm:text-lg font-semibold`, description `text-xs sm:text-sm text-muted-foreground`. Toolbar buttons (Compare all / Popular 4 / Clear) move from the picker region up here so the picker stops competing with its own title.
-- Heads-up: collapse to a single-line `px-4 sm:px-5 py-2.5 text-xs bg-muted/30 border-y border-border` strip — no rounded box of its own, since it now lives inside the card.
-- Picker region: drop the inner card chrome (no second border, no second shadow). Keep the category subgroups but use the lighter `bg-muted/15` so they read as content, not nested cards. `px-4 sm:px-5 py-4`.
-- Matrix region: drop the outer `rounded-2xl border shadow-card` wrapper — it's now part of the parent card. Keep the horizontal scroll container and legend footer; legend gets `border-t` only.
-- Empty-state ("Select at least one option…") becomes an inner `px-4 sm:px-5 py-10 text-center` region inside the same card, not a separate dashed card.
+- Add `mt-8 sm:mt-12 pt-8 sm:pt-10 border-t border-border` to give the section real breathing room from the three-column grid above it.
+- Header sits inside the same max-width container so it lines up with the matrix.
 
-### Result
+### 2. `src/components/ReportExport.tsx` — direct PDF download + Summary
 
-The comparison column reads as one tile with the same silhouette as Inputs and Recommendation. The header, controls, context note, picker, and matrix share one frame with consistent horizontal padding and divider rhythm.
+Add two new buttons to the toolbar alongside the existing Markdown + Preview/Print:
 
-No data, scoring, or business logic changes.
+- **Summary** (Eye icon, opens new in-app modal)
+- **PDF** (FileDown icon, triggers direct download)
+
+#### Direct PDF download
+
+- Add deps: `jspdf` and `html2canvas`.
+- Render the existing `<ReportContent />` into an offscreen hidden div (`position: fixed; left: -10000px; width: 800px`), snapshot with `html2canvas`, paginate into a multi-page A4 PDF via `jsPDF`, then save as `stack-architect-{top}.pdf`.
+- Keep the existing Markdown and Print buttons untouched — they're useful fallbacks.
+
+#### Summary modal
+
+- New `<Dialog>` triggered by the Summary button.
+- Renders a compact one-screen recap (not the full report):
+  - Top pick name + score (large)
+  - Tagline + 1-line description
+  - 3 bullets: top "Why this fits" rationales
+  - Cost band for current stage + scaling ceiling
+  - Mini matrix: just the top pick column + 2 runners-up, 5 most-weighted criteria
+  - Footer: "Download PDF" and "Open full preview" buttons
+- Uses the same data already passed to `ReportExport` — no new props.
+
+### 3. No business logic changes
+
+Scoring, inputs, and architecture data stay untouched. This is presentation + export only.
+
+## Technical notes
+
+- `jspdf` + `html2canvas` is the standard pair for client-side React → PDF and handles the existing Tailwind-styled `ReportContent` without restyling.
+- Pagination: render at A4 width (≈794px @ 96dpi), slice the canvas into page-height chunks, add each as an image to the PDF.
+- The hidden render container is mounted only during the export call and unmounted after, so it has zero impact on normal page weight.
+- Print button still works exactly as today.
+
+## Files touched
+
+- `src/pages/Index.tsx` — divider + header block above the matrix section.
+- `src/components/ReportExport.tsx` — new Summary modal + PDF download button + offscreen render logic.
+- `package.json` — add `jspdf`, `html2canvas`.
