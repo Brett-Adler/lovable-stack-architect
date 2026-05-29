@@ -34,27 +34,28 @@ interface PersistedState {
   enabled: ArchId[];
 }
 
-function loadState(): PersistedState {
+function loadState(): { state: PersistedState; shareError: boolean } {
   // URL takes precedence
   const params = new URLSearchParams(window.location.search);
   const s = params.get("s");
   if (s) {
     try {
       const json = LZString.decompressFromEncodedURIComponent(s);
-      if (json) return JSON.parse(json) as PersistedState;
+      if (json) return { state: JSON.parse(json) as PersistedState, shareError: false };
+      return { state: { inputs: DEFAULT_INPUTS, enabled: DEFAULT_ENABLED }, shareError: true };
     } catch {
-      /* ignore */
+      return { state: { inputs: DEFAULT_INPUTS, enabled: DEFAULT_ENABLED }, shareError: true };
     }
   }
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw) return JSON.parse(raw) as PersistedState;
+    if (raw) return { state: JSON.parse(raw) as PersistedState, shareError: false };
   } catch {
     /* ignore */
   }
   return {
-    inputs: DEFAULT_INPUTS,
-    enabled: DEFAULT_ENABLED,
+    state: { inputs: DEFAULT_INPUTS, enabled: DEFAULT_ENABLED },
+    shareError: false,
   };
 }
 
