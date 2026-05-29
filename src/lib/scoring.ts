@@ -272,7 +272,7 @@ function buildRationale(id: ArchId, inputs: Inputs): string[] {
       rs.push("Pick the region, BAA, and add-ons you need for compliance.");
     if (inputs.workloads.includes("realtime"))
       rs.push("Best-in-class realtime (Postgres changes, presence, broadcast).");
-    if (inputs.lockInTolerance === "low")
+    if (inputs.lockInTolerance.includes("low"))
       rs.push("Easier to leave: it's standard Postgres you can dump and migrate.");
   }
   if (id === "lovable-vercel") {
