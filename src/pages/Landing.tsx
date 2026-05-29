@@ -364,6 +364,35 @@ const Landing = () => {
           </div>
         </section>
 
+        {/* About the builder */}
+        <section className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
+          <div className="rounded-3xl border border-border bg-card p-8 shadow-card sm:p-10">
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <div className="inline-flex items-center gap-1.5 rounded-full border border-border bg-muted/40 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">
+                  About the builder
+                </div>
+                <h3 className="mt-3 text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+                  Built by {AUTHOR_HANDLE}
+                </h3>
+                <p className="mt-2 max-w-xl text-sm text-muted-foreground sm:text-base">
+                  Independent builder. Big fan of Lovable — open to joining the team. Say hi.
+                </p>
+              </div>
+              <Button
+                asChild
+                size="lg"
+                variant="outline"
+                className="gap-2 rounded-full border-border bg-card px-6"
+              >
+                <a href={AUTHOR_URL} target="_blank" rel="noopener noreferrer">
+                  View Lovable profile <ArrowRight className="h-4 w-4" />
+                </a>
+              </Button>
+            </div>
+          </div>
+        </section>
+
         {/* Final CTA */}
         <section className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-20">
           <div className="relative overflow-hidden rounded-3xl border border-border bg-card p-10 text-center shadow-card sm:p-14">
