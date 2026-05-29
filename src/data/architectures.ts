@@ -271,7 +271,7 @@ export const ARCHITECTURES: Architecture[] = [
     bestFor: ["Familiar Rails/Node teams", "Simple web + worker setups", "Predictable monolith deploys"],
     watchOuts: [
       "Not a Lovable integration — requires GitHub export + your own deploy pipeline",
-      "No free tier since Nov 2022 — Eco dynos start at $5/mo, Basic Postgres $5/mo",
+      "No free tier — Eco dynos start at $5/mo, Basic Postgres $5/mo",
       "Pricier per unit of compute at scale; limited regions",
     ],
     costBands: { prototype: "$5–15", mvp: "$25–100", growth: "$200–1k", scale: "$1k–6k" },
