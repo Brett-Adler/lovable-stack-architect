@@ -2,6 +2,13 @@ import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ExternalLink, Sparkles } from "lucide-react";
 import { LOVABLE_REMIX_URL } from "@/lib/constants";
+import { cn } from "@/lib/utils";
+
+const NAV_ITEMS = [
+  { to: "/", label: "Home", match: (p: string) => p === "/" },
+  { to: "/methodology", label: "Methodology", match: (p: string) => p.startsWith("/methodology") },
+  { to: "/app", label: "Comparator", match: (p: string) => p.startsWith("/app") },
+];
 
 export function SiteHeader({ children }: { children?: React.ReactNode }) {
   const { pathname } = useLocation();
@@ -27,6 +34,31 @@ export function SiteHeader({ children }: { children?: React.ReactNode }) {
             </span>
           </div>
         </Link>
+
+        <nav aria-label="Primary" className="order-3 w-full md:order-none md:w-auto">
+          <ul className="flex items-center gap-1 rounded-full border border-border/60 bg-card/60 p-1 text-sm shadow-sm backdrop-blur">
+            {NAV_ITEMS.map((item) => {
+              const active = item.match(pathname);
+              return (
+                <li key={item.to}>
+                  <Link
+                    to={item.to}
+                    aria-current={active ? "page" : undefined}
+                    className={cn(
+                      "inline-flex items-center rounded-full px-3 py-1.5 text-sm font-medium transition-colors",
+                      active
+                        ? "bg-foreground text-background"
+                        : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                    )}
+                  >
+                    {item.label}
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+        </nav>
+
         <div className="flex flex-wrap items-center gap-2">
           {children}
           {!onApp && (
