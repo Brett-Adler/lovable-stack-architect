@@ -192,7 +192,7 @@ const Landing = () => {
           </div>
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
             {ARCHITECTURES.map((a) => (
-              <div key={a.id} className="rounded-xl border border-border bg-card p-4 text-center">
+              <div key={a.id} className="rounded-xl border border-border bg-card p-4 text-center shadow-card">
                 <div className="text-sm font-semibold text-foreground">{a.short}</div>
                 <div className="mt-1 text-xs text-muted-foreground">{a.tagline}</div>
               </div>
