@@ -148,7 +148,7 @@ const Landing = () => {
               <Link
                 key={p.id}
                 to={presetShareUrl(p)}
-                className="group rounded-2xl border border-border bg-card p-6 transition-colors hover:border-primary/40 hover:bg-card/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                className="group rounded-2xl border border-border bg-card p-6 shadow-card transition-all hover:border-primary/40 hover:shadow-elegant focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
               >
                 <div className="text-sm font-semibold text-foreground group-hover:text-primary">{p.label}</div>
                 <p className="mt-1.5 text-xs text-muted-foreground">{p.description}</p>
