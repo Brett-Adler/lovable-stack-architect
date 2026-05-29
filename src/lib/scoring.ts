@@ -147,11 +147,37 @@ export interface RankedResult {
   topContributors: { criterion: Criterion; contribution: number; rubricScore: number }[];
 }
 
+export interface RankOutput {
+  results: RankedResult[];
+  /** Architectures excluded because of a hard compliance requirement (HIPAA / SOC 2 / residency). */
+  excluded: { arch: Architecture; reason: string }[];
+}
+
+/** Compliance levels that act as hard filters — anything scoring < 4 on `compliance` is removed. */
+const STRICT_COMPLIANCE: Compliance[] = ["hipaa", "soc2", "residency"];
+
 export function rank(inputs: Inputs): RankedResult[] {
+  return rankFull(inputs).results;
+}
+
+export function rankFull(inputs: Inputs): RankOutput {
   const weights = deriveWeights(inputs);
   const totalWeight = (Object.values(weights) as number[]).reduce((a, b) => a + b, 0) || 1;
+  const strict = inputs.compliance.filter((c) => STRICT_COMPLIANCE.includes(c));
+  const strictLabel = strict
+    .map((c) => (c === "hipaa" ? "HIPAA" : c === "soc2" ? "SOC 2" : "data residency"))
+    .join(" / ");
 
-  const results = ARCHITECTURES.map((arch) => {
+  const excluded: { arch: Architecture; reason: string }[] = [];
+
+  const scored = ARCHITECTURES.flatMap((arch) => {
+    if (strict.length && RUBRIC[arch.id]["compliance"] < 4) {
+      excluded.push({
+        arch,
+        reason: `Insufficient ${strictLabel} coverage for a hard requirement.`,
+      });
+      return [];
+    }
     let weighted = 0;
     const contributions: { criterion: Criterion; contribution: number; rubricScore: number }[] = [];
     for (const c of CRITERIA) {
@@ -159,16 +185,15 @@ export function rank(inputs: Inputs): RankedResult[] {
       weighted += contribution;
       contributions.push({ criterion: c, contribution, rubricScore: RUBRIC[arch.id][c.id] });
     }
-    // Normalize: max possible is totalWeight * 5
     const score = (weighted / (totalWeight * 5)) * 100;
     const topContributors = contributions
       .filter((c) => c.contribution > 0)
       .sort((a, b) => b.contribution - a.contribution)
       .slice(0, 3);
-    return { arch, score, rationale: buildRationale(arch.id, inputs), topContributors };
+    return [{ arch, score, rationale: buildRationale(arch.id, inputs), topContributors }];
   });
 
-  return results.sort((a, b) => b.score - a.score);
+  return { results: scored.sort((a, b) => b.score - a.score), excluded };
 }
 
 /**
