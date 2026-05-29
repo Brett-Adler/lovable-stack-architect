@@ -62,6 +62,9 @@ export function ComparisonMatrix({ enabled, topId, onToggle, onSetEnabled, view 
     }
   };
 
+  const showControls = view === "all" || view === "controls";
+  const showMatrix = view === "all" || view === "matrix";
+
   return (
     <TooltipProvider delayDuration={150}>
       <section
