@@ -2,7 +2,8 @@ import { ARCH_BY_ID, type ArchId } from "@/data/architectures";
 import type { Inputs } from "@/lib/scoring";
 import { stageFromMau } from "@/lib/scoring";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { ExternalLink, Info } from "lucide-react";
+import { ExternalLink, Info, Flag } from "lucide-react";
+import { GITHUB_URL } from "@/lib/constants";
 
 export function CostEstimate({ archId, inputs }: { archId: ArchId; inputs: Inputs }) {
   const arch = ARCH_BY_ID[archId];
