@@ -61,7 +61,11 @@ function loadState(): { state: PersistedState; shareError: boolean } {
 
 const Index = () => {
   const [state, setState] = useState<PersistedState>(() => {
-    const s = loadState();
+    const { state: s, shareError } = loadState();
+    if (shareError) {
+      // Defer toast until after mount
+      setTimeout(() => toast.error("Couldn't read that share link", { description: "It looks malformed. Starting from defaults." }), 0);
+    }
     return { ...s, enabled: sanitize(s.enabled) };
   });
   const [mobileTab, setMobileTab] = useState<"inputs" | "recommendation" | "comparison">("recommendation");
