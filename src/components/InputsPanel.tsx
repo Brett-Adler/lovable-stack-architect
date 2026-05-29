@@ -155,12 +155,21 @@ export function InputsPanel({ inputs, onChange }: Props) {
         <Label className="text-xs">Stage</Label>
         <div className="flex flex-wrap gap-1.5">
           {STAGES.map((s) => (
-            <Chip key={s.id} active={inputs.stage === s.id} onClick={() => update("stage", s.id)}>
+            <Chip
+              key={s.id}
+              active={inputs.stage.includes(s.id)}
+              onClick={() => {
+                const next = toggle(inputs.stage, s.id);
+                update("stage", (next.length ? next : [s.id]) as Stage[]);
+              }}
+            >
               {s.label}
             </Chip>
           ))}
         </div>
-        <p className="text-[11px] text-muted-foreground">Product maturity — how polished the app needs to be.</p>
+        <p className="text-[11px] text-muted-foreground">
+          Pick one or more — useful if you're on the cusp (e.g. Prototype + MVP).
+        </p>
       </div>
 
       <div className="space-y-2">
