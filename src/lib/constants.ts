@@ -4,3 +4,6 @@ export const LOVABLE_REMIX_URL = "https://lovable.dev/projects/ffa40064-0649-4c5
 export const GITHUB_URL = "#";
 export const LAST_REVIEWED = "May 2026";
 export const SITE_URL = "https://lovable-stack-architect.lovable.app";
+export const AUTHOR_HANDLE = "@brettadler";
+export const AUTHOR_URL = "https://lovable.dev/@brettadler";
+export const IS_OFFICIAL = false;

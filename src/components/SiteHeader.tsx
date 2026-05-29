@@ -30,7 +30,7 @@ export function SiteHeader({ children }: { children?: React.ReactNode }) {
               Lovable Stack Architect
             </span>
             <span className="hidden text-xs text-muted-foreground sm:block">
-              Pick the right backend for your Lovable app
+              Community template · not affiliated with Lovable
             </span>
           </div>
         </Link>
