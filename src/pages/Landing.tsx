@@ -113,11 +113,63 @@ const Landing = () => {
           </div>
         </section>
 
+        {/* What's Lovable Cloud */}
+        <section className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
+          <div className="rounded-2xl border border-border bg-card p-6 sm:p-8">
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:gap-6">
+              <div className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                <Database className="h-5 w-5" />
+              </div>
+              <div>
+                <h2 className="text-xl font-semibold text-foreground sm:text-2xl">What's Lovable Cloud?</h2>
+                <p className="mt-2 text-sm text-muted-foreground sm:text-base">
+                  Cloud is Lovable's integrated backend. You get a Postgres database, auth, file
+                  storage, edge functions, and the Lovable AI Gateway (managed Gemini/Claude/GPT
+                  calls — no API keys to rotate) provisioned automatically. It's powered by Supabase
+                  under the hood, so if you outgrow it you can detach to a self-owned Supabase project.
+                </p>
+                <p className="mt-2 text-xs text-muted-foreground">
+                  Lovable Cloud and external Supabase are the only native backend integrations. The
+                  other 8 options assume you export to GitHub and deploy the backend yourself.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Example scenarios */}
+        <section className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
+          <div className="mb-8 text-center">
+            <h2 className="text-2xl font-bold text-foreground sm:text-3xl">Try an example scenario</h2>
+            <p className="mt-2 text-sm text-muted-foreground">One click loads the tool with these inputs preset.</p>
+          </div>
+          <div className="grid gap-4 sm:grid-cols-3">
+            {PRESETS.map((p) => (
+              <Link
+                key={p.id}
+                to={presetShareUrl(p)}
+                className="group rounded-2xl border border-border bg-card p-6 transition-colors hover:border-primary/40 hover:bg-card/80"
+              >
+                <div className="text-sm font-semibold text-foreground group-hover:text-primary">{p.label}</div>
+                <p className="mt-1.5 text-xs text-muted-foreground">{p.description}</p>
+                <div className="mt-3 inline-flex items-center gap-1 text-xs text-primary opacity-80 group-hover:opacity-100">
+                  Open scenario <ArrowRight className="h-3 w-3" />
+                </div>
+              </Link>
+            ))}
+          </div>
+        </section>
+
         {/* How it works */}
         <section className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
           <div className="mb-8 text-center">
             <h2 className="text-2xl font-bold text-foreground sm:text-3xl">How it works</h2>
-            <p className="mt-2 text-sm text-muted-foreground">Three steps from a vague idea to a defensible pick.</p>
+            <p className="mt-2 inline-flex items-center justify-center gap-1 text-sm text-muted-foreground">
+              Three steps to a transparent, sourced recommendation.
+              <Link to="/methodology" className="inline-flex items-center gap-0.5 text-primary hover:underline">
+                <Info className="h-3 w-3" /> methodology
+              </Link>
+            </p>
           </div>
           <div className="grid gap-4 sm:grid-cols-3">
             {STEPS.map((s) => (
