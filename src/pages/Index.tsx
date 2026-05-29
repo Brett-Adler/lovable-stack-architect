@@ -84,7 +84,7 @@ const Index = () => {
       // Defer toast until after mount
       setTimeout(() => toast.error("Couldn't read that share link", { description: "It looks malformed. Starting from defaults." }), 0);
     }
-    return { ...s, enabled: sanitize(s.enabled) };
+    return { ...s, inputs: migrateInputs(s.inputs), enabled: sanitize(s.enabled) };
   });
   const [mobileTab, setMobileTab] = useState<"inputs" | "recommendation" | "comparison">("recommendation");
   const { inputs, enabled } = state;
