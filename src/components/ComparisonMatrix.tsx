@@ -71,6 +71,7 @@ export function ComparisonMatrix({ enabled, topId, onToggle, onSetEnabled, view 
         aria-labelledby="comparison-heading"
         className="overflow-hidden rounded-2xl border border-border bg-card shadow-card"
       >
+        {showControls && (<>
         {/* Header strip */}
         <header className="flex flex-wrap items-start justify-between gap-3 px-4 py-4 sm:px-5">
           <div className="min-w-0">
