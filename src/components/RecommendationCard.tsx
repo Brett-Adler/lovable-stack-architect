@@ -19,6 +19,9 @@ export function RecommendationCard({
 
   return (
     <div className="space-y-4">
+      <div aria-live="polite" aria-atomic="true" className="sr-only">
+        Recommended: {top.arch.name} — score {Math.round(top.score)} of 100. {top.arch.tagline}
+      </div>
       <div className="rounded-2xl border border-primary/30 bg-gradient-primary p-[1px] shadow-elegant">
         <div className="rounded-[calc(theme(borderRadius.2xl)-1px)] bg-card p-5">
           <div className="flex items-start justify-between gap-3">
@@ -26,7 +29,7 @@ export function RecommendationCard({
               <div className="text-xs font-semibold uppercase tracking-wider text-primary">
                 Recommended
               </div>
-              <h3 className="mt-1 text-xl font-bold text-foreground">{top.arch.name}</h3>
+              <h2 className="mt-1 text-xl font-bold text-foreground">{top.arch.name}</h2>
               <p className="mt-1 text-sm text-muted-foreground">{top.arch.tagline}</p>
             </div>
             <ScoreBadge score={top.score} primary />
@@ -104,7 +107,7 @@ export function RecommendationCard({
               <div className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
                 Runner-up #{i + 1}
               </div>
-              <h4 className="mt-0.5 text-base font-semibold text-foreground">{r.arch.name}</h4>
+              <h3 className="mt-0.5 text-base font-semibold text-foreground">{r.arch.name}</h3>
               <p className="text-xs text-muted-foreground">{r.arch.tagline}</p>
             </div>
             <ScoreBadge score={r.score} />

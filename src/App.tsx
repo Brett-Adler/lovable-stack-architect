@@ -18,7 +18,13 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <Suspense fallback={<div className="min-h-screen bg-gradient-subtle" />}>
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:fixed focus:left-3 focus:top-3 focus:z-[100] focus:rounded-md focus:bg-primary focus:px-4 focus:py-2 focus:text-sm focus:font-medium focus:text-primary-foreground focus:shadow-elegant focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-background"
+        >
+          Skip to main content
+        </a>
+        <Suspense fallback={<div className="min-h-dvh bg-gradient-subtle" />}>
           <Routes>
             <Route path="/" element={<Landing />} />
             <Route path="/app" element={<Index />} />

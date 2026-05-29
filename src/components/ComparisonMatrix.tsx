@@ -197,14 +197,21 @@ export function ComparisonMatrix({ enabled, topId, onToggle, onSetEnabled }: Pro
       ) : (
         <div className="mt-4 w-full max-w-full overflow-x-auto rounded-2xl border border-border bg-card shadow-card sm:mt-6">
           <table className="w-full min-w-[480px] border-collapse text-sm sm:min-w-[640px]">
+            <caption className="sr-only">
+              Architecture scores by criterion, 1 (poor) to 5 (excellent).
+            </caption>
             <thead>
               <tr className="border-b border-border bg-muted/30">
-                <th className="sticky left-0 z-10 bg-muted/30 px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                <th
+                  scope="col"
+                  className="sticky left-0 z-10 bg-muted/30 px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground"
+                >
                   Criterion
                 </th>
                 {archs.map((a) => (
                   <th
                     key={a.id}
+                    scope="col"
                     className={cn(
                       "px-4 py-3 text-center align-bottom",
                       a.id === topId && "bg-primary/5",
@@ -234,16 +241,25 @@ export function ComparisonMatrix({ enabled, topId, onToggle, onSetEnabled }: Pro
                     idx % 2 === 1 && "bg-muted/10",
                   )}
                 >
-                  <td className="sticky left-0 z-10 bg-card px-4 py-3 text-left">
+                  <th
+                    scope="row"
+                    className="sticky left-0 z-10 bg-card px-4 py-3 text-left font-normal"
+                  >
                     <Tooltip>
                       <TooltipTrigger asChild>
-                        <span className="cursor-help text-foreground">{c.label}</span>
+                        <button
+                          type="button"
+                          aria-label={`${c.label}. ${c.hint}`}
+                          className="rounded text-left text-foreground underline decoration-dotted decoration-muted-foreground/60 underline-offset-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-card"
+                        >
+                          {c.label}
+                        </button>
                       </TooltipTrigger>
                       <TooltipContent side="right" className="max-w-xs">
                         {c.hint}
                       </TooltipContent>
                     </Tooltip>
-                  </td>
+                  </th>
                   {archs.map((a) => {
                     const score = RUBRIC[a.id][c.id];
                     return (
@@ -254,6 +270,9 @@ export function ComparisonMatrix({ enabled, topId, onToggle, onSetEnabled }: Pro
                           a.id === topId && "bg-primary/5",
                         )}
                       >
+                        <span className="sr-only">
+                          {a.short}, {c.label}:{" "}
+                        </span>
                         <ScoreDot score={score} />
                       </td>
                     );
