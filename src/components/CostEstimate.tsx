@@ -5,10 +5,56 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { ExternalLink, Info, Flag } from "lucide-react";
 import { GITHUB_URL } from "@/lib/constants";
 
-export function CostEstimate({ archId, inputs }: { archId: ArchId; inputs: Inputs }) {
+function parseBand(band: string): number | null {
+  const cleaned = band.replace(/\$/g, "").replace(/\s/g, "");
+  const toNum = (s: string): number | null => {
+    if (!s) return null;
+    const m = s.match(/^([\d.]+)([km]?)\+?$/i);
+    if (!m) return null;
+    const n = parseFloat(m[1]);
+    if (isNaN(n)) return null;
+    const mult = m[2]?.toLowerCase() === "k" ? 1000 : m[2]?.toLowerCase() === "m" ? 1_000_000 : 1;
+    return n * mult;
+  };
+  if (cleaned.includes("–") || cleaned.includes("-")) {
+    const [a, b] = cleaned.split(/[–-]/);
+    const lo = toNum(a);
+    const hi = toNum(b);
+    if (lo != null && hi != null) return (lo + hi) / 2;
+    return hi ?? lo;
+  }
+  return toNum(cleaned);
+}
+
+export function CostEstimate({
+  archId,
+  inputs,
+  enabled,
+  topId,
+}: {
+  archId: ArchId;
+  inputs: Inputs;
+  enabled?: ArchId[];
+  topId?: ArchId;
+}) {
   const arch = ARCH_BY_ID[archId];
   const stage = stageFromMau(inputs.mau);
   const stageLabel = { prototype: "Prototype", mvp: "MVP", growth: "Growth", scale: "Scale" }[stage];
+
+  const compareRows = (enabled ?? [])
+    .map((id) => {
+      const a = ARCH_BY_ID[id];
+      const band = a.costBands[stage];
+      return { id, short: a.short, band, mid: parseBand(band) };
+    })
+    .sort((a, b) => {
+      if (a.mid == null && b.mid == null) return 0;
+      if (a.mid == null) return 1;
+      if (b.mid == null) return -1;
+      return a.mid - b.mid;
+    });
+  const maxMid = Math.max(...compareRows.map((r) => r.mid ?? 0), 1);
+
 
   return (
     <div className="rounded-2xl border border-border bg-card p-5 shadow-card">
@@ -83,9 +129,50 @@ export function CostEstimate({ archId, inputs }: { archId: ArchId; inputs: Input
         ))}
       </div>
 
+      {compareRows.length > 1 && (
+        <div className="mt-5 border-t border-border pt-4">
+          <div className="mb-2 flex items-center justify-between">
+            <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+              Compare at {stageLabel} scale
+            </h4>
+            <span className="text-[10px] text-muted-foreground">/ month</span>
+          </div>
+          <ul className="space-y-1.5">
+            {compareRows.map((r) => {
+              const isTop = r.id === topId;
+              const pct = r.mid != null ? Math.max(4, (r.mid / maxMid) * 100) : 0;
+              return (
+                <li key={r.id} className="flex items-center gap-2 text-xs">
+                  <div className="flex w-24 shrink-0 items-center gap-1.5">
+                    <span className={isTop ? "font-semibold text-foreground" : "text-foreground/80"}>
+                      {r.short}
+                    </span>
+                    {isTop && (
+                      <span className="rounded-sm bg-primary/15 px-1 py-0.5 text-[9px] font-semibold uppercase tracking-wider text-primary">
+                        Top
+                      </span>
+                    )}
+                  </div>
+                  <div className="relative h-2 flex-1 overflow-hidden rounded-full bg-muted/40">
+                    {r.mid != null && (
+                      <div
+                        className={`h-full rounded-full ${isTop ? "bg-primary/70" : "bg-foreground/30"}`}
+                        style={{ width: `${pct}%` }}
+                      />
+                    )}
+                  </div>
+                  <span className="w-20 shrink-0 text-right font-mono text-foreground/90">{r.band}</span>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      )}
+
       <p className="mt-4 text-xs text-muted-foreground">
         <span className="font-medium text-foreground">Ceiling:</span> {arch.scaleCeiling}
       </p>
+
     </div>
   );
 }

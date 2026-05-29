@@ -1,64 +1,49 @@
 ## Goals
 
-1. Clearer header + visual break above the full-width comparison matrix.
-2. A real downloadable PDF (in addition to the existing Print → Save as PDF).
-3. An in-app "Summary" modal that shows a one-page recap of the recommendation.
+1. Bring **Cost & scaling** higher up in the recommendation column so it's visible without scrolling.
+2. Add an at-a-glance **cost comparison across all enabled options** so users can quickly see how the top pick stacks up against alternatives on price.
 
 ## Changes
 
-### 1. `src/pages/Index.tsx` — divider + H2 above the matrix
+### 1. `src/pages/Index.tsx` — reorder the right column
 
-Wrap the bottom matrix `<section>` content with a header block:
+Move `<CostEstimate>` above `<RecommendationCard>` in the right `<aside>`:
 
 ```text
-─────────────────────────────────  (border-t border-border, full inner width)
-Full comparison matrix             (h2, text-xl sm:text-2xl font-semibold)
-See how every option scores on the same criteria. Top pick is highlighted.
-                                   (text-sm text-muted-foreground)
-[ existing <ComparisonMatrix view="matrix" /> ]
+Before                      After
+─────────────────           ─────────────────
+RecommendationCard          CostEstimate   ← moved up
+CostEstimate                RecommendationCard
+disclaimer text             disclaimer text
 ```
 
-- Add `mt-8 sm:mt-12 pt-8 sm:pt-10 border-t border-border` to give the section real breathing room from the three-column grid above it.
-- Header sits inside the same max-width container so it lines up with the matrix.
+This puts the most-asked question ("what will it cost me?") at the top of the column, with the full recommendation reasoning below it.
 
-### 2. `src/components/ReportExport.tsx` — direct PDF download + Summary
+### 2. `src/components/CostEstimate.tsx` — add "Compare across options"
 
-Add two new buttons to the toolbar alongside the existing Markdown + Preview/Print:
+Extend the existing card with a new section below the per-stage band grid:
 
-- **Summary** (Eye icon, opens new in-app modal)
-- **PDF** (FileDown icon, triggers direct download)
+- New prop: `enabled: ArchId[]` (list of architectures currently selected for comparison) and `topId?: ArchId` to highlight the top pick.
+- Renders a compact list, one row per enabled arch, sorted ascending by cost midpoint at the current stage:
+  - Arch short name (left)
+  - Cost band string (right, mono)
+  - Mini horizontal bar showing relative cost vs. the most expensive in the set
+  - Top pick gets a small "Top" badge and a primary-tinted bar
+- Section header: "Compare at {Stage} scale"
+- Parses the existing string bands (e.g. `"$80–250"`, `"$1.5k"`, `"$0"`) into a numeric midpoint with a small helper inside the component. No changes to the underlying data model.
 
-#### Direct PDF download
+### 3. `src/pages/Index.tsx` — pass the new props
 
-- Add deps: `jspdf` and `html2canvas`.
-- Render the existing `<ReportContent />` into an offscreen hidden div (`position: fixed; left: -10000px; width: 800px`), snapshot with `html2canvas`, paginate into a multi-page A4 PDF via `jsPDF`, then save as `stack-architect-{top}.pdf`.
-- Keep the existing Markdown and Print buttons untouched — they're useful fallbacks.
-
-#### Summary modal
-
-- New `<Dialog>` triggered by the Summary button.
-- Renders a compact one-screen recap (not the full report):
-  - Top pick name + score (large)
-  - Tagline + 1-line description
-  - 3 bullets: top "Why this fits" rationales
-  - Cost band for current stage + scaling ceiling
-  - Mini matrix: just the top pick column + 2 runners-up, 5 most-weighted criteria
-  - Footer: "Download PDF" and "Open full preview" buttons
-- Uses the same data already passed to `ReportExport` — no new props.
-
-### 3. No business logic changes
-
-Scoring, inputs, and architecture data stay untouched. This is presentation + export only.
+`<CostEstimate archId={topId} inputs={inputs} enabled={enabled} topId={topId} />`
 
 ## Technical notes
 
-- `jspdf` + `html2canvas` is the standard pair for client-side React → PDF and handles the existing Tailwind-styled `ReportContent` without restyling.
-- Pagination: render at A4 width (≈794px @ 96dpi), slice the canvas into page-height chunks, add each as an image to the PDF.
-- The hidden render container is mounted only during the export call and unmounted after, so it has zero impact on normal page weight.
-- Print button still works exactly as today.
+- The comparison list uses the *same* cost band strings already in `architectures.ts` — no new data to maintain.
+- Midpoint parsing handles `$0`, `$80–250`, `$1.5k`, `$300–1.5k`, `$2k+`. Unparseable rows fall back to sort-last and render the raw band string with no bar.
+- All styling uses existing semantic tokens (`bg-muted`, `bg-primary/20`, `border-border`, `text-muted-foreground`).
+- No business-logic or scoring changes.
 
 ## Files touched
 
-- `src/pages/Index.tsx` — divider + header block above the matrix section.
-- `src/components/ReportExport.tsx` — new Summary modal + PDF download button + offscreen render logic.
-- `package.json` — add `jspdf`, `html2canvas`.
+- `src/components/CostEstimate.tsx` — new comparison section + 2 new props.
+- `src/pages/Index.tsx` — reorder right column, pass `enabled`/`topId` to CostEstimate.
