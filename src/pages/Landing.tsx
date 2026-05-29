@@ -118,16 +118,18 @@ const Landing = () => {
                   </Link>
                 </Button>
               </div>
-              <Button
-                asChild
-                size="lg"
-                variant="outline"
-                className="gap-2 rounded-full border-border bg-card px-7"
-              >
-                <a href={LOVABLE_REMIX_URL} target="_blank" rel="noopener noreferrer">
-                  <ExternalLink className="h-4 w-4" /> Use this template
-                </a>
-              </Button>
+              {LOVABLE_REMIX_URL && (
+                <Button
+                  asChild
+                  size="lg"
+                  variant="outline"
+                  className="gap-2 rounded-full border-border bg-card px-7"
+                >
+                  <a href={LOVABLE_REMIX_URL} target="_blank" rel="noopener noreferrer">
+                    <ExternalLink className="h-4 w-4" /> Use this template
+                  </a>
+                </Button>
+              )}
             </div>
           </div>
         </section>
@@ -308,12 +310,18 @@ const Landing = () => {
                     picks, database picks, auth providers, AI models, anything you'd put in a
                     comparison table.
                   </p>
-                  <div className="mt-6 flex flex-wrap gap-3">
-                    <Button asChild size="lg" className="gap-2 rounded-full px-6">
-                      <a href={LOVABLE_REMIX_URL} target="_blank" rel="noopener noreferrer">
-                        <ExternalLink className="h-4 w-4" /> Remix on Lovable
-                      </a>
-                    </Button>
+                  <div className="mt-6 flex flex-wrap items-center gap-3">
+                    {LOVABLE_REMIX_URL ? (
+                      <Button asChild size="lg" className="gap-2 rounded-full px-6">
+                        <a href={LOVABLE_REMIX_URL} target="_blank" rel="noopener noreferrer">
+                          <ExternalLink className="h-4 w-4" /> Remix on Lovable
+                        </a>
+                      </Button>
+                    ) : (
+                      <span className="text-xs italic text-muted-foreground">
+                        Remix link coming soon.
+                      </span>
+                    )}
                     <Button
                       asChild
                       size="lg"
@@ -415,16 +423,18 @@ const Landing = () => {
                     </Link>
                   </Button>
                 </div>
-                <Button
-                  asChild
-                  size="lg"
-                  variant="outline"
-                  className="gap-2 rounded-full border-border bg-card px-7"
-                >
-                  <a href={LOVABLE_REMIX_URL} target="_blank" rel="noopener noreferrer">
-                    <FileDown className="h-4 w-4" /> Use this template
-                  </a>
-                </Button>
+                {LOVABLE_REMIX_URL && (
+                  <Button
+                    asChild
+                    size="lg"
+                    variant="outline"
+                    className="gap-2 rounded-full border-border bg-card px-7"
+                  >
+                    <a href={LOVABLE_REMIX_URL} target="_blank" rel="noopener noreferrer">
+                      <FileDown className="h-4 w-4" /> Use this template
+                    </a>
+                  </Button>
+                )}
               </div>
             </div>
           </div>

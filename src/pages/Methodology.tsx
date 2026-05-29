@@ -293,11 +293,13 @@ const Methodology = () => {
                     file, then tune the input weights if they don't match your domain.
                   </p>
                   <div className="mt-6 flex flex-wrap gap-3">
-                    <Button asChild size="lg" className="gap-2">
-                      <a href={LOVABLE_REMIX_URL} target="_blank" rel="noopener noreferrer">
-                        <ExternalLink className="h-4 w-4" aria-hidden="true" /> Remix on Lovable
-                      </a>
-                    </Button>
+                    {LOVABLE_REMIX_URL && (
+                      <Button asChild size="lg" className="gap-2">
+                        <a href={LOVABLE_REMIX_URL} target="_blank" rel="noopener noreferrer">
+                          <ExternalLink className="h-4 w-4" aria-hidden="true" /> Remix on Lovable
+                        </a>
+                      </Button>
+                    )}
                     <Button asChild size="lg" variant="outline" className="gap-2">
                       <Link to="/app">
                         <SlidersHorizontal className="h-4 w-4" aria-hidden="true" /> Open the tool
