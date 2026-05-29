@@ -122,13 +122,13 @@ function buildMarkdown({ inputs, results, excluded = [] }: Props): string {
 
   // Inputs
   lines.push(`## Project inputs`);
-  lines.push(`- Stage: ${inputs.stage}`);
+  lines.push(`- Stage: ${fmtList(inputs.stage)}`);
   lines.push(`- Expected MAU: ${inputs.mau.toLocaleString()}`);
   lines.push(`- Team strengths: ${fmtList(inputs.team)}`);
-  lines.push(`- Budget: ${inputs.budget}`);
+  lines.push(`- Budget: ${fmtList(inputs.budget)}`);
   lines.push(`- Compliance: ${fmtList(inputs.compliance)}`);
   lines.push(`- Workloads: ${fmtList(inputs.workloads)}`);
-  lines.push(`- Lock-in tolerance: ${inputs.lockInTolerance}`);
+  lines.push(`- Lock-in tolerance: ${fmtList(inputs.lockInTolerance)}`);
   lines.push(`- Time-to-market priority: ${inputs.ttmPriority}/5`);
   lines.push("");
 
