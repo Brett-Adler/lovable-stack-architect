@@ -147,7 +147,7 @@ const Index = () => {
             mobileTab === "comparison" ? "block" : "hidden",
           )}
         >
-          <ComparisonMatrix enabled={enabled} topId={topId} onToggle={toggleArch} onSetEnabled={setEnabled} />
+          <ComparisonMatrix view="controls" enabled={enabled} topId={topId} onToggle={toggleArch} onSetEnabled={setEnabled} />
           {topId && <ArchitectureDiagram archId={topId} inputs={inputs} />}
         </section>
 
