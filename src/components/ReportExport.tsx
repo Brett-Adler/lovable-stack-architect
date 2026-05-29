@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { Button } from "@/components/ui/button";
 import {
@@ -9,10 +9,11 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Download, Eye, Printer } from "lucide-react";
+import { Download, Eye, Printer, FileDown, FileText, Loader2 } from "lucide-react";
 import { CRITERIA, RUBRIC, type Architecture } from "@/data/architectures";
 import type { Inputs, RankedResult } from "@/lib/scoring";
 import { stageFromMau } from "@/lib/scoring";
+import { toast } from "sonner";
 import { LAST_REVIEWED, SITE_URL, AUTHOR_HANDLE } from "@/lib/constants";
 
 interface Props {
