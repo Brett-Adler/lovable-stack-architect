@@ -1,20 +1,33 @@
 import type { Inputs, RankedResult } from "@/lib/scoring";
 import { tradeoffVs } from "@/lib/scoring";
+import type { Architecture } from "@/data/architectures";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { Link } from "react-router-dom";
-import { CheckCircle2, Info } from "lucide-react";
+import { CheckCircle2, Info, ShieldAlert, Users } from "lucide-react";
 
-export function RecommendationCard({
-  results,
-  inputs,
-}: {
+interface Props {
   results: RankedResult[];
   inputs: Inputs;
-}) {
-  if (!results.length) return null;
+  excluded?: { arch: Architecture; reason: string }[];
+  isNonTechnical?: boolean;
+}
+
+export function RecommendationCard({ results, inputs, excluded = [], isNonTechnical = false }: Props) {
+  if (!results.length) {
+    return (
+      <div className="rounded-2xl border border-dashed border-border bg-card p-6 text-sm text-muted-foreground">
+        No architecture meets your hard requirements. Loosen the compliance filter to see options.
+      </div>
+    );
+  }
   const top = results[0];
-  const runners = results.slice(1, 3);
+  // For non-technical teams, hide runners that require GitHub export + self-host.
+  const visibleRunners = (isNonTechnical
+    ? results.slice(1).filter((r) => r.arch.nativeIntegration)
+    : results.slice(1)
+  ).slice(0, 2);
+  const runners = visibleRunners;
   const tradeoff = runners[0] ? tradeoffVs(top, runners[0], inputs) : null;
 
   return (
