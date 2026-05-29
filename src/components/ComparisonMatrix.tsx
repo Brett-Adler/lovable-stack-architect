@@ -21,6 +21,7 @@ interface Props {
   topId?: ArchId;
   onToggle: (id: ArchId) => void;
   onSetEnabled: (ids: ArchId[]) => void;
+  view?: "all" | "controls" | "matrix";
 }
 
 function ScoreDot({ score }: { score: number }) {
@@ -46,7 +47,7 @@ function ScoreDot({ score }: { score: number }) {
 
 const ALL_IDS = ARCHITECTURES.map((a) => a.id);
 
-export function ComparisonMatrix({ enabled, topId, onToggle, onSetEnabled }: Props) {
+export function ComparisonMatrix({ enabled, topId, onToggle, onSetEnabled, view = "all" }: Props) {
   const archs = ARCHITECTURES.filter((a) => enabled.includes(a.id));
   const allSelected = enabled.length === ALL_IDS.length;
   const noneSelected = enabled.length === 0;
@@ -61,12 +62,16 @@ export function ComparisonMatrix({ enabled, topId, onToggle, onSetEnabled }: Pro
     }
   };
 
+  const showControls = view === "all" || view === "controls";
+  const showMatrix = view === "all" || view === "matrix";
+
   return (
     <TooltipProvider delayDuration={150}>
       <section
         aria-labelledby="comparison-heading"
         className="overflow-hidden rounded-2xl border border-border bg-card shadow-card"
       >
+        {showControls && (<>
         {/* Header strip */}
         <header className="flex flex-wrap items-start justify-between gap-3 px-4 py-4 sm:px-5">
           <div className="min-w-0">
@@ -207,8 +212,10 @@ export function ComparisonMatrix({ enabled, topId, onToggle, onSetEnabled }: Pro
             })}
           </div>
         </div>
+        </>)}
 
         {/* Matrix region */}
+        {showMatrix && (<>
         {archs.length === 0 ? (
           <div className="border-t border-border px-4 py-10 text-center text-sm text-muted-foreground sm:px-5">
             Select at least one option above to see the comparison matrix.
@@ -323,6 +330,7 @@ export function ComparisonMatrix({ enabled, topId, onToggle, onSetEnabled }: Pro
             </div>
           </div>
         )}
+        </>)}
       </section>
     </TooltipProvider>
   );

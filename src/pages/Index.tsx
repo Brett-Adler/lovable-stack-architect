@@ -147,7 +147,7 @@ const Index = () => {
             mobileTab === "comparison" ? "block" : "hidden",
           )}
         >
-          <ComparisonMatrix enabled={enabled} topId={topId} onToggle={toggleArch} onSetEnabled={setEnabled} />
+          <ComparisonMatrix view="controls" enabled={enabled} topId={topId} onToggle={toggleArch} onSetEnabled={setEnabled} />
           {topId && <ArchitectureDiagram archId={topId} inputs={inputs} />}
         </section>
 
@@ -174,6 +174,17 @@ const Index = () => {
           </p>
         </aside>
       </main>
+
+      <section
+        aria-label="Comparison matrix"
+        hidden={mobileTab !== "comparison"}
+        className={cn(
+          "mx-auto w-full max-w-[1800px] px-3 pb-24 sm:px-6 md:pb-6 2xl:px-10",
+          mobileTab === "comparison" ? "block" : "hidden md:block",
+        )}
+      >
+        <ComparisonMatrix view="matrix" enabled={enabled} topId={topId} onToggle={toggleArch} onSetEnabled={setEnabled} />
+      </section>
 
 
 
