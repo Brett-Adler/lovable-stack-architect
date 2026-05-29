@@ -1,60 +1,54 @@
 ## Goal
 
-Keep the Lovable-inspired look (palette, fonts, gradient) but make it unmistakable that this is a fan-made / community template — not an official Lovable product — while leaving room for a light, tasteful "I'd love to work at Lovable" note.
+Hide every "Use this template" / Remix CTA and every GitHub link until real URLs are provided, so nothing in the UI points to a placeholder or the author's private editor URL.
 
-## Author info
+## Approach
 
-- Handle: `@brettadler`
-- Link: `https://lovable.dev/@brettadler`
-
-## Positioning rules
-
-1. Never imply authorship by Lovable. Drop phrasing like "Lovable-authored".
-2. Add a clear, persistent unaffiliated disclosure.
-3. Keep "Built with Lovable" and "Use this template" — those are factually true.
-4. Add one small, friendly "by @brettadler — hoping to join the Lovable team" note.
-
-## Changes
+Make both URLs nullable in `src/lib/constants.ts`, then gate every consumer behind a truthy check. Nothing renders if the URL is empty.
 
 ### 1. `src/lib/constants.ts`
-Add:
-- `AUTHOR_HANDLE = "@brettadler"`
-- `AUTHOR_URL = "https://lovable.dev/@brettadler"`
+
+```ts
+// Set these when ready to publish as a template.
+export const LOVABLE_REMIX_URL: string | null = null;
+export const GITHUB_URL: string | null = null;
+```
+
+(Keep the rest of the file unchanged.)
 
 ### 2. `src/components/SiteHeader.tsx`
-Below or beside the wordmark on desktop, add a tiny muted line: `Community template · not affiliated with Lovable`. Hidden on mobile to keep the header compact.
+
+Wrap the "Use this template / Remix" outline button (line ~72) in `{LOVABLE_REMIX_URL && (...)}`. When null, the button disappears; the "Open the tool" primary CTA stays.
 
 ### 3. `src/components/SiteFooter.tsx`
-Replace the single-line footer with two stacked lines:
-- Existing: `Last reviewed {LAST_REVIEWED} · MIT License`
-- New, muted, smaller: `An independent, community-built template by [@brettadler]({AUTHOR_URL}) — open to joining the Lovable team. Not affiliated with, endorsed by, or representing Lovable. "Lovable" and the Lovable brand belong to Lovable.`
 
-Footer nav stays as-is.
+- Wrap the "Use this template" link (line 13) in `{LOVABLE_REMIX_URL && ...}`.
+- The GitHub link is already gated on `GITHUB_URL !== "#"` — change to `{GITHUB_URL && ...}`.
 
-### 4. `src/pages/Landing.tsx` — hero
-- Pill badge becomes: `Community template · Inspired by Lovable · Last reviewed {LAST_REVIEWED}`.
-- Add a small italic line under the subhead: `An independent project by @brettadler — not affiliated with Lovable.` (handle links to AUTHOR_URL.)
+### 4. `src/pages/Landing.tsx`
 
-### 5. `Landing.tsx` — FAQ
-- Fix the bias answer: replace "This tool is Lovable-authored, so it has a perspective" with "I built this and I'm a Lovable fan, so it has a perspective…".
-- Add a new FAQ item near the top:
-  - **Q:** Is this an official Lovable product?
-  - **A:** No. It's an independent, community-built template by @brettadler, inspired by Lovable's design language. Not affiliated with, endorsed by, or representing Lovable. The Lovable name and brand belong to Lovable.
+Three CTA spots use `LOVABLE_REMIX_URL` (hero, "Use as a template" section, final CTA). Each becomes conditional:
 
-### 6. "Use as a template" section
-Subhead becomes: `A free, MIT-licensed community template you can remix on Lovable.`
+- Hero (line ~127): hide the secondary "Use this template" button entirely; "Open the tool" remains the single primary CTA.
+- "Use as a template" section (line ~313, "Remix on Lovable" button): hide the button, but keep the section's copy (it explains the template angle). Add a small muted line: "Remix link coming soon." so the section doesn't look broken.
+- Final CTA (line ~424): hide the Remix button; keep "Open the tool".
 
-### 7. Small "About the builder" bento tile
-Insert one card just above the final CTA:
-- Title: `Built by @brettadler`
-- Body: `Independent builder. Big fan of Lovable — open to joining the team. Say hi.`
-- CTA link: `View Lovable profile →` (→ AUTHOR_URL, new tab).
+### 5. `src/pages/Methodology.tsx`
 
-Easy to delete for anyone remixing the template.
+"Remix on Lovable" button at line ~297 — hide when `LOVABLE_REMIX_URL` is null; "Open the tool" stays.
 
-### 8. SEO
-Update meta description on `/` to: `An independent, community-built comparator for picking a backend for your Lovable app. Free, MIT, remix it.`
+### 6. Type cleanup
+
+Since the constants are now `string | null`, every consumer already uses `&&` truthy gating, so TypeScript narrows correctly inside the conditional. No `!` assertions needed.
 
 ## Out of scope
 
-No changes to scoring, data, routing, or the `/app` tool itself. Pure copy + small header/footer + one optional tile.
+- No copy rewrites or layout changes beyond removing/hiding the CTAs.
+- No changes to README, llms.txt, or the broader template-readiness items from the previous plan — those remain open and we'll come back to them once the real URLs land.
+
+## What the user provides later
+
+- Real public Remix URL → set `LOVABLE_REMIX_URL`.
+- Real GitHub repo URL (if open-sourcing) → set `GITHUB_URL`.
+
+Setting either constant to a non-empty string re-enables every gated CTA automatically.

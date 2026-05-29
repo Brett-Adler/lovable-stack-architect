@@ -68,12 +68,14 @@ export function SiteHeader({ children }: { children?: React.ReactNode }) {
               </Link>
             </Button>
           )}
-          <Button asChild variant="outline" size="sm" className="gap-1.5">
-            <a href={LOVABLE_REMIX_URL} target="_blank" rel="noopener noreferrer">
-              <ExternalLink className="h-4 w-4" /> <span className="hidden sm:inline">Use this template</span>
-              <span className="sm:hidden">Remix</span>
-            </a>
-          </Button>
+          {LOVABLE_REMIX_URL && (
+            <Button asChild variant="outline" size="sm" className="gap-1.5">
+              <a href={LOVABLE_REMIX_URL} target="_blank" rel="noopener noreferrer">
+                <ExternalLink className="h-4 w-4" /> <span className="hidden sm:inline">Use this template</span>
+                <span className="sm:hidden">Remix</span>
+              </a>
+            </Button>
+          )}
         </div>
       </div>
     </header>
