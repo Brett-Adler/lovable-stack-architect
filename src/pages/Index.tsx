@@ -97,6 +97,7 @@ const Index = () => {
   const shareLink = async () => {
     const compressed = LZString.compressToEncodedURIComponent(JSON.stringify(state));
     const url = `${window.location.origin}${window.location.pathname}?s=${compressed}`;
+    track("Share link", { top: topId ?? "none" });
     try {
       await navigator.clipboard.writeText(url);
       toast.success("Share link copied to clipboard");
