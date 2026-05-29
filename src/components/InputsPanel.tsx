@@ -170,6 +170,7 @@ export function InputsPanel({ inputs, onChange }: Props) {
           </span>
         </div>
         <Slider
+          aria-label="Expected monthly active users"
           min={0}
           max={MAU_STEPS.length - 1}
           step={1}
@@ -266,6 +267,7 @@ export function InputsPanel({ inputs, onChange }: Props) {
           <Badge variant="secondary" className="font-mono">{inputs.ttmPriority}/5</Badge>
         </div>
         <Slider
+          aria-label="Time-to-market priority"
           min={1}
           max={5}
           step={1}

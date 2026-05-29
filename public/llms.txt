@@ -1,0 +1,11 @@
+# Lovable Stack Architect
+
+> Side-by-side comparator that helps founders, PMs, designers and developers pick the best backend stack for a Lovable-built app.
+
+Lovable Stack Architect scores 10 popular hosting and backend platforms across 12 criteria — time-to-launch, DX with Lovable, cost at small and large scale, scaling ceiling, realtime, storage, AI/heavy compute, compliance, vendor lock-in, ops burden, and migration path. Inputs (stage, expected MAU, team strengths, budget, compliance needs, workloads, lock-in tolerance, time-to-market priority) drive a ranked recommendation, side-by-side matrix, architecture diagram, and exportable report.
+
+Platforms covered: Lovable Cloud, external Supabase, Vercel, Netlify, AWS, Google Cloud, Azure, Heroku, Render, Fly.io.
+
+## Pages
+
+- [Home](/): The full comparator — inputs, ranked recommendation, side-by-side matrix, cost estimate, and architecture diagram.
