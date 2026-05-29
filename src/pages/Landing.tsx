@@ -7,12 +7,13 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { ArrowRight, Sparkles, ExternalLink, Gauge, Share2, FileDown, SlidersHorizontal, Trophy, FileText } from "lucide-react";
+import { ArrowRight, Sparkles, ExternalLink, Gauge, Share2, FileDown, SlidersHorizontal, Trophy, FileText, Database, Info } from "lucide-react";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SeoHead } from "@/components/SeoHead";
 import { ARCHITECTURES } from "@/data/architectures";
 import { LAST_REVIEWED, LOVABLE_REMIX_URL } from "@/lib/constants";
+import { PRESETS, presetShareUrl } from "@/lib/presets";
 
 const FEATURES = [
   {
@@ -45,7 +46,10 @@ const TEMPLATE_BULLETS = [
 ];
 
 const FAQ = [
-  { q: "Where does the data come from?", a: "Curated from public vendor pricing pages, docs, and hands-on experience. Every score is editable in one file." },
+  { q: "Where does the data come from?", a: "Curated from public vendor pricing pages, docs, and hands-on experience. Every score is editable in one file, and every cost band links to its source on the Methodology page." },
+  { q: "How is bias handled?", a: "This tool is Lovable-authored, so it has a perspective. Every criterion starts at the same baseline weight to avoid structurally favoring Lovable Cloud, and the recommendation card shows the top criteria that drove the score so you can sanity-check it. Full disclosure on the Methodology page." },
+  { q: "What's actually in Lovable Cloud?", a: "Postgres database, auth, file storage, edge functions, and the Lovable AI Gateway (managed Gemini/Claude/GPT calls — no API keys to rotate). It's powered by Supabase under the hood, so if you outgrow Cloud you can detach to a self-owned Supabase project." },
+  { q: "Do the other 8 platforms work with Lovable too?", a: "Not as native integrations. Only Lovable Cloud and external Supabase are wired in. For Vercel, Netlify, AWS, GCP, Azure, Heroku, Render, and Fly.io you export your Lovable project to GitHub and deploy the backend yourself." },
   { q: "How fresh is it?", a: `Cost bands and rubric were last reviewed ${LAST_REVIEWED}. Always verify against current vendor pricing before committing.` },
   { q: "Can I customize it for a different decision?", a: "Yes — that's the point. The whole app is data-driven. Edit architectures.ts and you have a picker for CMSs, databases, auth providers, AI models, anything." },
   { q: "Is it free?", a: "Yes, MIT licensed. Fork it, ship it, sell a branded version — all fine." },
@@ -74,8 +78,8 @@ const Landing = () => {
               Pick the right backend for your Lovable app
             </h1>
             <p className="mt-5 text-base text-muted-foreground sm:text-lg">
-              An interactive comparator across Lovable Cloud, Supabase, Vercel, Netlify, AWS, GCP, Azure,
-              Heroku, Render, and Fly.io. Tuned to your stage, budget, and workloads.
+              An interactive comparator across 10 hosting and backend options — Lovable Cloud, Supabase, Vercel, Netlify, AWS, GCP, Azure, Heroku, Render, and Fly.io — tuned to your stage, budget, and workloads. Methodology and sources are{" "}
+              <Link to="/methodology" className="underline decoration-dotted hover:text-foreground">openly published</Link>.
             </p>
             <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
               <Button asChild size="lg" className="gap-2">
