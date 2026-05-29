@@ -212,8 +212,10 @@ export function ComparisonMatrix({ enabled, topId, onToggle, onSetEnabled, view 
             })}
           </div>
         </div>
+        </>)}
 
         {/* Matrix region */}
+        {showMatrix && (<>
         {archs.length === 0 ? (
           <div className="border-t border-border px-4 py-10 text-center text-sm text-muted-foreground sm:px-5">
             Select at least one option above to see the comparison matrix.
