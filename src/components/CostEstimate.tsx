@@ -51,6 +51,20 @@ export function CostEstimate({ archId, inputs }: { archId: ArchId; inputs: Input
                 </li>
               ))}
             </ul>
+            {GITHUB_URL && (
+              <a
+                href={`${GITHUB_URL}/issues/new?title=${encodeURIComponent(
+                  `Cost correction: ${arch.name}`,
+                )}&body=${encodeURIComponent(
+                  `Stage: ${stageLabel}\nCurrent band: ${arch.costBands[stage]}\nSuggested band: \nSource: `,
+                )}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-2 inline-flex items-center gap-1 text-[11px] text-muted-foreground hover:text-foreground hover:underline"
+              >
+                <Flag className="h-3 w-3" /> Suggest a correction
+              </a>
+            )}
           </PopoverContent>
         </Popover>
       </div>
