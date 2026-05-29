@@ -326,8 +326,133 @@ function ReportContent({ inputs, results, excluded = [] }: Props) {
   );
 }
 
+const STAGE_LABEL_LOCAL: Record<string, string> = {
+  prototype: "Prototype",
+  mvp: "MVP",
+  growth: "Growth",
+  scale: "Scale",
+};
+
+function SummaryDialog({
+  open,
+  onOpenChange,
+  inputs,
+  results,
+  onDownloadPdf,
+  onOpenFullPreview,
+  pdfBusy,
+}: {
+  open: boolean;
+  onOpenChange: (v: boolean) => void;
+  inputs: Inputs;
+  results: RankedResult[];
+  onDownloadPdf: () => void;
+  onOpenFullPreview: () => void;
+  pdfBusy: boolean;
+}) {
+  const top = results[0];
+  const runners = results.slice(1, 3);
+  const stage = stageFromMau(inputs.mau);
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="no-print max-h-[90vh] max-w-2xl overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle>Recommendation summary</DialogTitle>
+          <DialogDescription>
+            A one-glance recap of your top pick. Download the full PDF for the complete report.
+          </DialogDescription>
+        </DialogHeader>
+
+        {!top ? (
+          <p className="text-sm text-muted-foreground">
+            No architecture met your hard requirements. Loosen the compliance filter to see options.
+          </p>
+        ) : (
+          <div className="space-y-5">
+            <div className="rounded-xl border border-border bg-card p-4">
+              <div className="flex items-baseline justify-between gap-3">
+                <h3 className="text-xl font-semibold text-foreground">{top.arch.name}</h3>
+                <span className="font-mono text-sm text-muted-foreground">
+                  {Math.round(top.score)}/100
+                </span>
+              </div>
+              <p className="mt-1 text-sm italic text-muted-foreground">{top.arch.tagline}</p>
+              <p className="mt-2 text-sm text-foreground">{top.arch.description}</p>
+            </div>
+
+            <div>
+              <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                Why this fits
+              </h4>
+              <ul className="mt-2 list-disc space-y-1 pl-5 text-sm">
+                {top.rationale.slice(0, 4).map((r, i) => (
+                  <li key={i}>{r}</li>
+                ))}
+              </ul>
+            </div>
+
+            <div className="rounded-xl border border-border bg-muted/30 p-4">
+              <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                Cost & scaling
+              </h4>
+              <p className="mt-1 text-sm">
+                <strong>{top.arch.costBands[stage]}</strong> / month at {STAGE_LABEL_LOCAL[stage]} scale.
+              </p>
+              <p className="mt-1 text-xs text-muted-foreground">
+                Ceiling: {top.arch.scaleCeiling}
+              </p>
+            </div>
+
+            {runners.length > 0 && (
+              <div>
+                <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                  Runners-up
+                </h4>
+                <ul className="mt-2 space-y-1.5 text-sm">
+                  {runners.map((r, i) => (
+                    <li
+                      key={r.arch.id}
+                      className="flex items-baseline justify-between gap-3 border-b border-border/60 pb-1.5 last:border-0"
+                    >
+                      <span>
+                        <span className="text-muted-foreground">#{i + 2}</span>{" "}
+                        <strong>{r.arch.name}</strong>{" "}
+                        <span className="text-xs text-muted-foreground">— {r.arch.tagline}</span>
+                      </span>
+                      <span className="font-mono text-xs text-muted-foreground">
+                        {Math.round(r.score)}/100
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
+        )}
+
+        <DialogFooter className="gap-2 sm:gap-2">
+          <Button variant="outline" onClick={onOpenFullPreview}>
+            <Eye className="mr-1.5 h-4 w-4" /> Full preview
+          </Button>
+          <Button onClick={onDownloadPdf} disabled={pdfBusy} className="gap-1.5">
+            {pdfBusy ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <FileDown className="h-4 w-4" />
+            )}
+            Download PDF
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
 export function ReportExport(props: Props) {
   const [open, setOpen] = useState(false);
+  const [summaryOpen, setSummaryOpen] = useState(false);
+  const [pdfBusy, setPdfBusy] = useState(false);
+  const pdfSourceRef = useRef<HTMLDivElement | null>(null);
 
   const downloadMd = () => {
     const md = buildMarkdown(props);
@@ -341,13 +466,65 @@ export function ReportExport(props: Props) {
   };
 
   const printNow = () => {
-    // Defer to after the dialog has rendered the print-root content.
     setTimeout(() => window.print(), 50);
+  };
+
+  const downloadPdf = async () => {
+    if (!pdfSourceRef.current || pdfBusy) return;
+    setPdfBusy(true);
+    try {
+      const [{ default: jsPDF }, { default: html2canvas }] = await Promise.all([
+        import("jspdf"),
+        import("html2canvas"),
+      ]);
+      const node = pdfSourceRef.current;
+      const canvas = await html2canvas(node, {
+        scale: 2,
+        backgroundColor: "#ffffff",
+        useCORS: true,
+        logging: false,
+      });
+      const pdf = new jsPDF({ unit: "pt", format: "a4", orientation: "portrait" });
+      const pageWidth = pdf.internal.pageSize.getWidth();
+      const pageHeight = pdf.internal.pageSize.getHeight();
+      const imgWidth = pageWidth;
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+      const imgData = canvas.toDataURL("image/jpeg", 0.92);
+      let heightLeft = imgHeight;
+      let position = 0;
+      pdf.addImage(imgData, "JPEG", 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+      while (heightLeft > 0) {
+        position = heightLeft - imgHeight;
+        pdf.addPage();
+        pdf.addImage(imgData, "JPEG", 0, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+      }
+      pdf.save(
+        `stack-architect-${props.results[0]?.arch.short.toLowerCase() ?? "report"}.pdf`,
+      );
+    } catch (err) {
+      console.error(err);
+      toast.error("Couldn't generate PDF", {
+        description: "Try the Print → Save as PDF fallback.",
+      });
+    } finally {
+      setPdfBusy(false);
+    }
   };
 
   return (
     <>
       <div className="no-print flex flex-wrap gap-2">
+        <Button onClick={() => setSummaryOpen(true)} variant="outline" size="sm" className="gap-1.5">
+          <FileText className="h-4 w-4" />
+          <span className="hidden sm:inline">Summary</span>
+        </Button>
+        <Button onClick={downloadPdf} disabled={pdfBusy} variant="outline" size="sm" className="gap-1.5">
+          {pdfBusy ? <Loader2 className="h-4 w-4 animate-spin" /> : <FileDown className="h-4 w-4" />}
+          <span className="hidden sm:inline">PDF</span>
+        </Button>
         <Button onClick={downloadMd} variant="outline" size="sm" className="gap-1.5">
           <Download className="h-4 w-4" />
           <span className="hidden sm:inline">Markdown</span>
@@ -357,6 +534,19 @@ export function ReportExport(props: Props) {
           <span className="hidden sm:inline">Preview / Print</span>
         </Button>
       </div>
+
+      <SummaryDialog
+        open={summaryOpen}
+        onOpenChange={setSummaryOpen}
+        inputs={props.inputs}
+        results={props.results}
+        pdfBusy={pdfBusy}
+        onDownloadPdf={downloadPdf}
+        onOpenFullPreview={() => {
+          setSummaryOpen(false);
+          setOpen(true);
+        }}
+      />
 
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="no-print max-h-[90vh] max-w-3xl overflow-y-auto">
@@ -371,6 +561,10 @@ export function ReportExport(props: Props) {
           </div>
           <DialogFooter className="gap-2 sm:gap-2">
             <Button variant="outline" onClick={() => setOpen(false)}>Close</Button>
+            <Button onClick={downloadPdf} disabled={pdfBusy} variant="outline" className="gap-1.5">
+              {pdfBusy ? <Loader2 className="h-4 w-4 animate-spin" /> : <FileDown className="h-4 w-4" />}
+              Download PDF
+            </Button>
             <Button onClick={printNow} className="gap-1.5">
               <Printer className="h-4 w-4" /> Print / Save as PDF
             </Button>
@@ -383,6 +577,28 @@ export function ReportExport(props: Props) {
         createPortal(
           <div id="print-root" aria-hidden="true" className="hidden print:block">
             <div className="p-8">
+              <ReportContent {...props} />
+            </div>
+          </div>,
+          document.body,
+        )}
+
+      {/* Offscreen render source for html2canvas PDF export. White bg, fixed width. */}
+      {typeof document !== "undefined" &&
+        createPortal(
+          <div
+            aria-hidden="true"
+            style={{
+              position: "fixed",
+              left: "-10000px",
+              top: 0,
+              width: "800px",
+              background: "#ffffff",
+              color: "#0a0a0a",
+              pointerEvents: "none",
+            }}
+          >
+            <div ref={pdfSourceRef} style={{ padding: "32px" }}>
               <ReportContent {...props} />
             </div>
           </div>,
