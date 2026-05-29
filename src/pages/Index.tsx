@@ -178,13 +178,13 @@ const Index = () => {
             mobileTab === "recommendation" ? "block" : "hidden",
           )}
         >
+          {topId && <CostEstimate archId={topId} inputs={inputs} enabled={enabled} topId={topId} />}
           <RecommendationCard
             results={results}
             inputs={inputs}
             excluded={excluded}
             isNonTechnical={isNonTechnical}
           />
-          {topId && <CostEstimate archId={topId} inputs={inputs} />}
           <p className="text-[11px] leading-relaxed text-muted-foreground">
             All four options assume Lovable handles design, frontend dev, testing, and deployment.
             Costs are curated bands, not live quotes — verify against current pricing before committing.
