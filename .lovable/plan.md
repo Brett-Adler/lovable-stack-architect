@@ -1,110 +1,127 @@
-# Align /methodology with the Landing + App visual language
+# Implement the "Modern high-density bento" direction
 
-## Problem
+Refresh the marketing surface of the template to match Lovable's brand: cream background, Inter type, tri-gradient accents (blue → magenta → orange), bento composition, ink-black CTAs. No content/copy changes, no flow changes, no app-tool changes beyond inheriting the new tokens.
 
-`/methodology` works, but it doesn't share the visual vocabulary used on `/` (Landing) and `/app` (Index):
+## Token layer — `src/index.css`
 
-- Hero is left-aligned with a plain `<h1>` — Landing uses a centered hero with a pill "chip" badge, centered headline, and centered lede.
-- Section pattern is "one big numbered card containing everything". Landing uses a lighter rhythm: centered section title + subtitle, then a grid/panel of smaller white cards with `shadow-card`.
-- Numbered badges use a soft `bg-primary/10` chip. Landing's "How it works" uses solid filled circles (`bg-primary text-primary-foreground`).
-- Criteria render as a two-column `<dl>` of plain text — Landing-style feature grids are cards with icon tiles.
-- Biases list is mostly plain bordered rows — Landing prefers white cards with shadow.
-- Final CTA uses a flat gradient block — Landing uses the gradient-border + inner white-card pattern from the "Use as a template" section.
+Replace the light-mode token block (`:root`) with the Lovable cream palette. All values HSL.
 
-## Goal
+| Token | New value | Note |
+|---|---|---|
+| `--background` | `40 25% 94%` | Cream `#F5F2EC` |
+| `--foreground` | `0 0% 6%` | Ink `#0F0F0F` |
+| `--card` | `0 0% 100%` | Pure white tiles |
+| `--card-foreground` | `0 0% 6%` | |
+| `--popover` / `-fg` | `0 0% 100%` / `0 0% 6%` | |
+| `--primary` | `0 0% 6%` | Ink — solid CTAs become black |
+| `--primary-foreground` | `0 0% 100%` | |
+| `--primary-glow` | `309 78% 60%` | Magenta `#E94BD2` (used as second stop in legacy gradients) |
+| `--secondary` | `40 20% 96%` | |
+| `--secondary-foreground` | `0 0% 6%` | |
+| `--muted` | `40 18% 92%` | |
+| `--muted-foreground` | `0 0% 29%` | `#4A4A4A` — passes AA on cream and white |
+| `--accent` | `309 78% 60%` | Magenta |
+| `--accent-foreground` | `0 0% 100%` | |
+| `--border` | `35 18% 86%` | Warm hairline |
+| `--input` | `35 18% 86%` | |
+| `--ring` | `0 0% 6%` | Strong ink focus ring |
+| `--radius` | `1rem` | Slightly more pillowy tiles |
 
-Rewrite `src/pages/Methodology.tsx` so it reads as the same product as Landing and App. Same hero shape, same section rhythm, same card/chip/numbered-badge styling, same gradient CTA pattern. No copy changes, no data changes, no routing changes.
+Gradients/shadows:
 
-## Approach (single file: `src/pages/Methodology.tsx`)
+- `--gradient-primary: linear-gradient(135deg, #4F8AFB 0%, #E94BD2 50%, #FF6A3D 100%);`
+- `--gradient-subtle: linear-gradient(180deg, hsl(40 28% 95%), hsl(35 22% 92%));`
+- `--gradient-glow: radial-gradient(60% 60% at 50% 0%, rgba(79,138,251,0.18), rgba(233,75,210,0.16) 40%, rgba(255,106,61,0.14) 70%, transparent 80%);`
+- `--shadow-card: 0 1px 2px rgba(15,15,15,0.04), 0 8px 30px rgba(15,15,15,0.04);`
+- `--shadow-elegant: 0 20px 60px -20px rgba(15,15,15,0.18);`
 
-### 1. Hero — match Landing
+Dark mode (`.dark`) — keep functional but retint: background `0 0% 6%`, card `0 0% 9%`, foreground white, border `0 0% 16%`, muted-foreground `0 0% 70%`. Gradients unchanged.
 
-Replace the left-aligned header with Landing's centered hero pattern:
+Utilities — add `.bg-gradient-glow { background: var(--gradient-glow); }`, keep existing `.bg-gradient-primary`, `.bg-gradient-subtle`, `.text-gradient`, `.shadow-card`, `.shadow-elegant`.
 
-- `max-w-3xl` centered block
-- Pill chip: `inline-flex items-center gap-1.5 rounded-full border border-border bg-card/60 px-3 py-1 text-xs font-medium text-muted-foreground` with a small `Sparkles`/`Info` icon and "Methodology · Last reviewed {LAST_REVIEWED}"
-- `h1` `text-4xl sm:text-5xl md:text-6xl font-bold leading-tight tracking-tight`
-- Centered `p.text-muted-foreground` lede
-- "Back home" link styled as a small ghost link above or below — keep it but center it and keep the focus-visible ring
+Set base `body { font-family: Inter, … }`.
 
-Bump page container to `max-w-6xl` so sections breathe like Landing.
+## Tailwind — `tailwind.config.ts`
 
-### 2. Section rhythm — adopt Landing's pattern
+- Add `fontFamily.sans = ["Inter", "ui-sans-serif", "system-ui", "-apple-system", "Segoe UI", "Roboto", "Helvetica", "Arial", "sans-serif"]`.
+- Add `colors.brand = { blue: "#4F8AFB", magenta: "#E94BD2", orange: "#FF6A3D", ink: "#0F0F0F", cream: "#F5F2EC" }` for the rare hex use sites that want a literal brand value.
+- Extend `borderRadius` with `"2xl": "1.25rem", "3xl": "1.75rem"` for tile shapes.
 
-Each section becomes:
+## `index.html`
 
-```
-<section className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
-  <div className="mb-8 text-center">
-    <div className="inline-flex h-8 w-8 ... bg-primary text-primary-foreground">{n}</div>
-    <h2 className="mt-3 text-2xl sm:text-3xl font-bold text-foreground">{title}</h2>
-    <p className="mt-2 text-sm text-muted-foreground">{subtitle}</p>
-  </div>
-  {/* grid / panel content */}
-</section>
-```
+- Preconnect to Google Fonts and load Inter 400–800.
+- Update `theme-color` and `msapplication-TileColor` to `#F5F2EC`.
 
-Numbered badge moves to a solid filled circle (Landing's "How it works" style) above the title. Drop the one-giant-card-per-section wrapper.
+## Header — `src/components/SiteHeader.tsx`
 
-### 3. Section 1 — "How the score is computed"
+- Swap sticky bg to `bg-background/80 backdrop-blur` (cream).
+- Primary "Open the tool" button keeps default ink styling. Outline button keeps default.
+- No structural change; tighten padding only.
 
-- Centered intro paragraph (the prose currently in section 1 body)
-- Below it, the formula callout becomes a single centered white card: `rounded-2xl border border-border bg-card shadow-card p-6 sm:p-8` with the existing "THE FORMULA" eyebrow + body. Keep the inline `<code>` chips.
+## Landing — `src/pages/Landing.tsx`
 
-### 4. Section 2 — "Criteria"
+Rewrite layout to the bento direction. Keep every section, keep all `FEATURES`/`STEPS`/`PRESETS`/`TEMPLATE_BULLETS`/`FAQ`/`ARCHITECTURES` data wiring.
 
-Convert the `<dl>` into a 3-column grid of feature cards matching Landing's feature cards:
+### Hero
+- Single `<section>` with `relative` and an absolutely-positioned `bg-gradient-glow` blob behind the headline.
+- Centered chip: pill with a pinging tri-gradient dot + "Free Lovable template · Last reviewed {LAST_REVIEWED}".
+- `h1`: `text-5xl md:text-7xl font-extrabold tracking-[-0.04em] leading-[0.95]`. Last clause "your Lovable app" wrapped in `.text-gradient` so the brand gradient highlights one phrase.
+- Lede unchanged (with the existing "openly published" link to /methodology).
+- CTA pair: primary = gradient-bordered pill wrapping an ink-black inner button ("Open the tool" + arrow). Secondary = "Use this template" as a cream/outline pill.
 
-- `grid gap-4 sm:grid-cols-2 lg:grid-cols-3`
-- Each card: `rounded-2xl border border-border bg-card p-6 shadow-card`
-- Inside: a small monospace index badge (e.g. `01`…`12`) in a `bg-primary/10 text-primary` tile, then `h3` label, then `p.text-sm.text-muted-foreground` hint. Mirrors the icon-tile + title + body shape of Landing's "Side-by-side scoring" cards.
+### Bento features (replaces today's 3-column grid)
+- `grid grid-cols-12 gap-5`.
+- Tile 1 (`col-span-12 md:col-span-8`, white, `rounded-3xl shadow-card`): icon tile tinted `bg-brand-blue/10 text-brand-blue`, then h3 + body for `FEATURES[0]` (Side-by-side scoring).
+- Tile 2 (`col-span-12 md:col-span-4`, white): icon tile `bg-brand-magenta/10 text-brand-magenta`, then `FEATURES[1]`.
+- Tile 3 (`col-span-12 md:col-span-4`, white): icon tile `bg-brand-orange/10 text-brand-orange`, then `FEATURES[2]`.
+- Tile 4 — the **dark "What's Lovable Cloud?" tile** (`col-span-12 md:col-span-8`): `bg-foreground text-background` (ink/cream inverted), with an absolutely positioned tri-gradient blur in the top-right corner. Pulls the existing copy from today's "What's Lovable Cloud?" section, plus the existing two-paragraph body. Add a small inline "Learn more →" link to `/methodology`.
 
-### 5. Section 3 — "Cost-band sources"
+This bento subsumes today's standalone "What's Lovable Cloud?" `<section>` — delete that section to avoid duplication.
 
-Keep the table semantics (caption, `scope="col"`/`scope="row"`, links) — wrap in a single Landing-style white card panel:
+### Preset scenarios
+- Keep `mb-8 text-center` header.
+- Cards stay white `rounded-3xl` with `shadow-card`, but the inner pill changes: a tiny gradient dot before the title, and the arrow chevron becomes a gradient text fragment on hover.
 
-- Outer: `rounded-2xl border border-border bg-card shadow-card overflow-hidden`
-- Intro paragraph centered above the panel (in the section header subtitle slot)
-- Inner table: drop the nested border wrapper; let the panel be the frame
+### How it works
+- Keep 3-column grid. Numbered circle becomes a gradient-filled disc (`bg-gradient-primary text-white`) instead of solid ink.
 
-### 6. Section 4 — "Known biases & caveats"
+### Platforms covered
+- Convert to a mini-bento: `grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3`, each tile `rounded-2xl border bg-card shadow-card p-4 text-center` (essentially today, plus the bolder shadow).
 
-Grid of cards like Landing's "How it works":
+### Use as a template (CTA panel)
+- Outer: `rounded-[2rem] p-[1.5px] bg-gradient-primary shadow-elegant`. Inner: `bg-card rounded-[calc(2rem-1.5px)] p-8 sm:p-12`.
+- Primary button "Remix on Lovable" and outline button "Try it first" — unchanged copy and routing.
+- TEMPLATE_BULLETS chips: `rounded-xl border bg-muted/40` (unchanged).
 
-- `grid gap-4 sm:grid-cols-2`
-- Each bias = `rounded-2xl border border-border bg-card p-6 shadow-card`
-- The `Lovable-authored` accent item keeps `border-warning/30 bg-warning/10` (no shadow) and the `AlertTriangle` icon, but now lives inline in the same grid so it visually anchors the set.
+### FAQ
+- Wrap in a single white tile `rounded-3xl border bg-card shadow-card p-6 sm:p-10` and keep the shadcn Accordion. Headings tightened.
 
-### 7. Section 5 — "Make it your own"
+## Methodology — `src/pages/Methodology.tsx`
 
-Replace the flat gradient block with Landing's gradient-border + inner white card pattern (lifted verbatim from Landing's "Use as a template" section):
+- Hero: identical pattern to Landing. Chip = "Methodology · Last reviewed {LAST_REVIEWED}" with the tri-gradient dot. h1 = "How the recommendation is built", with the word "built" wrapped in `.text-gradient`.
+- Numbered section badges: gradient-filled disc (`bg-gradient-primary text-white`) instead of solid primary.
+- Section cards keep `rounded-2xl border bg-card shadow-card`. No content changes.
+- Final "Make it your own" CTA panel switches to the same gradient-bordered + white-inner pattern as the Landing CTA, for consistency.
 
-```
-<div className="rounded-3xl border border-primary/30 bg-gradient-primary p-[1px] shadow-elegant">
-  <div className="rounded-[calc(1.5rem-1px)] bg-card p-8 sm:p-12">
-    {/* eyebrow, h2, lede, file chips, primary + outline buttons */}
-  </div>
-</div>
-```
+## App (`src/pages/Index.tsx`) and inner components
 
-- Eyebrow: "For builders" in uppercase primary
-- Buttons: primary "Remix on Lovable" (ExternalLink) + outline "Open the tool" linking to `/app` — matches Landing's pair
-- File chips: `src/data/architectures.ts`, `src/lib/scoring.ts` in `rounded-xl border border-border bg-muted/40 p-3 font-mono text-xs text-primary` (Landing's TEMPLATE_BULLETS card style, simplified)
-
-### 8. Misc
-
-- Wrap the whole page in `<div className="min-h-dvh bg-gradient-subtle">` (already there) — unchanged.
-- Keep `SiteHeader`, `SiteFooter`, `SeoHead`, `main#main-content`, the "skip to main content" target, and all existing aria/scope/sr-only/focus-visible attributes.
-- Keep `LAST_REVIEWED`, `LOVABLE_REMIX_URL`, `CRITERIA`, `ARCHITECTURES`, and the `BIASES` array exactly as they are.
-
-## Scope
-
-- Only `src/pages/Methodology.tsx` is touched.
-- No new components, no token changes, no copy edits, no data edits.
-- Accessibility posture is preserved (headings still h1 → h2 → h3, table semantics intact, focus rings intact, reduced-motion still respected via existing global CSS).
+- No layout/structural changes. Inherit new tokens automatically (cream bg, ink CTAs, Inter type).
+- One small touch: the page wrapper switches from `bg-gradient-subtle` to `bg-background` so the app surface is solid cream and the comparator tiles read cleanly. The comparator itself is untouched.
 
 ## Verification
 
-- Open `/methodology` in the preview and confirm the hero, section headers, cards, table panel, and CTA visually mirror `/`.
-- Tab through to confirm focus rings still appear on the back link, source links, and CTA buttons.
-- Confirm the bias accent card still uses warning colors and the icon.
+- Open `/`, `/methodology`, `/app` — confirm cream background, Inter type, gradient hero word, bento composition on `/`, ink CTAs everywhere.
+- Tab through CTAs — focus ring is now ink, visible on cream and white.
+- Confirm muted text (`#4A4A4A`) on cream ≈ 8:1 and on white ≈ 9:1 (well above AA).
+- Sanity-check the dark "What's Lovable Cloud?" tile: white text on `#0F0F0F` ≈ 20:1.
+- Re-check `/methodology` table still has source links accessible.
+
+## Files touched
+
+- `index.html`
+- `src/index.css`
+- `tailwind.config.ts`
+- `src/components/SiteHeader.tsx`
+- `src/pages/Landing.tsx`
+- `src/pages/Methodology.tsx`
+- `src/pages/Index.tsx` (one-line wrapper bg swap)

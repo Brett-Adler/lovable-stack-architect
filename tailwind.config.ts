@@ -11,12 +11,32 @@ export default {
       screens: { "2xl": "1400px" },
     },
     extend: {
+      fontFamily: {
+        sans: [
+          "Inter",
+          "ui-sans-serif",
+          "system-ui",
+          "-apple-system",
+          "Segoe UI",
+          "Roboto",
+          "Helvetica",
+          "Arial",
+          "sans-serif",
+        ],
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
+        brand: {
+          blue: "#4F8AFB",
+          magenta: "#E94BD2",
+          orange: "#FF6A3D",
+          ink: "#0F0F0F",
+          cream: "#F5F2EC",
+        },
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
@@ -31,7 +51,7 @@ export default {
           foreground: "hsl(var(--destructive-foreground))",
         },
         success: { DEFAULT: "hsl(var(--success))", foreground: "hsl(0 0% 100%)" },
-        warning: { DEFAULT: "hsl(var(--warning))", foreground: "hsl(222 47% 11%)" },
+        warning: { DEFAULT: "hsl(var(--warning))", foreground: "hsl(0 0% 6%)" },
         muted: {
           DEFAULT: "hsl(var(--muted))",
           foreground: "hsl(var(--muted-foreground))",
@@ -61,8 +81,10 @@ export default {
       },
       borderRadius: {
         lg: "var(--radius)",
-        md: "calc(var(--radius) - 2px)",
-        sm: "calc(var(--radius) - 4px)",
+        md: "calc(var(--radius) - 4px)",
+        sm: "calc(var(--radius) - 8px)",
+        "2xl": "1.25rem",
+        "3xl": "1.75rem",
       },
       boxShadow: {
         card: "var(--shadow-card)",
