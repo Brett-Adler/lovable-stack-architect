@@ -100,7 +100,7 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-subtle">
+    <div className="min-h-dvh bg-gradient-subtle">
       <SeoHead
         title="Stack comparator — Lovable Stack Architect"
         description="Compare 10 hosting and backend platforms side by side. Tune to your stage, budget, team, and workloads."
@@ -115,7 +115,7 @@ const Index = () => {
       <h1 className="sr-only">Lovable Stack Architect — Pick the right backend stack for your Lovable app</h1>
 
 
-      <main className="mx-auto grid w-full max-w-[1800px] gap-4 px-3 py-4 pb-24 sm:gap-6 sm:px-6 sm:py-6 md:grid-cols-[240px_minmax(0,1fr)] md:pb-6 lg:grid-cols-[260px_minmax(0,1fr)_320px] xl:grid-cols-[300px_minmax(0,1fr)_360px] 2xl:gap-8 2xl:px-10 2xl:grid-cols-[320px_minmax(0,1fr)_400px]">
+      <main id="main-content" className="mx-auto grid w-full max-w-[1800px] gap-4 px-3 py-4 pb-24 sm:gap-6 sm:px-6 sm:py-6 md:grid-cols-[240px_minmax(0,1fr)] md:pb-6 lg:grid-cols-[260px_minmax(0,1fr)_320px] xl:grid-cols-[300px_minmax(0,1fr)_360px] 2xl:gap-8 2xl:px-10 2xl:grid-cols-[320px_minmax(0,1fr)_400px]">
         <div
           id="panel-inputs"
           role="tabpanel"
@@ -215,7 +215,8 @@ const Index = () => {
                 tabIndex={active ? 0 : -1}
                 onClick={() => {
                   setMobileTab(id);
-                  window.scrollTo({ top: 0, behavior: "smooth" });
+                  const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+                  window.scrollTo({ top: 0, behavior: prefersReduced ? "auto" : "smooth" });
                 }}
                 className={cn(
                   "flex min-h-[48px] flex-col items-center justify-center gap-0.5 py-2.5 text-[11px] font-medium transition-colors",

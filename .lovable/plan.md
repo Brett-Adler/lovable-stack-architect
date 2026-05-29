@@ -1,52 +1,92 @@
 ## Goal
-Rewrite the README to launch-quality and close the remaining small gaps blocking a Lovable template publish.
+Bring the site to WCAG 2.1 AA (with a few 2.2 wins where they don't add friction), without regressing usability for sighted/mouse users. The existing code already does a lot right (semantic landmarks, aria-labels on icon buttons, tab roles on mobile nav, `<html lang="en">`, shadcn primitives). The plan below closes the remaining gaps I identified by reading the code.
 
-## 1. README rewrite (`README.md`)
+## Findings (grouped by severity)
 
-Replace with a launch-quality version, structured as:
+### Critical
+1. **No skip-to-content link.** Keyboard users have to tab through the entire header on every page.
+2. **Comparison table is not screen-reader friendly.** `<table>` has no `<caption>`, `<th scope=…>` is missing on both column and row headers, and the criterion-label tooltip uses `<span className="cursor-help">` — not keyboard-focusable, so SR/keyboard users never see the hint.
+3. **Architecture diagram SVG is inserted via `dangerouslySetInnerHTML` with no accessible name.** Screen readers either read raw SVG text or skip it entirely.
+4. **`min-h-screen` everywhere.** On iOS Safari with the URL bar this clips primary actions; WCAG 2.1 reflow + target-size implications. Switch to `min-h-dvh`.
 
-- **Hero blurb + screenshot** — 1–2 sentence pitch, embed `docs/screenshots/hero.png`, MIT + "Built with Lovable" badges.
-- **Live demo** — link the published URL and the "Use this template" remix link from `src/lib/constants.ts`.
-- **What it does** — 4 bullets: side-by-side scoring, live recommendation with rationale + runner-up trade-off, transparent sourced methodology, share & export.
-- **Screenshots** — landing, recommendation card, comparison matrix, methodology, and a mobile shot. Stored under `docs/screenshots/`.
-- **Use it as a template (5-minute customization)** — three concrete steps:
-  1. Swap options, criteria & rubric in `src/data/architectures.ts`.
-  2. Tune defaults and input → weight mapping in `src/lib/scoring.ts`.
-  3. Rebrand: `index.html`, `src/lib/constants.ts` (`LOVABLE_REMIX_URL`, `GITHUB_URL`, `SITE_URL`, `LAST_REVIEWED`), assets in `public/`.
-- **Methodology & bias disclosure** — short paragraph mirroring `/methodology` so it shows on GitHub too; link to the in-app page.
-- **Tech stack** — React 18, Vite 5, TS, Tailwind, shadcn/ui, react-router, Mermaid, lz-string (share URLs), Vitest.
-- **Project structure** — annotated tree of `src/pages`, `src/components`, `src/data`, `src/lib`.
-- **Routes** — `/`, `/app`, `/methodology`.
-- **Local development** — install / dev / build / lint / test.
-- **Data freshness** — pulled from `LAST_REVIEWED`; instructions for re-review.
-- **Contributing** — one PR to `src/data/architectures.ts` is enough to fix a score or cost band.
-- **License** — MIT.
+### Warning
+5. **`--muted-foreground: 220 9% 46%`** on `--background: 0 0% 100%` is ~4.6:1 — just over AA for normal text but FAILS AA for the `text-[10px]`–`text-[11px]` muted captions used in InputsPanel, ComparisonMatrix, CostEstimate, and footer. Bump lightness down to ~38% so all sizes pass.
+6. **Recommendation card has no live-region announcement** when inputs change — sighted users see the new pick update instantly, SR users hear nothing.
+7. **Heading hierarchy on `/app`**: `<h1 className="sr-only">` then `<h2>` "Side-by-side comparison" and `<h2>` "Project inputs" (good), but the Recommendation aside jumps straight to `<h3>` (top arch name) with no `<h2>` above it. Promote it.
+8. **NotFound** uses non-token `bg-muted` body with default `text-muted-foreground` — fine — but `min-h-screen` and no main landmark.
 
-## 2. Pre-launch fixes
+### Info (best-practice)
+9. **Example-scenario `<Link>` cards on Landing** rely on default link focus ring; add explicit `focus-visible` ring to match Buttons.
+10. **Mermaid diagrams** initialize once; we should respect `prefers-reduced-motion` for our own transitions (chip color transitions, mobile-tab drop-shadow). Add a global CSS guard.
+11. **Tooltip-only content on cost-band sources popover trigger** uses a small icon button — already has `aria-label`, fine.
+12. **Decorative icons** inside Buttons are already correctly hidden via `aria-hidden`/wrapped text — spot-check the SiteFooter logo and FAQ accordion (Radix handles).
 
-- **`src/lib/constants.ts` — `GITHUB_URL`**: still `"#"`. User will provide the repo URL later; in the meantime, hide the GitHub link in `SiteFooter.tsx` and the README "Contributing" section when `GITHUB_URL === "#"` so we don't ship dead links. Easy to flip on later by setting the constant.
-- **`src/lib/constants.ts` — `LOVABLE_REMIX_URL`**: currently the editor project URL. Leave as-is for now; flag to the user that it should be swapped for the official Lovable template URL once published. Add a code comment to that effect (already present — verify).
-- **`index.html` — OG image**: `og:image` points to `/og-image.png` but only `og-image.svg` exists in `public/`. Generate a 1200×630 PNG at `public/og-image.png` using imagegen (brand-aligned: dark gradient, product name, "Compare 10 backend platforms side by side", small Lovable mark). Keeps current meta tags valid.
-- **Template gallery screenshot**: 1600×900 hero composition (landing top + recommendation card) saved to `docs/screenshots/template-cover.png` for the Lovable listing.
-- **In-app screenshots**: capture from local preview at desktop (1440×900) and mobile (390×844) viewports — landing hero, `/app` with recommendation + matrix visible, `/methodology`. Save into `docs/screenshots/`.
-- **`public/llms.txt`** — re-read and update for the new landing + `/app` + `/methodology` structure if stale.
-- **`public/robots.txt`** — verify it allows crawling and references `sitemap.xml`.
-- **`public/sitemap.xml`** — already includes `/`, `/app`, `/methodology`. Verify `lastmod` dates are reasonable (add if missing).
-- **`index.html`** — double-check the JSON-LD `SoftwareApplication` description still matches current copy after the audit pass (Lovable AI Gateway mention, "native vs self-hosted" framing).
+## Implementation
 
-## 3. Order of operations
-1. Capture screenshots from the running preview at desktop + mobile viewports → `docs/screenshots/`.
-2. Generate `public/og-image.png` (1200×630) via imagegen.
-3. Generate `docs/screenshots/template-cover.png` (1600×900) for the Lovable listing.
-4. Hide the GitHub link in `SiteFooter.tsx` while `GITHUB_URL === "#"`.
-5. Refresh `public/llms.txt` and verify `robots.txt` / `sitemap.xml` / `index.html` JSON-LD.
-6. Rewrite `README.md` referencing the new screenshots, real demo URL, and template remix URL.
+### 1. Skip-to-content link
+Add a visually-hidden-until-focused anchor at the very top of `App.tsx` (inside `BrowserRouter`, above `<Routes>`) that jumps to `#main-content`. Add `id="main-content"` to the `<main>` element in `Landing.tsx`, `Index.tsx`, `Methodology.tsx`, and wrap `NotFound.tsx` in a `<main id="main-content">`.
 
-## 4. Out of scope
-- Landing-page visual redesign.
-- Adding criteria, presets, or platforms.
-- Dark-mode polish.
+### 2. Comparison table semantics (`src/components/ComparisonMatrix.tsx`)
+- Add `<caption className="sr-only">Architecture scores by criterion (1 = poor, 5 = excellent).</caption>`.
+- Add `scope="col"` to the architecture `<th>` cells.
+- Convert the first `<td>` of each row (criterion label) to `<th scope="row">`.
+- Replace `<span className="cursor-help">` with a `<button type="button">` so the Radix tooltip trigger is keyboard-focusable; keep the visual treatment via styling (no underline, dotted underline on focus/hover). Bind it as the `TooltipTrigger asChild` child.
+- Keep existing `aria-label` on `ScoreDot` (already announces "N out of 5").
 
-## Open items (user follow-up, non-blocking)
-- Real `GITHUB_URL` once the repo is published — flip the constant and the footer/README link re-appears automatically.
-- Real `LOVABLE_REMIX_URL` once the template is submitted to the Lovable gallery.
+### 3. Architecture diagram (`src/components/ArchitectureDiagram.tsx`)
+- Wrap the SVG container with `role="img"` and a dynamic `aria-label` (e.g. `Architecture diagram for ${arch.name}: ${arch.tagline}`).
+- Keep the visible `<h3>` heading; the role+label gives SR users a sensible single utterance instead of raw SVG node text.
+
+### 4. `min-h-screen` → `min-h-dvh`
+Replace in `Landing.tsx`, `Index.tsx`, `Methodology.tsx`, `NotFound.tsx`, and the `App.tsx` Suspense fallback. Keeps desktop identical; fixes iOS Safari and Android Chrome viewport clipping.
+
+### 5. Muted-foreground contrast (`src/index.css`)
+- Light: `--muted-foreground: 220 9% 46%` → `220 9% 38%` (≈ 6.5:1 on white — passes AA for all sizes and AAA for normal text).
+- Dark: leave `215 20% 65%` (already ≈ 7:1 on the dark background — passes AAA).
+- No other token changes; the visual feel stays the same — slightly more legible captions.
+
+### 6. Live region for recommendation (`src/components/RecommendationCard.tsx`)
+Add an `aria-live="polite"` `<div className="sr-only">` that announces `Recommended: ${top.arch.name} — score ${Math.round(top.score)} of 100. ${top.arch.tagline}` whenever the top pick changes. Throttle by keying off `top.arch.id + top.score`.
+
+### 7. Heading promotion (`src/components/RecommendationCard.tsx`)
+- Top card: keep small "Recommended" eyebrow; promote `<h3>` (arch name) to `<h2>`.
+- Runner-ups: promote inner `<h4>` to `<h3>` to stay sequential.
+
+### 8. NotFound (`src/pages/NotFound.tsx`)
+- Wrap content in `<main id="main-content">`.
+- `min-h-screen` → `min-h-dvh`.
+- Keep `bg-muted` (token, fine).
+
+### 9. Example-scenario card focus rings (`src/pages/Landing.tsx`)
+Add `focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background` to the preset `<Link>` cards.
+
+### 10. Reduced-motion guard (`src/index.css`)
+Add at the bottom:
+```css
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+```
+
+### 11. Smooth-scroll override in mobile tab nav (`src/pages/Index.tsx`)
+The mobile tab click does `window.scrollTo({ top: 0, behavior: "smooth" })`. Respect `prefers-reduced-motion` by reading `window.matchMedia('(prefers-reduced-motion: reduce)').matches` and using `"auto"` when true.
+
+## Out of scope
+- Full color-system redesign.
+- Localization beyond `lang="en"`.
+- Dark-mode visual polish (already AA there).
+- Adding tests for a11y (could be a follow-up with `@axe-core/react` in dev mode).
+
+## Verification
+After implementation I'll:
+- Re-screenshot landing + `/app` + `/methodology` to confirm visual parity.
+- Tab through the page from a fresh load and confirm skip link, focus rings, and tooltip-on-focus all work.
+- Spot-check contrast for `text-muted-foreground` against `bg-background` and `bg-card` with the new value.
+
+## Open question
+None — proceeding will not change content or layout, only semantics, focus behavior, and one token value.

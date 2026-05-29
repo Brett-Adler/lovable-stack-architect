@@ -58,7 +58,7 @@ const FAQ = [
 
 const Landing = () => {
   return (
-    <div className="min-h-screen bg-gradient-subtle">
+    <div className="min-h-dvh bg-gradient-subtle">
       <SeoHead
         title="Lovable Stack Architect — Pick the right backend for your Lovable app"
         description="Compare 10 hosting and backend platforms side by side. Free, open-source Lovable template you can rebrand for any decision space."
@@ -66,7 +66,7 @@ const Landing = () => {
       />
       <SiteHeader />
 
-      <main>
+      <main id="main-content">
         {/* Hero */}
         <section className="mx-auto max-w-6xl px-4 pb-12 pt-12 sm:px-6 sm:pt-20 sm:pb-20">
           <div className="mx-auto max-w-3xl text-center">
@@ -148,7 +148,7 @@ const Landing = () => {
               <Link
                 key={p.id}
                 to={presetShareUrl(p)}
-                className="group rounded-2xl border border-border bg-card p-6 transition-colors hover:border-primary/40 hover:bg-card/80"
+                className="group rounded-2xl border border-border bg-card p-6 transition-colors hover:border-primary/40 hover:bg-card/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
               >
                 <div className="text-sm font-semibold text-foreground group-hover:text-primary">{p.label}</div>
                 <p className="mt-1.5 text-xs text-muted-foreground">{p.description}</p>

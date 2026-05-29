@@ -8,14 +8,14 @@ import { ArrowLeft } from "lucide-react";
 
 const Methodology = () => {
   return (
-    <div className="min-h-screen bg-gradient-subtle">
+    <div className="min-h-dvh bg-gradient-subtle">
       <SeoHead
         title="Methodology — Lovable Stack Architect"
         description="How the Lovable Stack Architect scores 10 backend options across 12 criteria, including the rubric, weights, sources, and known biases."
         path="/methodology"
       />
       <SiteHeader />
-      <main className="mx-auto max-w-3xl px-4 py-12 sm:px-6 sm:py-16">
+      <main id="main-content" className="mx-auto max-w-3xl px-4 py-12 sm:px-6 sm:py-16">
         <Link to="/" className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground">
           <ArrowLeft className="h-3 w-3" /> Back home
         </Link>

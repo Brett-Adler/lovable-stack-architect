@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import mermaid from "mermaid";
 import { buildMermaid } from "@/lib/diagram";
-import type { ArchId } from "@/data/architectures";
+import { ARCH_BY_ID, type ArchId } from "@/data/architectures";
 import type { Inputs } from "@/lib/scoring";
 
 let initialized = false;
@@ -9,6 +9,7 @@ let initialized = false;
 export function ArchitectureDiagram({ archId, inputs }: { archId: ArchId; inputs: Inputs }) {
   const ref = useRef<HTMLDivElement>(null);
   const [svg, setSvg] = useState<string>("");
+  const arch = ARCH_BY_ID[archId];
 
   useEffect(() => {
     if (!initialized) {
@@ -36,9 +37,14 @@ export function ArchitectureDiagram({ archId, inputs }: { archId: ArchId; inputs
       </h3>
       <div
         ref={ref}
+        role="img"
+        aria-label={`Architecture diagram for ${arch.name}: ${arch.tagline}`}
         className="mt-3 flex justify-center overflow-x-auto [&_svg]:max-w-full [&_svg]:h-auto"
         dangerouslySetInnerHTML={{ __html: svg }}
       />
+      <p className="sr-only">
+        Visual diagram. Equivalent description: {arch.description}
+      </p>
     </div>
   );
 }
