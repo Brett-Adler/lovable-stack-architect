@@ -5,9 +5,14 @@
 [![MIT License](https://img.shields.io/badge/license-MIT-6E3CF1.svg)](LICENSE)
 [![Built with Lovable](https://img.shields.io/badge/built%20with-Lovable-6E3CF1.svg)](https://lovable.dev)
 
+**Independent, community-built template by [@brettadler](https://lovable.dev/@brettadler) — not affiliated with, endorsed by, or representing Lovable. "Lovable" and the Lovable brand belong to Lovable.**
+
 **Live demo:** <https://lovable-stack-architect.lovable.app>
 
+**Remixing this?** Start with [TEMPLATE-SETUP.md](TEMPLATE-SETUP.md) for the full rebrand checklist.
+
 ![Lovable Stack Architect landing page](docs/screenshots/landing-hero.png)
+
 
 ## What it does
 
@@ -34,13 +39,19 @@ The whole app is data-driven. Fork it and re-aim it at any decision space (CMS p
 
 1. **`src/data/architectures.ts`** — swap the options being compared (`ARCHITECTURES`), the dimensions you score on (`CRITERIA`), and the 1–5 score for each `(option × criterion)` pair (`RUBRIC`). Add `sources`, `lastReviewed`, and `nativeIntegration` per option.
 2. **`src/lib/scoring.ts`** — tune `DEFAULT_INPUTS` (what users see on first load) and the input → weight mapping (how user choices reweight each criterion).
-3. **Rebrand** — edit `src/lib/constants.ts` (`LOVABLE_REMIX_URL`, `GITHUB_URL`, `SITE_URL`, `LAST_REVIEWED`), `index.html` (title, description, OG/Twitter tags, JSON-LD), and assets in `public/` (`logo.svg`, `logo-mark.svg`, favicons, `apple-touch-icon.png`, `og-image.png`, `site.webmanifest`).
+3. **Rebrand** — edit `src/lib/constants.ts` and then walk through [TEMPLATE-SETUP.md](TEMPLATE-SETUP.md) for HTML head, public assets, and copy. The key constants:
+   - `AUTHOR_HANDLE`, `AUTHOR_URL` — replace the original author's attribution in the header, footer, hero, and About tile.
+   - `SITE_URL` — used for canonical and OG URLs.
+   - `LAST_REVIEWED` — bump when you re-review the rubric.
+   - `LOVABLE_REMIX_URL`, `GITHUB_URL` — both `string | null`. Every Remix and GitHub CTA stays hidden while these are `null`; set them to enable.
+   - `IS_OFFICIAL` — semantic flag; keep `false` unless you actually represent the platform you're comparing.
 
 That's it — the UI, scoring engine, share URLs, Markdown export, methodology page, and architecture diagram all keep working.
 
 ## Methodology & bias
 
-This tool is Lovable-authored and lives on a Lovable-hosted site, so it has a perspective. We try to be transparent about it:
+This is an independent, community-built template — not affiliated with Lovable. I built it because I'm a Lovable fan, so the rubric has a perspective. I try to be transparent about it:
+
 
 - Every criterion starts at the same baseline weight so no single criterion structurally favors any option.
 - The recommendation card shows the top criteria that drove the score and the specific trade-off versus the runner-up.
