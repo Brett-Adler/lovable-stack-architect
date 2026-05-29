@@ -311,7 +311,7 @@ export const ARCHITECTURES: Architecture[] = [
     bestFor: ["Latency-sensitive apps", "Geo-distributed workloads", "Teams that like containers"],
     watchOuts: [
       "Not a Lovable integration — requires GitHub export + your own deploy pipeline",
-      "Free allowance ended Oct 2024 — pay-as-you-go from a few dollars/mo",
+      "No free allowance — pay-as-you-go from a few dollars/mo",
       "Postgres HA needs careful setup; smaller managed-service catalog",
     ],
     costBands: { prototype: "$0–5", mvp: "$10–60", growth: "$100–600", scale: "$600–3k" },
