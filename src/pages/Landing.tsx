@@ -173,7 +173,7 @@ const Landing = () => {
           </div>
           <div className="grid gap-4 sm:grid-cols-3">
             {STEPS.map((s) => (
-              <div key={s.n} className="rounded-2xl border border-border bg-card p-6">
+              <div key={s.n} className="rounded-2xl border border-border bg-card p-6 shadow-card">
                 <div className="mb-3 inline-flex h-8 w-8 items-center justify-center rounded-full bg-primary text-sm font-semibold text-primary-foreground">
                   {s.n}
                 </div>
