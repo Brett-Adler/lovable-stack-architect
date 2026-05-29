@@ -99,7 +99,7 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-gradient-subtle">
       <header className="no-print sticky top-0 z-40 border-b border-border bg-background/85 backdrop-blur supports-[backdrop-filter]:bg-background/70">
-        <div className="mx-auto flex max-w-[1400px] flex-wrap items-center justify-between gap-3 px-3 py-3 sm:px-6 sm:py-4">
+        <div className="mx-auto flex max-w-[1800px] flex-wrap items-center justify-between gap-3 px-3 py-3 sm:px-6 sm:py-4 2xl:px-10">
           <div className="flex min-w-0 items-center gap-2">
             <img
               src="/logo-mark.svg"
@@ -126,13 +126,16 @@ const Index = () => {
         </div>
       </header>
 
-      <main className="mx-auto grid w-full max-w-[1400px] gap-4 px-3 py-4 pb-24 sm:gap-6 sm:px-6 sm:py-6 lg:grid-cols-[280px_minmax(0,1fr)_340px] lg:pb-6 xl:grid-cols-[300px_minmax(0,1fr)_360px]">
+      <main className="mx-auto grid w-full max-w-[1800px] gap-4 px-3 py-4 pb-24 sm:gap-6 sm:px-6 sm:py-6 md:grid-cols-[240px_minmax(0,1fr)] md:pb-6 lg:grid-cols-[260px_minmax(0,1fr)_320px] xl:grid-cols-[300px_minmax(0,1fr)_360px] 2xl:gap-8 2xl:px-10 2xl:grid-cols-[320px_minmax(0,1fr)_400px]">
         <div
           id="panel-inputs"
           role="tabpanel"
           aria-labelledby="tab-inputs"
           hidden={mobileTab !== "inputs"}
-          className={cn("min-w-0 lg:!block", mobileTab === "inputs" ? "block" : "hidden")}
+          className={cn(
+            "min-w-0 md:!block md:row-span-2 lg:row-span-1",
+            mobileTab === "inputs" ? "block" : "hidden",
+          )}
         >
           <InputsPanel inputs={inputs} onChange={setInputs} />
         </div>
@@ -143,7 +146,7 @@ const Index = () => {
           aria-labelledby="tab-comparison"
           hidden={mobileTab !== "comparison"}
           className={cn(
-            "order-3 min-w-0 space-y-4 sm:space-y-6 lg:order-none lg:!block",
+            "order-3 min-w-0 space-y-4 sm:space-y-6 md:order-2 md:!block lg:order-none",
             mobileTab === "comparison" ? "block" : "hidden",
           )}
         >
@@ -163,7 +166,7 @@ const Index = () => {
           aria-labelledby="tab-recommendation"
           hidden={mobileTab !== "recommendation"}
           className={cn(
-            "order-2 min-w-0 space-y-4 sm:space-y-6 lg:order-none lg:!block",
+            "order-2 min-w-0 space-y-4 sm:space-y-6 md:order-1 md:!block md:col-start-2 lg:order-none lg:col-start-auto",
             mobileTab === "recommendation" ? "block" : "hidden",
           )}
         >
@@ -176,9 +179,11 @@ const Index = () => {
         </aside>
       </main>
 
+
+
       {/* Mobile bottom tab nav */}
       <nav
-        className="no-print fixed bottom-0 left-0 right-0 z-40 border-t border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80 lg:hidden"
+        className="no-print fixed bottom-0 left-0 right-0 z-40 border-t border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80 md:hidden"
         aria-label="Switch between Inputs, Recommendation, and Comparison sections"
       >
         <div

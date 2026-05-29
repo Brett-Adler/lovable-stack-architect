@@ -113,7 +113,7 @@ export function InputsPanel({ inputs, onChange }: Props) {
 
   return (
     <aside className="rounded-2xl border border-border bg-card p-4 shadow-card sm:p-5">
-      <Collapsible open={open} onOpenChange={setOpen} className="lg:!block">
+      <Collapsible open={open} onOpenChange={setOpen} className="md:!block">
         <div className="flex items-center justify-between gap-2">
           <h2 id="inputs-heading" className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
             Project inputs
@@ -132,7 +132,7 @@ export function InputsPanel({ inputs, onChange }: Props) {
               <Button
                 variant="ghost"
                 size="sm"
-                className="h-9 w-9 p-0 lg:hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                className="h-9 w-9 p-0 md:hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                 aria-label={open ? "Collapse project inputs" : "Expand project inputs"}
                 aria-expanded={open}
                 aria-controls="inputs-content"
@@ -148,7 +148,7 @@ export function InputsPanel({ inputs, onChange }: Props) {
           id="inputs-content"
           role="region"
           aria-labelledby="inputs-heading"
-          className="hidden data-[state=open]:block lg:!block"
+          className="hidden data-[state=open]:block md:!block"
         >
           <div className="mt-5 flex flex-col gap-6">
       <div className="space-y-2">
