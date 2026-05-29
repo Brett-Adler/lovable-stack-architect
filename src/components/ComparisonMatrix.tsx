@@ -21,6 +21,7 @@ interface Props {
   topId?: ArchId;
   onToggle: (id: ArchId) => void;
   onSetEnabled: (ids: ArchId[]) => void;
+  view?: "all" | "controls" | "matrix";
 }
 
 function ScoreDot({ score }: { score: number }) {
