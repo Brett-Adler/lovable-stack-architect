@@ -129,9 +129,50 @@ export function CostEstimate({
         ))}
       </div>
 
+      {compareRows.length > 1 && (
+        <div className="mt-5 border-t border-border pt-4">
+          <div className="mb-2 flex items-center justify-between">
+            <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+              Compare at {stageLabel} scale
+            </h4>
+            <span className="text-[10px] text-muted-foreground">/ month</span>
+          </div>
+          <ul className="space-y-1.5">
+            {compareRows.map((r) => {
+              const isTop = r.id === topId;
+              const pct = r.mid != null ? Math.max(4, (r.mid / maxMid) * 100) : 0;
+              return (
+                <li key={r.id} className="flex items-center gap-2 text-xs">
+                  <div className="flex w-24 shrink-0 items-center gap-1.5">
+                    <span className={isTop ? "font-semibold text-foreground" : "text-foreground/80"}>
+                      {r.short}
+                    </span>
+                    {isTop && (
+                      <span className="rounded-sm bg-primary/15 px-1 py-0.5 text-[9px] font-semibold uppercase tracking-wider text-primary">
+                        Top
+                      </span>
+                    )}
+                  </div>
+                  <div className="relative h-2 flex-1 overflow-hidden rounded-full bg-muted/40">
+                    {r.mid != null && (
+                      <div
+                        className={`h-full rounded-full ${isTop ? "bg-primary/70" : "bg-foreground/30"}`}
+                        style={{ width: `${pct}%` }}
+                      />
+                    )}
+                  </div>
+                  <span className="w-20 shrink-0 text-right font-mono text-foreground/90">{r.band}</span>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      )}
+
       <p className="mt-4 text-xs text-muted-foreground">
         <span className="font-medium text-foreground">Ceiling:</span> {arch.scaleCeiling}
       </p>
+
     </div>
   );
 }
