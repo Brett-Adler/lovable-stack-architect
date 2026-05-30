@@ -301,7 +301,13 @@ export function ComparisonMatrix({ enabled, topId, onToggle, onSetEnabled, view 
                           )}
                           <Tooltip>
                             <TooltipTrigger asChild>
-                              <span className="cursor-help whitespace-nowrap font-semibold text-foreground underline decoration-dotted decoration-muted-foreground/40 underline-offset-4">
+                              <span className="inline-flex cursor-help items-center gap-1 whitespace-nowrap font-semibold text-foreground underline decoration-dotted decoration-muted-foreground/40 underline-offset-4">
+                                {TOP_4_SET.has(a.id) && (
+                                  <Star
+                                    className="h-3 w-3 fill-amber-400 text-amber-400"
+                                    aria-label="Top 4 pick"
+                                  />
+                                )}
                                 {a.short}
                               </span>
                             </TooltipTrigger>
