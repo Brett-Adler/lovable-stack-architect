@@ -24,10 +24,24 @@ export function ArchitectureDiagram({ archId, inputs }: { archId: ArchId; inputs
     }
     const code = buildMermaid(archId, inputs);
     const id = `diagram-${archId}-${Date.now()}`;
+    let cancelled = false;
     mermaid
       .render(id, code)
-      .then(({ svg }) => setSvg(svg))
-      .catch(() => setSvg(""));
+      .then(({ svg }) => {
+        if (!cancelled) setSvg(svg);
+      })
+      .catch((err) => {
+        console.error("Mermaid render failed:", err);
+        if (!cancelled) setSvg("");
+      })
+      .finally(() => {
+        // Mermaid appends a temporary measurement node (#d{id}) to <body> and
+        // leaves an error SVG behind on failure. Sweep them up.
+        document.querySelectorAll(`#d${id}, #${id}`).forEach((n) => n.remove());
+      });
+    return () => {
+      cancelled = true;
+    };
   }, [archId, inputs]);
 
   return (
