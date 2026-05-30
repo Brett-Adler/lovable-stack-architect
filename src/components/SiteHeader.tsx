@@ -45,7 +45,7 @@ export function SiteHeader({ children }: { children?: React.ReactNode }) {
                     to={item.to}
                     aria-current={active ? "page" : undefined}
                     className={cn(
-                      "inline-flex items-center rounded-full px-3 py-1.5 text-sm font-medium transition-colors",
+                      "inline-flex items-center whitespace-nowrap rounded-full px-3 py-1.5 text-xs font-medium transition-colors sm:text-sm",
                       active
                         ? "bg-foreground text-background"
                         : "text-muted-foreground hover:bg-muted hover:text-foreground"
