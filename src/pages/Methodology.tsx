@@ -178,7 +178,15 @@ const Methodology = () => {
               </div>
             ))}
           </div>
+          <div className="mt-10">
+            <ScreenshotPlaceholder
+              variant="matrix"
+              caption="How the rubric renders in the app"
+              hint="Capture the full matrix with one column (e.g. Lovable Cloud) highlighted and a rubric tooltip open on a single cell."
+            />
+          </div>
         </section>
+
 
         {/* 3. Cost-band sources */}
         <section className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
