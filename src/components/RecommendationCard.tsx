@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { Link } from "react-router-dom";
 import { CheckCircle2, Info, ShieldAlert, Users } from "lucide-react";
+import { BrandMark } from "@/components/BrandMark";
 
 interface Props {
   results: RankedResult[];
