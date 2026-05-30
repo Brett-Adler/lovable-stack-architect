@@ -162,8 +162,10 @@ function ScoreBadge({ score, primary }: { score: number; primary?: boolean }) {
         "font-mono tabular-nums",
         primary && "bg-primary/10 text-primary",
       )}
+      aria-label={`Score ${Math.round(score)} out of 100`}
     >
       {Math.round(score)}
+      <span className="ml-0.5 opacity-60">/100</span>
     </Badge>
   );
 }

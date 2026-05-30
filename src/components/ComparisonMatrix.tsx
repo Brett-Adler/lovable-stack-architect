@@ -92,10 +92,10 @@ export function ComparisonMatrix({ enabled, topId, onToggle, onSetEnabled, view 
               id="comparison-heading"
               className="text-base font-semibold text-foreground sm:text-lg"
             >
-              Side-by-side comparison
+              Pick what to compare
             </h2>
             <p className="text-xs text-muted-foreground sm:text-sm">
-              Scores reflect how each architecture handles each criterion. Toggle options below the table.
+              Choose the platforms you want side-by-side. The full matrix below updates instantly.
             </p>
           </div>
           <div className="flex flex-wrap gap-1.5">
@@ -121,7 +121,7 @@ export function ComparisonMatrix({ enabled, topId, onToggle, onSetEnabled, view 
               {top4Selected ? (
                 <Check className="h-3 w-3" aria-hidden="true" />
               ) : (
-                <Star className="h-3 w-3 fill-amber-400 text-amber-400" aria-hidden="true" />
+                <Star className="h-3 w-3 fill-primary text-primary" aria-hidden="true" />
               )}
               Top 4
             </Button>
@@ -157,7 +157,7 @@ export function ComparisonMatrix({ enabled, topId, onToggle, onSetEnabled, view 
               <p className="text-xs text-muted-foreground">
                 Tap any platform to add or remove it.{" "}
                 <span className="inline-flex items-center gap-1 text-foreground/70">
-                  <Star className="h-3 w-3 fill-amber-400 text-amber-400" aria-hidden="true" />
+                  <Star className="h-3 w-3 fill-primary text-primary" aria-hidden="true" />
                   = Top 4 picks
                 </span>
               </p>
@@ -168,7 +168,7 @@ export function ComparisonMatrix({ enabled, topId, onToggle, onSetEnabled, view 
               className={cn(
                 "rounded-full border px-2.5 py-0.5 text-[11px] font-semibold",
                 allSelected && "border-primary/30 bg-primary/10 text-primary",
-                top4Selected && "border-amber-400/40 bg-amber-400/10 text-amber-600 dark:text-amber-400",
+                top4Selected && "border-primary/30 bg-primary/10 text-primary",
                 noneSelected && "border-border bg-muted text-muted-foreground",
                 isCustom && "border-border bg-background text-foreground",
               )}
@@ -228,14 +228,14 @@ export function ComparisonMatrix({ enabled, topId, onToggle, onSetEnabled, view 
                                 active
                                   ? "border-primary bg-primary text-primary-foreground"
                                   : "border-border bg-background text-foreground hover:bg-muted",
-                                isTop4 && !active && "ring-1 ring-amber-400/40",
+                                isTop4 && !active && "ring-1 ring-primary/40",
                               )}
                             >
                               {isTop4 && (
                                 <Star
                                   className={cn(
-                                    "h-3 w-3 fill-amber-400 text-amber-400",
-                                    active && "fill-amber-200 text-amber-200",
+                                    "h-3 w-3 fill-primary text-primary",
+                                    active && "fill-primary-foreground text-primary-foreground",
                                   )}
                                   aria-hidden="true"
                                 />
@@ -304,7 +304,7 @@ export function ComparisonMatrix({ enabled, topId, onToggle, onSetEnabled, view 
                               <span className="inline-flex cursor-help items-center gap-1 whitespace-nowrap font-semibold text-foreground underline decoration-dotted decoration-muted-foreground/40 underline-offset-4">
                                 {TOP_4_SET.has(a.id) && (
                                   <Star
-                                    className="h-3 w-3 fill-amber-400 text-amber-400"
+                                    className="h-3 w-3 fill-primary text-primary"
                                     aria-label="Top 4 pick"
                                   />
                                 )}
