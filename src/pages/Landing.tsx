@@ -561,7 +561,7 @@ const Landing = () => {
                   </a>
                 </h3>
                 <p className="mt-2 max-w-xl text-sm text-muted-foreground sm:text-base">
-                  Independent builder. Big fan of Lovable — open to joining the team. Say hi.
+                  Independent builder and Lovable superfan. Built this because friends kept asking which backend to use with Lovable and I didn't know enough to answer well. Figured other Lovable fans might want the same shortcut. Open to joining the Lovable team — say hi.
                 </p>
               </div>
               <Button
