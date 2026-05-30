@@ -525,20 +525,22 @@ const Landing = () => {
               FAQ
             </h2>
           </div>
-          <div className="rounded-3xl border border-border bg-card p-2 shadow-card sm:p-6">
-            <Accordion type="single" collapsible className="w-full">
-              {FAQ.map((item, i) => (
-                <AccordionItem key={i} value={`item-${i}`}>
-                  <AccordionTrigger className="text-left text-sm sm:text-base">
-                    {item.q}
-                  </AccordionTrigger>
-                  <AccordionContent className="text-sm text-muted-foreground">
-                    {item.a}
-                  </AccordionContent>
-                </AccordionItem>
-              ))}
-            </Accordion>
-          </div>
+          <Accordion type="single" collapsible defaultValue="item-0" className="w-full space-y-3">
+            {FAQ.map((item, i) => (
+              <AccordionItem
+                key={i}
+                value={`item-${i}`}
+                className="overflow-hidden rounded-2xl border border-border bg-card shadow-card"
+              >
+                <AccordionTrigger className="bg-card px-5 py-4 text-left text-sm hover:no-underline sm:text-base">
+                  {item.q}
+                </AccordionTrigger>
+                <AccordionContent className="border-t border-border/60 bg-muted/40 px-5 pt-4 pb-5 text-sm text-muted-foreground">
+                  {item.a}
+                </AccordionContent>
+              </AccordionItem>
+            ))}
+          </Accordion>
         </section>
 
         {/* About the builder */}
