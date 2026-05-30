@@ -227,11 +227,11 @@ const Index = () => {
           mobileTab === "comparison" ? "block" : "hidden md:block",
         )}
       >
-        <header className="mb-5 sm:mb-6">
-          <h2 id="full-matrix-heading" className="text-xl font-semibold tracking-tight sm:text-2xl">
-            Full comparison matrix
+        <header className="mb-8 text-center sm:mb-10">
+          <h2 id="full-matrix-heading" className="text-3xl font-extrabold tracking-[-0.02em] text-foreground sm:text-4xl">
+            Full comparison <span className="text-gradient">matrix</span>
           </h2>
-          <p className="mt-1 max-w-2xl text-sm text-muted-foreground">
+          <p className="mx-auto mt-2 max-w-2xl text-sm text-muted-foreground sm:text-base">
             See how every option scores on the same criteria. Your top pick is highlighted, and you can scroll horizontally to compare all enabled stacks side by side.
           </p>
         </header>
