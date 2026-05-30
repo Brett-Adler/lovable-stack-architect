@@ -14,3 +14,7 @@ Platforms covered: Lovable Cloud, external Supabase, Vercel, Netlify, AWS, Googl
 - [Home](/): Marketing landing — what the tool does, example scenarios, FAQ, and a path to remix it as a template.
 - [Tool](/app): The full comparator — inputs, ranked recommendation with rationale and runner-up trade-off, side-by-side matrix, cost estimate with sources, and architecture diagram. Share scenarios via URL; export Markdown or PDF.
 - [Methodology](/methodology): How the score is computed, the rubric and weights, cost-band sources per platform, and the tool's known biases.
+
+## How to remix
+
+This site is a free MIT-licensed template. The whole comparator is data-driven — edit `src/data/architectures.ts` (options, criteria, 1–5 rubric scores) and `src/lib/scoring.ts` (weights) to re-aim it at any decision space: CMS picker, database picker, auth picker, AI-model picker, anything. See `TEMPLATE-SETUP.md` in the repo for the full rebrand checklist (constants, HTML head, favicons, OG image, copy).
