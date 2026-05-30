@@ -146,6 +146,7 @@ export function CostEstimate({
               return (
                 <li key={r.id} className="flex items-center gap-2 text-xs">
                   <div className="flex w-24 shrink-0 items-center gap-1.5">
+                    <BrandMark archId={r.id} size="sm" />
                     <span className={isTop ? "font-semibold text-foreground" : "text-foreground/80"}>
                       {r.short}
                     </span>
