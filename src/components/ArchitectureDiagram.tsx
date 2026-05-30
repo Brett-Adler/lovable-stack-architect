@@ -72,7 +72,7 @@ export function ArchitectureDiagram({ archId, inputs }: { archId: ArchId; inputs
   }, [archId, inputs]);
 
   return (
-    <div className="w-full max-w-full overflow-hidden rounded-2xl border border-border bg-card p-5 shadow-card">
+    <div className="mx-auto w-full max-w-3xl overflow-hidden rounded-2xl border border-border bg-card p-5 shadow-card">
       <div className="flex items-baseline justify-between gap-3">
         <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
           Architecture diagram
