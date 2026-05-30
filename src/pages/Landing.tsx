@@ -342,15 +342,23 @@ const Landing = () => {
             </p>
           </div>
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {CRITERIA.map((c) => (
-              <div
-                key={c.id}
-                className="rounded-2xl border border-border bg-card p-5 shadow-card transition-all hover:-translate-y-0.5 hover:shadow-elegant"
-              >
-                <div className="text-sm font-semibold text-foreground">{c.label}</div>
-                <p className="mt-1 text-xs leading-relaxed text-muted-foreground">{c.hint}</p>
-              </div>
-            ))}
+            {CRITERIA.map((c) => {
+              const Icon = CRITERION_ICON[c.id];
+              return (
+                <div
+                  key={c.id}
+                  className="flex items-start gap-3 rounded-2xl border border-border bg-card p-5 shadow-card transition-all hover:-translate-y-0.5 hover:shadow-elegant"
+                >
+                  <div className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                    <Icon className="h-4 w-4" aria-hidden="true" />
+                  </div>
+                  <div className="min-w-0">
+                    <div className="text-sm font-semibold text-foreground">{c.label}</div>
+                    <p className="mt-1 text-xs leading-relaxed text-muted-foreground">{c.hint}</p>
+                  </div>
+                </div>
+              );
+            })}
           </div>
           <div className="mt-8 text-center">
             <Link
