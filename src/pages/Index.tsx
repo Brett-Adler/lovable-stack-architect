@@ -159,10 +159,72 @@ const Index = () => {
         </div>
       </section>
 
+      {/* Mobile section pill nav */}
+      <nav
+        className="no-print sticky top-14 z-30 mx-auto w-full max-w-[1800px] px-3 pt-4 sm:px-6 md:hidden"
+        aria-label="Switch between Inputs, Recommendation, and Comparison sections"
+      >
+        <div
+          role="tablist"
+          aria-label="App sections"
+          className="mx-auto grid max-w-md grid-cols-3 gap-1 rounded-full border border-border/60 bg-card/80 p-1 shadow-sm backdrop-blur"
+          onKeyDown={(e) => {
+            const order = ["inputs", "recommendation", "comparison"] as const;
+            const idx = order.indexOf(mobileTab);
+            if (e.key === "ArrowRight") {
+              e.preventDefault();
+              setMobileTab(order[(idx + 1) % order.length]);
+            } else if (e.key === "ArrowLeft") {
+              e.preventDefault();
+              setMobileTab(order[(idx - 1 + order.length) % order.length]);
+            } else if (e.key === "Home") {
+              e.preventDefault();
+              setMobileTab(order[0]);
+            } else if (e.key === "End") {
+              e.preventDefault();
+              setMobileTab(order[order.length - 1]);
+            }
+          }}
+        >
+          {([
+            { id: "inputs", label: "Inputs", Icon: SlidersHorizontal },
+            { id: "recommendation", label: "Pick", Icon: Sparkle },
+            { id: "comparison", label: "Compare", Icon: Columns3 },
+          ] as const).map(({ id, label, Icon }) => {
+            const active = mobileTab === id;
+            return (
+              <button
+                key={id}
+                id={`tab-${id}`}
+                type="button"
+                role="tab"
+                aria-selected={active}
+                aria-controls={`panel-${id}`}
+                tabIndex={active ? 0 : -1}
+                onClick={() => {
+                  setMobileTab(id);
+                  const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+                  window.scrollTo({ top: 0, behavior: prefersReduced ? "auto" : "smooth" });
+                }}
+                className={cn(
+                  "inline-flex min-h-[40px] items-center justify-center gap-1.5 whitespace-nowrap rounded-full px-3 text-xs font-medium transition-colors",
+                  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                  active
+                    ? "bg-foreground text-background shadow-sm"
+                    : "text-muted-foreground hover:text-foreground",
+                )}
+              >
+                <Icon aria-hidden="true" className="h-4 w-4" />
+                <span>{label}</span>
+                {active && <span className="sr-only"> (current section)</span>}
+              </button>
+            );
+          })}
+        </div>
+      </nav>
 
+      <main id="main-content" className="mx-auto grid w-full max-w-[1800px] gap-4 px-3 py-4 sm:gap-6 sm:px-6 sm:py-6 md:grid-cols-[240px_minmax(0,1fr)] lg:grid-cols-[260px_minmax(0,1fr)_320px] xl:grid-cols-[300px_minmax(0,1fr)_360px] 2xl:gap-8 2xl:px-10 2xl:grid-cols-[320px_minmax(0,1fr)_400px]">
 
-
-      <main id="main-content" className="mx-auto grid w-full max-w-[1800px] gap-4 px-3 py-4 pb-24 sm:gap-6 sm:px-6 sm:py-6 md:grid-cols-[240px_minmax(0,1fr)] md:pb-6 lg:grid-cols-[260px_minmax(0,1fr)_320px] xl:grid-cols-[300px_minmax(0,1fr)_360px] 2xl:gap-8 2xl:px-10 2xl:grid-cols-[320px_minmax(0,1fr)_400px]">
         <div
           id="panel-inputs"
           role="tabpanel"
