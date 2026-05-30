@@ -299,6 +299,18 @@ const Landing = () => {
           </div>
         </section>
 
+        {/* Screenshot placeholder — comparison matrix */}
+        <section className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
+          <div className="mb-8 text-center">
+            <h2 className="text-3xl font-extrabold tracking-[-0.02em] text-foreground sm:text-4xl">
+              See every option side-by-side
+            </h2>
+            <p className="mt-2 text-sm text-muted-foreground sm:text-base">
+              The full-width matrix shows all 10 platforms scored across all 12 criteria.
+            </p>
+          </div>
+          <ScreenshotPlaceholder variant="matrix" />
+        </section>
 
         {/* Use as a template */}
         <section className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
