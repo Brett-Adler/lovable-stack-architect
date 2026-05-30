@@ -301,6 +301,7 @@ export function ComparisonMatrix({ enabled, topId, onToggle, onSetEnabled, view 
                               Top pick
                             </span>
                           )}
+                          <BrandMark archId={a.id} size="md" />
                           <Tooltip>
                             <TooltipTrigger asChild>
                               <span className="inline-flex cursor-help items-center gap-1 whitespace-nowrap font-semibold text-foreground underline decoration-dotted decoration-muted-foreground/40 underline-offset-4">
