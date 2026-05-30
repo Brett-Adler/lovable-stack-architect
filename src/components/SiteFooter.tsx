@@ -33,7 +33,7 @@ export function SiteFooter() {
             rel="noopener noreferrer"
             className="underline decoration-dotted underline-offset-2 hover:text-foreground"
           >
-            {AUTHOR_HANDLE}
+            {AUTHOR_HANDLE} on lovable.dev
           </a>
           {" "}— open to joining the Lovable team. Not affiliated with, endorsed by, or representing Lovable.
           “Lovable” and the Lovable brand belong to Lovable.

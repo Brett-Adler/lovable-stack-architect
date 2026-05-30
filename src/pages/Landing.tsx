@@ -58,7 +58,7 @@ const TEMPLATE_BULLETS = [
 ];
 
 const FAQ = [
-  { q: "Is this an official Lovable product?", a: "No. It's an independent, community-built template by @brettadler, inspired by Lovable's design language. Not affiliated with, endorsed by, or representing Lovable. The Lovable name and brand belong to Lovable." },
+  { q: "Is this an official Lovable product?", a: <>No. It's an independent, community-built template by <a href={AUTHOR_URL} target="_blank" rel="noopener noreferrer" className="underline decoration-dotted underline-offset-2 hover:text-foreground">@brettadler on lovable.dev</a>, inspired by Lovable's design language. Not affiliated with, endorsed by, or representing Lovable. The Lovable name and brand belong to Lovable.</> },
   { q: "Where does the data come from?", a: "Curated from public vendor pricing pages, docs, and hands-on experience. Every score is editable in one file, and every cost band links to its source on the Methodology page." },
   { q: "How is bias handled?", a: "I built this and I'm a Lovable fan, so it has a perspective. Every criterion starts at the same baseline weight to avoid structurally favoring Lovable Cloud, and the recommendation card shows the top criteria that drove the score so you can sanity-check it. Full disclosure on the Methodology page." },
   { q: "What's actually in Lovable Cloud?", a: "Postgres database, auth, file storage, edge functions, and the Lovable AI Gateway (managed Gemini/Claude/GPT calls — no API keys to rotate). It's powered by Supabase under the hood, so if you outgrow Cloud you can detach to a self-owned Supabase project." },
@@ -118,7 +118,7 @@ const Landing = () => {
                 rel="noopener noreferrer"
                 className="underline decoration-dotted underline-offset-2 hover:text-foreground"
               >
-                {AUTHOR_HANDLE}
+                {AUTHOR_HANDLE} on lovable.dev
               </a>
               {" "}— not affiliated with Lovable.
             </p>
@@ -472,7 +472,15 @@ const Landing = () => {
                   About the builder
                 </div>
                 <h3 className="mt-3 text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-                  Built by {AUTHOR_HANDLE}
+                  Built by{" "}
+                  <a
+                    href={AUTHOR_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="underline decoration-dotted underline-offset-4 hover:text-foreground/80"
+                  >
+                    {AUTHOR_HANDLE} on lovable.dev
+                  </a>
                 </h3>
                 <p className="mt-2 max-w-xl text-sm text-muted-foreground sm:text-base">
                   Independent builder. Big fan of Lovable — open to joining the team. Say hi.

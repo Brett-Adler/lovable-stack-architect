@@ -43,7 +43,7 @@ function buildMarkdown({ inputs, results, excluded = [] }: Props): string {
   lines.push(`# Stack Architect — Architecture Recommendation`);
   lines.push("");
   lines.push(`> Generated ${new Date().toLocaleString()} · Rubric last reviewed ${LAST_REVIEWED}`);
-  lines.push(`> Source: ${SITE_URL} · Maintained by ${AUTHOR_HANDLE} · Community template, not affiliated with Lovable`);
+  lines.push(`> Source: ${SITE_URL} · Maintained by [${AUTHOR_HANDLE}](https://lovable.dev/${AUTHOR_HANDLE}) on lovable.dev · Community template, not affiliated with Lovable`);
   lines.push("");
 
   if (!top) {
@@ -163,7 +163,7 @@ function ReportContent({ inputs, results, excluded = [] }: Props) {
           Generated {new Date().toLocaleString()} · Rubric last reviewed {LAST_REVIEWED}
         </p>
         <p className="text-xs text-muted-foreground">
-          Source: {SITE_URL} · Maintained by {AUTHOR_HANDLE} · Community template, not affiliated with Lovable
+          Source: {SITE_URL} · Maintained by <a href={`https://lovable.dev/${AUTHOR_HANDLE}`} target="_blank" rel="noopener noreferrer" className="underline">{AUTHOR_HANDLE} on lovable.dev</a> · Community template, not affiliated with Lovable
         </p>
       </header>
 
