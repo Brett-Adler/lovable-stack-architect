@@ -40,12 +40,12 @@ export function SiteHeader({ children }: { children?: React.ReactNode }) {
             {NAV_ITEMS.map((item) => {
               const active = item.match(pathname);
               return (
-                <li key={item.to}>
+                <li key={item.to} className="min-w-0">
                   <Link
                     to={item.to}
                     aria-current={active ? "page" : undefined}
                     className={cn(
-                      "inline-flex items-center whitespace-nowrap rounded-full px-3 py-1.5 text-xs font-medium transition-colors sm:text-sm",
+                      "flex w-full items-center justify-center whitespace-nowrap rounded-full px-3 py-1.5 text-xs font-medium transition-colors sm:text-sm md:inline-flex md:w-auto",
                       active
                         ? "bg-foreground text-background"
                         : "text-muted-foreground hover:bg-muted hover:text-foreground"
