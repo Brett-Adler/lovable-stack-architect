@@ -1,34 +1,24 @@
 ## Goal
 
-Make the home page do a better job explaining what the user puts *in* (inputs) and what the tool scores *on* (criteria), so visitors understand the substance before opening `/app`.
+Make it visually clear that `@brettadler` is a Lovable profile (lovable.dev URL) wherever the handle appears, so visitors trust the link before they click.
 
-## Changes (all in `src/pages/Landing.tsx`)
+## Changes
 
-Add two new sections, placed right after the existing "How it works" 3-step block and before "Platforms covered" — that flow becomes: *Hero → Bento → Example scenarios → How it works → **Inputs you give** → **Criteria we score** → Platforms covered → Matrix screenshot → Template → FAQ*.
+### 1. `src/components/SiteFooter.tsx` (line ~36)
+Change displayed link text from `{AUTHOR_HANDLE}` to `{AUTHOR_HANDLE} on lovable.dev` so the trust signal is visible without hovering. `href` already points to `AUTHOR_URL`.
 
-### 1. "Inputs you give" section
+### 2. `src/pages/Landing.tsx`
+- **Hero byline (~line 121):** same change — show `@brettadler on lovable.dev` as the link text.
+- **Built-by line (~line 475–487):** same change.
+- **FAQ "Is this an official Lovable product?" answer (line 61):** the answer is currently a plain string rendered inside `AccordionContent`. Convert this single FAQ item so its `a` field can be either a string or a JSX node, and render the @brettadler mention as an inline link to `AUTHOR_URL` with visible "on lovable.dev" suffix. Minimal type change: `a: string | React.ReactNode` and render directly inside `AccordionContent`.
 
-A compact grid of 8 input cards (one per `Inputs` field in `src/lib/scoring.ts`), each with an icon, label, and one-line description of what it controls:
+### 3. `src/components/ReportExport.tsx` (Markdown + PDF footer, lines 46 & 166)
+Append the profile URL alongside the handle so exported reports also carry the trust signal: `Maintained by @brettadler (https://lovable.dev/@brettadler)` in Markdown, and a real `<a>` in the PDF/HTML footer.
 
-- Stage (prototype / MVP / growth / scale)
-- Expected MAU
-- Team skills (frontend, backend, DevOps, data, none)
-- Budget band
-- Compliance needs (none, GDPR, HIPAA, SOC 2, residency)
-- Workloads (CRUD, realtime, files, AI, background jobs, heavy compute)
-- Lock-in tolerance
-- Time-to-market priority
-
-Layout: 2 cols mobile, 4 cols desktop. Lucide icons reused from the rest of the page (e.g. `SlidersHorizontal`, `Users`, `Wallet`, `ShieldCheck`, `Workflow`, `Lock`, `Zap`, `Gauge`). Short intro line: "Eight inputs shape the recommendation."
-
-### 2. "What we score on" section
-
-Render the 12 `CRITERIA` from `src/data/architectures.ts` directly (import `CRITERIA`) so the page stays in sync with the data file. Each criterion is a small card showing `label` (bold) + `hint` (muted). 2 cols mobile, 3 cols desktop. Intro line: "Every option scored 1–5 on these 12 criteria. Weights shift based on your inputs." Link to `/methodology` at the bottom.
-
-Both sections reuse existing rounded-3xl border-card styling for visual consistency with the rest of the page.
+### 4. `public/llms.txt` (line 5)
+Append the URL after the handle: `by @brettadler (https://lovable.dev/@brettadler)`.
 
 ## Out of scope
 
-- No new data files, no scoring/logic changes.
-- No edits to `/app` or methodology pages.
-- No new components — sections live inline in `Landing.tsx`.
+- `AUTHOR_URL` constant — already correct.
+- No new components, no styling overhauls; reuse existing dotted-underline link styles.
