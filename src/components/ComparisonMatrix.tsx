@@ -232,6 +232,7 @@ export function ComparisonMatrix({ enabled, topId, onToggle, onSetEnabled, view 
                                 isTop4 && !active && "ring-1 ring-primary/40",
                               )}
                             >
+                              <BrandMark archId={a.id} size="sm" />
                               {isTop4 && (
                                 <Star
                                   className={cn(
