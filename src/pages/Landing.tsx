@@ -11,6 +11,7 @@ import { ArrowRight, Sparkles, ExternalLink, Gauge, Share2, FileDown, SlidersHor
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SeoHead } from "@/components/SeoHead";
+import { ScreenshotPlaceholder } from "@/components/ScreenshotPlaceholder";
 import { ARCHITECTURES } from "@/data/architectures";
 import { AUTHOR_HANDLE, AUTHOR_URL, LAST_REVIEWED, LOVABLE_REMIX_URL } from "@/lib/constants";
 import { PRESETS, presetShareUrl } from "@/lib/presets";
