@@ -129,7 +129,7 @@ const Landing = () => {
         <section className="relative overflow-hidden">
           <div
             aria-hidden="true"
-            className="pointer-events-none absolute left-1/2 top-[-10%] -z-0 h-[600px] w-[900px] -translate-x-1/2 bg-gradient-glow blur-3xl"
+            className="pointer-events-none absolute inset-x-0 top-0 -z-0 h-[900px] bg-gradient-aurora blur-2xl"
           />
           <div className="relative z-10 mx-auto max-w-6xl px-4 pb-16 pt-16 text-center sm:px-6 sm:pt-24 sm:pb-20">
             <div className="mx-auto mb-8 inline-flex items-center gap-2 rounded-full border border-border bg-card/70 px-3 py-1 text-xs font-medium text-muted-foreground backdrop-blur-sm">

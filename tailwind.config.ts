@@ -13,6 +13,7 @@ export default {
     extend: {
       fontFamily: {
         sans: [
+          "Geist",
           "Inter",
           "ui-sans-serif",
           "system-ui",
@@ -31,11 +32,11 @@ export default {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         brand: {
-          blue: "#4F8AFB",
-          magenta: "#E94BD2",
-          orange: "#FF6A3D",
-          ink: "#0F0F0F",
-          cream: "#F5F2EC",
+          blue: "#4D7CFF",
+          magenta: "#FF4D8D",
+          orange: "#FF7A45",
+          ink: "#0A0A0A",
+          cream: "#F7F4EE",
         },
         primary: {
           DEFAULT: "hsl(var(--primary))",
