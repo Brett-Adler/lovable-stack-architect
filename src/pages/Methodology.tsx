@@ -7,6 +7,7 @@ import appInputsPanelShot from "@/assets/shots/app-inputs-panel.png";
 import appMatrixShot from "@/assets/shots/app-matrix.png";
 import { CRITERIA, ARCHITECTURES, RUBRIC, type CriterionId, type ArchId } from "@/data/architectures";
 import { BRAND } from "@/lib/branding";
+import { BrandMark } from "@/components/BrandMark";
 import { LAST_REVIEWED, LOVABLE_REMIX_URL } from "@/lib/constants";
 import {
   ArrowLeft,
