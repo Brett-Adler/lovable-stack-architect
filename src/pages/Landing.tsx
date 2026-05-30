@@ -7,14 +7,25 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { ArrowRight, Sparkles, ExternalLink, Gauge, Share2, FileDown, SlidersHorizontal, Trophy, FileText, Database, Info } from "lucide-react";
+import { ArrowRight, Sparkles, ExternalLink, Gauge, Share2, FileDown, SlidersHorizontal, Trophy, FileText, Database, Info, Layers, Users, Wallet, ShieldCheck, Workflow, Lock, Zap, TrendingUp } from "lucide-react";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SeoHead } from "@/components/SeoHead";
 import { ScreenshotPlaceholder } from "@/components/ScreenshotPlaceholder";
-import { ARCHITECTURES } from "@/data/architectures";
+import { ARCHITECTURES, CRITERIA } from "@/data/architectures";
 import { AUTHOR_HANDLE, AUTHOR_URL, LAST_REVIEWED, LOVABLE_REMIX_URL } from "@/lib/constants";
 import { PRESETS, presetShareUrl } from "@/lib/presets";
+
+const INPUTS = [
+  { icon: Layers, label: "Stage", body: "Prototype, MVP, growth, or scale — sets what matters most." },
+  { icon: TrendingUp, label: "Expected MAU", body: "Monthly active users — drives the scaling and cost-at-scale weights." },
+  { icon: Users, label: "Team skills", body: "Frontend, backend, DevOps, data, or none — shifts ops-burden weight." },
+  { icon: Wallet, label: "Budget", body: "Low, medium, or high — tunes cost-at-small vs cost-at-large emphasis." },
+  { icon: ShieldCheck, label: "Compliance", body: "GDPR, HIPAA, SOC 2, residency — HIPAA / SOC 2 / residency act as hard filters." },
+  { icon: Workflow, label: "Workloads", body: "CRUD, realtime, files, AI, background jobs, heavy compute." },
+  { icon: Lock, label: "Lock-in tolerance", body: "How willing you are to be tied to one vendor." },
+  { icon: Zap, label: "Time-to-market", body: "1–5 priority — how much speed-to-launch should dominate the ranking." },
+];
 
 const FEATURES = [
   {
@@ -273,6 +284,66 @@ const Landing = () => {
                 <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">{s.body}</p>
               </div>
             ))}
+          </div>
+        </section>
+
+        {/* Inputs you give */}
+        <section className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
+          <div className="mb-10 text-center">
+            <h2 className="text-3xl font-extrabold tracking-[-0.02em] text-foreground sm:text-4xl">
+              Inputs you give
+            </h2>
+            <p className="mt-2 text-sm text-muted-foreground sm:text-base">
+              Eight inputs shape the recommendation — each one reweights the criteria below.
+            </p>
+          </div>
+          <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
+            {INPUTS.map((i) => {
+              const Icon = i.icon;
+              return (
+                <div
+                  key={i.label}
+                  className="rounded-3xl border border-border bg-card p-5 shadow-card transition-all hover:-translate-y-0.5 hover:shadow-elegant"
+                >
+                  <div className="mb-3 inline-flex h-9 w-9 items-center justify-center rounded-xl bg-brand-blue/10 text-brand-blue">
+                    <Icon className="h-4 w-4" />
+                  </div>
+                  <div className="text-sm font-semibold text-foreground">{i.label}</div>
+                  <p className="mt-1 text-xs leading-relaxed text-muted-foreground">{i.body}</p>
+                </div>
+              );
+            })}
+          </div>
+        </section>
+
+        {/* What we score on */}
+        <section className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
+          <div className="mb-10 text-center">
+            <h2 className="text-3xl font-extrabold tracking-[-0.02em] text-foreground sm:text-4xl">
+              What we score on
+            </h2>
+            <p className="mt-2 text-sm text-muted-foreground sm:text-base">
+              Every option is scored 1–5 on these {CRITERIA.length} criteria. Your inputs shift the weights.
+            </p>
+          </div>
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {CRITERIA.map((c) => (
+              <div
+                key={c.id}
+                className="rounded-2xl border border-border bg-card p-5 shadow-card transition-all hover:-translate-y-0.5 hover:shadow-elegant"
+              >
+                <div className="text-sm font-semibold text-foreground">{c.label}</div>
+                <p className="mt-1 text-xs leading-relaxed text-muted-foreground">{c.hint}</p>
+              </div>
+            ))}
+          </div>
+          <div className="mt-8 text-center">
+            <Link
+              to="/methodology"
+              className="inline-flex items-center gap-1 text-sm font-semibold text-foreground underline-offset-4 hover:underline"
+            >
+              See the full rubric & weights <ArrowRight className="h-3 w-3" />
+            </Link>
           </div>
         </section>
 

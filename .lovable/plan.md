@@ -1,24 +1,34 @@
 ## Goal
 
-Move the **Inputs / Pick / Compare** section nav from the bottom fixed bar (mobile-only) to a prominent pill bar near the top of `/app`, so users immediately see they can switch between sections.
+Make the home page do a better job explaining what the user puts *in* (inputs) and what the tool scores *on* (criteria), so visitors understand the substance before opening `/app`.
 
-## Changes — `src/pages/Index.tsx`
+## Changes (all in `src/pages/Landing.tsx`)
 
-1. **Add a new pill-style tab bar** below the hero band (right after line 160), mobile-only:
-   - Container: `md:hidden`, centered, sticky just under the header (`sticky top-[~64px] z-30`) so it stays visible as users scroll within a section.
-   - Inner element matches the SiteHeader pill style: `grid grid-cols-3 gap-1 rounded-full border border-border/60 bg-card/60 p-1 shadow-sm backdrop-blur`.
-   - Each pill: icon + label (`Inputs / Pick / Compare`), `whitespace-nowrap`, full-width inside its grid cell. Active pill = `bg-foreground text-background`; inactive = muted with hover state.
-   - Preserves the existing `role="tablist"` / `aria-selected` / `aria-controls` / arrow-key navigation and the scroll-to-top behavior on tab change.
+Add two new sections, placed right after the existing "How it works" 3-step block and before "Platforms covered" — that flow becomes: *Hero → Bento → Example scenarios → How it works → **Inputs you give** → **Criteria we score** → Platforms covered → Matrix screenshot → Template → FAQ*.
 
-2. **Remove the fixed bottom nav** (lines 240–305) and its bottom-padding compensation (`pb-24 md:pb-6` on main/full-matrix sections becomes plain `pb-6`, plus drop the `env(safe-area-inset-bottom)` padding since it lived on the bottom bar).
+### 1. "Inputs you give" section
 
-3. **Reuse the existing `mobileTab` state and handlers** — no behavior change, just relocation + restyle. The tab IDs (`inputs / recommendation / comparison`) and corresponding `panel-*` / `tab-*` IDs stay the same so a11y wiring keeps working.
+A compact grid of 8 input cards (one per `Inputs` field in `src/lib/scoring.ts`), each with an icon, label, and one-line description of what it controls:
 
-## Visual reference
+- Stage (prototype / MVP / growth / scale)
+- Expected MAU
+- Team skills (frontend, backend, DevOps, data, none)
+- Budget band
+- Compliance needs (none, GDPR, HIPAA, SOC 2, residency)
+- Workloads (CRUD, realtime, files, AI, background jobs, heavy compute)
+- Lock-in tolerance
+- Time-to-market priority
 
-Same pill treatment already used in `SiteHeader` for Home / Methodology / Comparator, so the section nav reads as a natural sibling of the site nav.
+Layout: 2 cols mobile, 4 cols desktop. Lucide icons reused from the rest of the page (e.g. `SlidersHorizontal`, `Users`, `Wallet`, `ShieldCheck`, `Workflow`, `Lock`, `Zap`, `Gauge`). Short intro line: "Eight inputs shape the recommendation."
+
+### 2. "What we score on" section
+
+Render the 12 `CRITERIA` from `src/data/architectures.ts` directly (import `CRITERIA`) so the page stays in sync with the data file. Each criterion is a small card showing `label` (bold) + `hint` (muted). 2 cols mobile, 3 cols desktop. Intro line: "Every option scored 1–5 on these 12 criteria. Weights shift based on your inputs." Link to `/methodology` at the bottom.
+
+Both sections reuse existing rounded-3xl border-card styling for visual consistency with the rest of the page.
 
 ## Out of scope
 
-- Desktop layout (≥ md): unchanged — all three panels are visible simultaneously in the grid, so no nav needed.
-- Hero copy, content of each panel, full-matrix section.
+- No new data files, no scoring/logic changes.
+- No edits to `/app` or methodology pages.
+- No new components — sections live inline in `Landing.tsx`.
