@@ -9,7 +9,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Download, Eye, Printer, FileDown, FileText, Loader2 } from "lucide-react";
+import { Download, Eye, Printer, FileDown, FileText, Loader2, Share2, Link2 } from "lucide-react";
 import { CRITERIA, RUBRIC, type Architecture } from "@/data/architectures";
 import type { Inputs, RankedResult } from "@/lib/scoring";
 import { stageFromMau } from "@/lib/scoring";
