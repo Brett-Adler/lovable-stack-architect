@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SeoHead } from "@/components/SeoHead";
+import { ScreenshotPlaceholder } from "@/components/ScreenshotPlaceholder";
 import { CRITERIA, ARCHITECTURES } from "@/data/architectures";
 import { LAST_REVIEWED, LOVABLE_REMIX_URL } from "@/lib/constants";
 import {
@@ -149,7 +150,12 @@ const Methodology = () => {
               </div>
             </div>
           </div>
+          <div className="mt-10">
+            <ScreenshotPlaceholder variant="inputs-panel" />
+          </div>
         </section>
+
+
 
         {/* 2. Criteria */}
         <section className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
@@ -172,7 +178,15 @@ const Methodology = () => {
               </div>
             ))}
           </div>
+          <div className="mt-10">
+            <ScreenshotPlaceholder
+              variant="matrix"
+              caption="How the rubric renders in the app"
+              hint="Capture the full matrix with one column (e.g. Lovable Cloud) highlighted and a rubric tooltip open on a single cell."
+            />
+          </div>
         </section>
+
 
         {/* 3. Cost-band sources */}
         <section className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">

@@ -11,6 +11,7 @@ import { ArrowRight, Sparkles, ExternalLink, Gauge, Share2, FileDown, SlidersHor
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SeoHead } from "@/components/SeoHead";
+import { ScreenshotPlaceholder } from "@/components/ScreenshotPlaceholder";
 import { ARCHITECTURES } from "@/data/architectures";
 import { AUTHOR_HANDLE, AUTHOR_URL, LAST_REVIEWED, LOVABLE_REMIX_URL } from "@/lib/constants";
 import { PRESETS, presetShareUrl } from "@/lib/presets";
@@ -133,6 +134,13 @@ const Landing = () => {
             </div>
           </div>
         </section>
+
+        {/* Screenshot placeholder — tool overview */}
+        <section className="mx-auto -mt-4 max-w-6xl px-4 sm:px-6">
+          <ScreenshotPlaceholder variant="recommendation" />
+        </section>
+
+
 
         {/* Bento: features + Lovable Cloud tile */}
         <section className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
@@ -291,6 +299,18 @@ const Landing = () => {
           </div>
         </section>
 
+        {/* Screenshot placeholder — comparison matrix */}
+        <section className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
+          <div className="mb-8 text-center">
+            <h2 className="text-3xl font-extrabold tracking-[-0.02em] text-foreground sm:text-4xl">
+              See every option side-by-side
+            </h2>
+            <p className="mt-2 text-sm text-muted-foreground sm:text-base">
+              The full-width matrix shows all 10 platforms scored across all 12 criteria.
+            </p>
+          </div>
+          <ScreenshotPlaceholder variant="matrix" />
+        </section>
 
         {/* Use as a template */}
         <section className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
