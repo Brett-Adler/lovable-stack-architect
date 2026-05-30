@@ -163,7 +163,7 @@ function ReportContent({ inputs, results, excluded = [] }: Props) {
           Generated {new Date().toLocaleString()} · Rubric last reviewed {LAST_REVIEWED}
         </p>
         <p className="text-xs text-muted-foreground">
-          Source: {SITE_URL} · Maintained by {AUTHOR_HANDLE} · Community template, not affiliated with Lovable
+          Source: {SITE_URL} · Maintained by <a href={`https://lovable.dev/${AUTHOR_HANDLE}`} target="_blank" rel="noopener noreferrer" className="underline">{AUTHOR_HANDLE} on lovable.dev</a> · Community template, not affiliated with Lovable
         </p>
       </header>
 
