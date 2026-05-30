@@ -301,10 +301,12 @@ const Methodology = () => {
             accent="criteria"
             subtitle="Every architecture is scored 1–5 on each of these. Tap a column in the comparator to see why it scored the way it did."
           />
+          <ScoreLegend />
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {CRITERIA.map((c, i) => {
               const Icon = CRITERION_ICON[c.id] ?? Sparkles;
               const tint = CRITERION_TINTS[i % CRITERION_TINTS.length];
+              const { leader, spreadLabel } = getCriterionStats(c.id);
               return (
                 <div
                   key={c.id}
@@ -317,6 +319,15 @@ const Methodology = () => {
                   </div>
                   <h3 className="text-base font-semibold text-foreground">{c.label}</h3>
                   <p className="mt-1.5 text-sm text-muted-foreground">{c.hint}</p>
+                  <div className="mt-4 border-t border-border/60 pt-4">
+                    <Scoreboard criterionId={c.id} />
+                    <div className="mt-3 flex flex-wrap items-center justify-between gap-2">
+                      <LeaderChip archId={leader.id} score={leader.score} />
+                      <span className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+                        {spreadLabel}
+                      </span>
+                    </div>
+                  </div>
                 </div>
               );
             })}
