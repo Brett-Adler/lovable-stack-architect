@@ -12,7 +12,6 @@ const NAV_ITEMS = [
 
 export function SiteHeader({ children }: { children?: React.ReactNode }) {
   const { pathname } = useLocation();
-  const onApp = pathname.startsWith("/app");
 
   return (
     <header className="no-print sticky top-0 z-40 border-b border-border/60 bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/70">
