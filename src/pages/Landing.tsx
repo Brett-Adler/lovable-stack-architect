@@ -153,7 +153,7 @@ const Landing = () => {
               .
             </p>
             <p className="mx-auto mt-3 max-w-2xl text-xs italic text-muted-foreground/80">
-              An independent project by{" "}
+              A fan project by{" "}
               <a
                 href={AUTHOR_URL}
                 target="_blank"
@@ -162,8 +162,16 @@ const Landing = () => {
               >
                 {AUTHOR_HANDLE} on lovable.dev
               </a>
-              {" "}— not affiliated with Lovable.
+              . Not a Lovable product, not affiliated with any platform listed below — just a Lovable nerd who kept getting asked which backend to pick and finally built the answer.
             </p>
+            <a
+              href="https://lovable.dev"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mx-auto mt-4 inline-flex items-center gap-1.5 rounded-full border border-border bg-card/70 px-3 py-1 text-xs text-muted-foreground backdrop-blur-sm transition-colors hover:text-foreground"
+            >
+              Built with <img src="/logo-mark.svg" alt="" className="h-3.5 w-3.5 rounded" /> <span className="font-medium">Lovable</span>
+            </a>
             <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
               <div className="rounded-full bg-gradient-primary p-[1.5px] shadow-elegant transition-transform hover:scale-[1.02]">
                 <Button asChild size="lg" className="gap-2 rounded-full px-7">
