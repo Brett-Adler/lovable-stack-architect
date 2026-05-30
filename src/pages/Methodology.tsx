@@ -3,7 +3,8 @@ import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SeoHead } from "@/components/SeoHead";
 import { ScreenshotPlaceholder } from "@/components/ScreenshotPlaceholder";
-import { CRITERIA, ARCHITECTURES, type CriterionId } from "@/data/architectures";
+import { CRITERIA, ARCHITECTURES, RUBRIC, type CriterionId, type ArchId } from "@/data/architectures";
+import { BRAND } from "@/lib/branding";
 import { LAST_REVIEWED, LOVABLE_REMIX_URL } from "@/lib/constants";
 import {
   ArrowLeft,
@@ -104,6 +105,82 @@ const BIASES = [
     body: "No vendor pays for placement. If you find a score you disagree with, the rubric lives in one file and is one PR away from a fix.",
   },
 ];
+
+// Fixed vendor order across all 12 scoreboards so the eye learns the shape.
+const VENDOR_ORDER: ArchId[] = ARCHITECTURES.map((a) => a.id);
+
+const SCORE_SWATCH: Record<number, string> = {
+  1: "bg-destructive/70",
+  2: "bg-destructive/40",
+  3: "bg-warning/60",
+  4: "bg-success/50",
+  5: "bg-success/80",
+};
+
+function getCriterionStats(criterionId: CriterionId) {
+  const scores = VENDOR_ORDER.map((id) => ({ id, score: RUBRIC[id][criterionId] }));
+  const values = scores.map((s) => s.score);
+  const min = Math.min(...values);
+  const max = Math.max(...values);
+  const leader = [...scores].sort((a, b) => b.score - a.score)[0];
+  const leaderArch = ARCHITECTURES.find((a) => a.id === leader.id)!;
+  let spreadLabel: string;
+  if (max - min >= 3) spreadLabel = `Differentiating · ${min}–${max}`;
+  else if (min >= 4) spreadLabel = `Tight race · ${min}–${max}`;
+  else if (min >= 3) spreadLabel = `Everyone scores ${min}+`;
+  else spreadLabel = `Range ${min}–${max}`;
+  return { scores, leader, leaderArch, spreadLabel };
+}
+
+function Scoreboard({ criterionId }: { criterionId: CriterionId }) {
+  const { scores, leader } = getCriterionStats(criterionId);
+  return (
+    <div className="flex items-center gap-[3px]" role="img" aria-label="Per-vendor rubric scores">
+      {scores.map(({ id, score }) => {
+        const arch = ARCHITECTURES.find((a) => a.id === id)!;
+        const isLeader = id === leader.id;
+        return (
+          <span
+            key={id}
+            title={`${arch.name} — ${score}/5`}
+            className={`h-3 w-3 rounded-sm ${SCORE_SWATCH[score]} ${
+              isLeader ? "ring-1 ring-foreground/40 ring-offset-1 ring-offset-card" : ""
+            }`}
+          />
+        );
+      })}
+    </div>
+  );
+}
+
+function LeaderChip({ archId, score }: { archId: ArchId; score: number }) {
+  const arch = ARCHITECTURES.find((a) => a.id === archId)!;
+  const brand = BRAND[archId];
+  return (
+    <div className="inline-flex items-center gap-1.5 rounded-full border border-border bg-muted/40 px-2 py-0.5 text-[11px] font-medium text-foreground/80">
+      {brand.src ? (
+        <img src={brand.src} alt="" className="h-3 w-3 rounded-sm" />
+      ) : brand.Icon ? (
+        <brand.Icon className="h-3 w-3" style={{ color: brand.color }} aria-hidden="true" />
+      ) : null}
+      <span className="truncate">{arch.short || arch.name}</span>
+      <span className="text-muted-foreground">· {score}/5</span>
+    </div>
+  );
+}
+
+function ScoreLegend() {
+  return (
+    <div className="mx-auto mb-6 flex flex-wrap items-center justify-center gap-2 text-[11px] text-muted-foreground">
+      <span className="font-medium uppercase tracking-wider">Poor</span>
+      {[1, 2, 3, 4, 5].map((s) => (
+        <span key={s} className={`h-3 w-3 rounded-sm ${SCORE_SWATCH[s]}`} aria-hidden="true" />
+      ))}
+      <span className="font-medium uppercase tracking-wider">Excellent</span>
+      <span className="ml-2 hidden sm:inline">· each square = one of the {ARCHITECTURES.length} architectures, in catalog order</span>
+    </div>
+  );
+}
 
 const Methodology = () => {
   return (
@@ -224,10 +301,12 @@ const Methodology = () => {
             accent="criteria"
             subtitle="Every architecture is scored 1–5 on each of these. Tap a column in the comparator to see why it scored the way it did."
           />
+          <ScoreLegend />
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {CRITERIA.map((c, i) => {
               const Icon = CRITERION_ICON[c.id] ?? Sparkles;
               const tint = CRITERION_TINTS[i % CRITERION_TINTS.length];
+              const { leader, spreadLabel } = getCriterionStats(c.id);
               return (
                 <div
                   key={c.id}
@@ -240,6 +319,15 @@ const Methodology = () => {
                   </div>
                   <h3 className="text-base font-semibold text-foreground">{c.label}</h3>
                   <p className="mt-1.5 text-sm text-muted-foreground">{c.hint}</p>
+                  <div className="mt-4 border-t border-border/60 pt-4">
+                    <Scoreboard criterionId={c.id} />
+                    <div className="mt-3 flex flex-wrap items-center justify-between gap-2">
+                      <LeaderChip archId={leader.id} score={leader.score} />
+                      <span className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+                        {spreadLabel}
+                      </span>
+                    </div>
+                  </div>
                 </div>
               );
             })}
