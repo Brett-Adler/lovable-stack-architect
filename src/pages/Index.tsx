@@ -154,7 +154,7 @@ const Index = () => {
 
       {/* Mobile section pill nav */}
       <nav
-        className="no-print sticky top-14 z-30 mx-auto w-full max-w-[1800px] px-3 pt-4 sm:px-6 md:hidden"
+        className="no-print sticky top-12 z-30 mx-auto w-full max-w-[1800px] px-3 pt-4 sm:px-6 md:hidden"
         aria-label="Switch between Inputs, Recommendation, and Comparison sections"
       >
         <div
@@ -243,8 +243,8 @@ const Index = () => {
         >
           {topId && <CostEstimate archId={topId} inputs={inputs} enabled={enabled} topId={topId} />}
           <ComparisonMatrix view="controls" enabled={enabled} topId={topId} onToggle={toggleArch} onSetEnabled={setEnabled} />
-          {topId && <ArchitectureDiagram archId={topId} inputs={inputs} />}
         </section>
+
 
         <aside
           id="panel-recommendation"
@@ -270,7 +270,22 @@ const Index = () => {
         </aside>
       </main>
 
+      {topId && (
+        <section
+          aria-labelledby="architecture-diagram-heading"
+          hidden={mobileTab !== "comparison"}
+          className={cn(
+            "mx-auto w-full max-w-[1800px] px-3 pb-2 sm:px-6 2xl:px-10",
+            mobileTab === "comparison" ? "block" : "hidden md:block",
+          )}
+        >
+          <h2 id="architecture-diagram-heading" className="sr-only">Architecture diagram for top pick</h2>
+          <ArchitectureDiagram archId={topId} inputs={inputs} />
+        </section>
+      )}
+
       <section
+
         aria-labelledby="full-matrix-heading"
         hidden={mobileTab !== "comparison"}
         className={cn(
