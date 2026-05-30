@@ -13,7 +13,11 @@ import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SeoHead } from "@/components/SeoHead";
 import { ScreenshotPlaceholder } from "@/components/ScreenshotPlaceholder";
-import { ARCHITECTURES, CRITERIA, type CriterionId } from "@/data/architectures";
+import { ARCHITECTURES, CRITERIA, type ArchId, type CriterionId } from "@/data/architectures";
+import { SiSupabase, SiVercel, SiNetlify, SiGooglecloud, SiHeroku, SiRender, SiFlydotio } from "react-icons/si";
+import { FaAws } from "react-icons/fa";
+import { VscAzure } from "react-icons/vsc";
+import type { IconType } from "react-icons";
 
 const CRITERION_ICON: Record<CriterionId, LucideIcon> = {
   "time-to-launch": Rocket,
@@ -39,6 +43,19 @@ const INPUT_TINT: Record<string, string> = {
   amber: "bg-amber-500/10 text-amber-600 dark:text-amber-400",
   emerald: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400",
   sky: "bg-sky-500/10 text-sky-600 dark:text-sky-400",
+};
+
+const BRAND: Record<ArchId, { Icon?: IconType; src?: string; color: string }> = {
+  "lovable-cloud":    { src: "/logo-mark.svg",  color: "#E94BD2" },
+  "lovable-supabase": { Icon: SiSupabase,       color: "#3ECF8E" },
+  "lovable-vercel":   { Icon: SiVercel,         color: "#000000" },
+  "lovable-netlify":  { Icon: SiNetlify,        color: "#00C7B7" },
+  "lovable-aws":      { Icon: FaAws,            color: "#FF9900" },
+  "lovable-gcp":      { Icon: SiGooglecloud,    color: "#4285F4" },
+  "lovable-azure":    { Icon: VscAzure,         color: "#0078D4" },
+  "lovable-heroku":   { Icon: SiHeroku,         color: "#430098" },
+  "lovable-render":   { Icon: SiRender,         color: "#000000" },
+  "lovable-fly":      { Icon: SiFlydotio,       color: "#7B3FE4" },
 };
 
 const INPUTS = [
@@ -136,7 +153,7 @@ const Landing = () => {
               .
             </p>
             <p className="mx-auto mt-3 max-w-2xl text-xs italic text-muted-foreground/80">
-              An independent project by{" "}
+              A fan project by{" "}
               <a
                 href={AUTHOR_URL}
                 target="_blank"
@@ -145,8 +162,16 @@ const Landing = () => {
               >
                 {AUTHOR_HANDLE} on lovable.dev
               </a>
-              {" "}— not affiliated with Lovable.
+              . Not a Lovable product, not affiliated with any platform listed below — just a Lovable nerd who kept getting asked which backend to pick and finally built the answer.
             </p>
+            <a
+              href="https://lovable.dev"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mx-auto mt-4 inline-flex items-center gap-1.5 rounded-full border border-border bg-card/70 px-3 py-1 text-xs text-muted-foreground backdrop-blur-sm transition-colors hover:text-foreground"
+            >
+              Built with <img src="/logo-mark.svg" alt="" className="h-3.5 w-3.5 rounded" /> <span className="font-medium">Lovable</span>
+            </a>
             <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
               <div className="rounded-full bg-gradient-primary p-[1.5px] shadow-elegant transition-transform hover:scale-[1.02]">
                 <Button asChild size="lg" className="gap-2 rounded-full px-7">
@@ -394,16 +419,33 @@ const Landing = () => {
             </p>
           </div>
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
-            {ARCHITECTURES.map((a) => (
-              <div
-                key={a.id}
-                className="rounded-2xl border border-border bg-card p-4 text-center shadow-card transition-all hover:-translate-y-0.5 hover:shadow-elegant"
-              >
-                <div className="text-sm font-semibold text-foreground">{a.short}</div>
-                <div className="mt-1 text-xs text-muted-foreground">{a.tagline}</div>
-              </div>
-            ))}
+            {ARCHITECTURES.map((a) => {
+              const brand = BRAND[a.id];
+              const Icon = brand.Icon;
+              return (
+                <div
+                  key={a.id}
+                  className="rounded-2xl border border-border bg-card p-5 text-center shadow-card transition-all hover:-translate-y-0.5 hover:shadow-elegant"
+                >
+                  <div
+                    className="mx-auto mb-3 inline-flex h-12 w-12 items-center justify-center rounded-xl ring-1 ring-inset ring-border/40"
+                    style={{ backgroundColor: `${brand.color}14`, color: brand.color }}
+                  >
+                    {brand.src ? (
+                      <img src={brand.src} alt="" className="h-7 w-7" />
+                    ) : Icon ? (
+                      <Icon className="h-6 w-6" aria-hidden="true" />
+                    ) : null}
+                  </div>
+                  <div className="text-sm font-semibold text-foreground">{a.short}</div>
+                  <div className="mt-1 text-xs text-muted-foreground">{a.tagline}</div>
+                </div>
+              );
+            })}
           </div>
+          <p className="mt-6 text-center text-xs italic text-muted-foreground/70">
+            Logos are trademarks of their respective owners. Shown for identification only — this site is not affiliated with or endorsed by any of them.
+          </p>
         </section>
 
         {/* Screenshot placeholder — comparison matrix */}
@@ -519,7 +561,7 @@ const Landing = () => {
                   </a>
                 </h3>
                 <p className="mt-2 max-w-xl text-sm text-muted-foreground sm:text-base">
-                  Independent builder. Big fan of Lovable — open to joining the team. Say hi.
+                  Independent builder and Lovable superfan. Built this because friends kept asking which backend to use with Lovable and I didn't know enough to answer well. Figured other Lovable fans might want the same shortcut. Open to joining the Lovable team — say hi.
                 </p>
               </div>
               <Button
