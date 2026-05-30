@@ -36,7 +36,7 @@ export function SiteHeader({ children }: { children?: React.ReactNode }) {
         </Link>
 
         <nav aria-label="Primary" className="order-3 w-full md:order-none md:w-auto">
-          <ul className="flex items-center gap-1 rounded-full border border-border/60 bg-card/60 p-1 text-sm shadow-sm backdrop-blur">
+          <ul className="grid w-full grid-cols-3 items-center gap-1 rounded-full border border-border/60 bg-card/60 p-1 text-sm shadow-sm backdrop-blur md:flex md:w-auto">
             {NAV_ITEMS.map((item) => {
               const active = item.match(pathname);
               return (
