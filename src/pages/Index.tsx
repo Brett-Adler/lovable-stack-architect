@@ -7,7 +7,7 @@ import { CostEstimate } from "@/components/CostEstimate";
 import { ArchitectureDiagram } from "@/components/ArchitectureDiagram";
 import { ReportExport } from "@/components/ReportExport";
 import { Button } from "@/components/ui/button";
-import { Link2, SlidersHorizontal, Sparkle, Columns3 } from "lucide-react";
+import { Link2, SlidersHorizontal, Sparkle, Columns3, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
@@ -139,6 +139,32 @@ const Index = () => {
       </SiteHeader>
       <h1 className="sr-only">Lovable Stack Architect — Pick the right backend stack for your Lovable app</h1>
 
+      {/* Hero band — matches Landing/Methodology language */}
+      <section className="no-print relative overflow-hidden">
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute left-1/2 top-[-30%] -z-0 h-[420px] w-[900px] -translate-x-1/2 bg-gradient-glow blur-3xl"
+        />
+        <div className="relative z-10 mx-auto w-full max-w-[1800px] px-3 pt-8 sm:px-6 sm:pt-12 2xl:px-10">
+          <div className="mx-auto max-w-3xl text-center">
+            <div className="mx-auto mb-5 inline-flex items-center gap-2 rounded-full border border-border bg-card/70 px-3 py-1 text-xs font-medium text-muted-foreground backdrop-blur-sm">
+              <Sparkles className="h-3 w-3 text-brand-magenta" aria-hidden="true" />
+              Stack comparator
+            </div>
+            <h2 className="text-3xl font-extrabold leading-[1.05] tracking-[-0.03em] text-foreground sm:text-4xl md:text-5xl">
+              Tune your stack, see the{" "}
+              <span className="text-gradient">right pick</span>
+            </h2>
+            <p className="mx-auto mt-3 max-w-xl text-sm text-muted-foreground sm:text-base">
+              Adjust your stage, team, budget, and workloads on the left. The recommendation,
+              cost band, and rankings update live.
+            </p>
+          </div>
+        </div>
+      </section>
+
+
+
 
       <main id="main-content" className="mx-auto grid w-full max-w-[1800px] gap-4 px-3 py-4 pb-24 sm:gap-6 sm:px-6 sm:py-6 md:grid-cols-[240px_minmax(0,1fr)] md:pb-6 lg:grid-cols-[260px_minmax(0,1fr)_320px] xl:grid-cols-[300px_minmax(0,1fr)_360px] 2xl:gap-8 2xl:px-10 2xl:grid-cols-[320px_minmax(0,1fr)_400px]">
         <div
@@ -201,11 +227,11 @@ const Index = () => {
           mobileTab === "comparison" ? "block" : "hidden md:block",
         )}
       >
-        <header className="mb-5 sm:mb-6">
-          <h2 id="full-matrix-heading" className="text-xl font-semibold tracking-tight sm:text-2xl">
-            Full comparison matrix
+        <header className="mb-8 text-center sm:mb-10">
+          <h2 id="full-matrix-heading" className="text-3xl font-extrabold tracking-[-0.02em] text-foreground sm:text-4xl">
+            Full comparison <span className="text-gradient">matrix</span>
           </h2>
-          <p className="mt-1 max-w-2xl text-sm text-muted-foreground">
+          <p className="mx-auto mt-2 max-w-2xl text-sm text-muted-foreground sm:text-base">
             See how every option scores on the same criteria. Your top pick is highlighted, and you can scroll horizontally to compare all enabled stacks side by side.
           </p>
         </header>
