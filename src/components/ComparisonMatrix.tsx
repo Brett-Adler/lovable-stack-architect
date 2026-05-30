@@ -212,6 +212,7 @@ export function ComparisonMatrix({ enabled, topId, onToggle, onSetEnabled, view 
                   <div className="mt-2 flex flex-wrap gap-1.5">
                     {inCat.map((a) => {
                       const active = enabled.includes(a.id);
+                      const isTop4 = TOP_4_SET.has(a.id);
                       return (
                         <Tooltip key={a.id}>
                           <TooltipTrigger asChild>
@@ -219,7 +220,7 @@ export function ComparisonMatrix({ enabled, topId, onToggle, onSetEnabled, view 
                               type="button"
                               role="switch"
                               aria-checked={active}
-                              aria-label={`${active ? "Remove" : "Add"} ${a.name}`}
+                              aria-label={`${active ? "Remove" : "Add"} ${a.name}${isTop4 ? " (Top 4 pick)" : ""}`}
                               onClick={() => onToggle(a.id)}
                               className={cn(
                                 "group inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-medium transition-colors",
@@ -227,12 +228,22 @@ export function ComparisonMatrix({ enabled, topId, onToggle, onSetEnabled, view 
                                 active
                                   ? "border-primary bg-primary text-primary-foreground"
                                   : "border-border bg-background text-foreground hover:bg-muted",
+                                isTop4 && !active && "ring-1 ring-amber-400/40",
                               )}
                             >
+                              {isTop4 && (
+                                <Star
+                                  className={cn(
+                                    "h-3 w-3 fill-amber-400 text-amber-400",
+                                    active && "fill-amber-200 text-amber-200",
+                                  )}
+                                  aria-hidden="true"
+                                />
+                              )}
                               {active ? (
                                 <Check className="h-3 w-3" aria-hidden="true" />
                               ) : (
-                                <Plus className="h-3 w-3 opacity-60 group-hover:opacity-100" aria-hidden="true" />
+                                !isTop4 && <Plus className="h-3 w-3 opacity-60 group-hover:opacity-100" aria-hidden="true" />
                               )}
                               {a.short}
                             </button>
