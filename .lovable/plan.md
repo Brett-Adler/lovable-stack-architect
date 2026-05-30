@@ -1,51 +1,60 @@
 ## Goal
 
-Give each "What we score on" card a small icon so the 12 criteria are scannable instead of a wall of text.
+The "Inputs you give" cards all use the same small blue icon tile, so the grid reads as monotone. Make each card visually distinct and more substantial.
 
-## Change
+## Changes — `src/pages/Landing.tsx` only
 
-Edit `src/pages/Landing.tsx` only — keep `src/data/architectures.ts` icon-free (presentation stays in the page).
+### 1. Refresh icon choices + add a per-card tint
 
-### 1. Add a local icon map keyed by `CriterionId`
+`TrendingUp` is currently reused on both "Expected MAU" and on the criteria grid. Swap and tighten:
 
-Import the needed icons from `lucide-react` (already used elsewhere) and define:
+| Card | Icon | Tint token |
+|---|---|---|
+| Stage | `Milestone` | brand-violet |
+| Expected MAU | `LineChart` | brand-blue |
+| Team skills | `Users` | brand-cyan (existing) or `--brand-magenta` |
+| Budget | `Wallet` | accent-amber (use `text-amber-500`) |
+| Compliance | `ShieldCheck` | emerald (`text-emerald-500`) |
+| Workloads | `Boxes` | brand-violet |
+| Lock-in tolerance | `KeyRound` | brand-magenta |
+| Time-to-market | `Rocket` | brand-blue |
+
+Encode the tint per item in the `INPUTS` array:
 
 ```ts
-const CRITERION_ICON: Record<CriterionId, LucideIcon> = {
-  "time-to-launch":  Rocket,
-  "dx-with-lovable": Sparkles,
-  "cost-small":      PiggyBank,
-  "cost-large":      TrendingUp,
-  "scaling-ceiling": Gauge,
-  "realtime":        Radio,
-  "storage":         FolderOpen,
-  "ai-compute":      Cpu,
-  "compliance":      ShieldCheck,
-  "lock-in":         Unlock,
-  "ops-burden":      Wrench,
-  "migration":       ArrowRightLeft,
+const INPUTS = [
+  { icon: Milestone, label: "Stage", body: "...", tint: "violet" },
+  { icon: LineChart, label: "Expected MAU", body: "...", tint: "blue" },
+  ...
+];
+const TINT: Record<string, string> = {
+  violet:  "bg-brand-violet/10 text-brand-violet",
+  blue:    "bg-brand-blue/10 text-brand-blue",
+  magenta: "bg-brand-magenta/10 text-brand-magenta",
+  amber:   "bg-amber-500/10 text-amber-600 dark:text-amber-400",
+  emerald: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400",
+  cyan:    "bg-cyan-500/10 text-cyan-600 dark:text-cyan-400",
 };
 ```
 
-### 2. Render the icon inside each card (lines ~330–338)
+(Will verify which `brand-*` tokens exist in `tailwind.config.ts` before wiring — fall back to `primary` / `accent` if any are missing.)
 
-Replace the existing card body with a layout that puts a small icon tile to the left of the label:
+### 2. Beef up the tile
+
+In the card body, replace the current `h-9 w-9` flat tile with a slightly larger gradient-backed tile and a bigger icon, so the imagery actually reads:
 
 ```tsx
-<div className="flex items-start gap-3 ...">
-  <div className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
-    <Icon className="h-4 w-4" />
-  </div>
-  <div className="min-w-0">
-    <div className="text-sm font-semibold text-foreground">{c.label}</div>
-    <p className="mt-1 text-xs leading-relaxed text-muted-foreground">{c.hint}</p>
-  </div>
+<div className={cn(
+  "mb-3 inline-flex h-12 w-12 items-center justify-center rounded-2xl ring-1 ring-inset ring-border/40 shadow-sm",
+  TINT[i.tint],
+)}>
+  <Icon className="h-5 w-5" strokeWidth={2.25} />
 </div>
 ```
 
-Keep the existing card chrome (rounded-2xl border, hover lift, shadow). Icon tile uses the same `bg-primary/10 text-primary` pattern already used in the Export & share cards and the inputs section so it feels native.
+No other layout changes — same grid, same padding, same hover lift.
 
 ## Out of scope
 
-- No new criteria, copy, or layout changes.
-- No icons on other criteria-mentioning surfaces (Methodology page, matrix headers) — only the "What we score on" grid on the home page, which is what the screenshot shows.
+- "What we score on" criteria cards (already iconified in the previous turn).
+- No new copy or per-card illustrations beyond the icon tile.
