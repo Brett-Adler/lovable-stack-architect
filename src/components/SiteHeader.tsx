@@ -15,24 +15,25 @@ export function SiteHeader({ children }: { children?: React.ReactNode }) {
 
   return (
     <header className="no-print sticky top-0 z-40 border-b border-border/60 bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/70">
-      <div className="mx-auto flex max-w-[1800px] flex-wrap items-center justify-between gap-3 px-3 py-3 sm:px-6 sm:py-4 2xl:px-10">
+      <div className="mx-auto flex max-w-[1800px] flex-wrap items-center justify-between gap-3 px-3 py-2 sm:px-6 sm:py-2.5 2xl:px-10">
         <Link to="/" className="flex min-w-0 items-center gap-2">
           <img
             src="/logo-mark.svg"
             alt="Lovable Stack Architect"
-            width={36}
-            height={36}
-            className="h-9 w-9 shrink-0 rounded-lg"
+            width={32}
+            height={32}
+            className="h-8 w-8 shrink-0 rounded-lg"
           />
           <div className="min-w-0">
-            <span className="block truncate text-base font-semibold leading-tight text-foreground sm:text-lg">
+            <span className="block truncate text-sm font-semibold leading-tight text-foreground sm:text-base">
               Lovable Stack Architect
             </span>
-            <span className="hidden text-xs text-muted-foreground sm:block">
+            <span className="hidden text-xs text-muted-foreground">
               Community template · not affiliated with Lovable
             </span>
           </div>
         </Link>
+
 
         <nav aria-label="Primary" className="order-3 w-full md:order-none md:w-auto">
           <ul className="grid w-full grid-cols-3 items-center gap-1 rounded-full border border-border/60 bg-card/60 p-1 text-sm shadow-sm backdrop-blur md:flex md:w-auto">
