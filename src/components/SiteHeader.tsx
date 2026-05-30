@@ -1,6 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ExternalLink, Sparkles } from "lucide-react";
+import { ExternalLink } from "lucide-react";
 import { LOVABLE_REMIX_URL } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 
