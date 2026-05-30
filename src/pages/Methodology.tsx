@@ -3,6 +3,8 @@ import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SeoHead } from "@/components/SeoHead";
 import { ScreenshotPlaceholder } from "@/components/ScreenshotPlaceholder";
+import appInputsPanelShot from "@/assets/shots/app-inputs-panel.png";
+import appMatrixShot from "@/assets/shots/app-matrix.png";
 import { CRITERIA, ARCHITECTURES, RUBRIC, type CriterionId, type ArchId } from "@/data/architectures";
 import { BRAND } from "@/lib/branding";
 import { LAST_REVIEWED, LOVABLE_REMIX_URL } from "@/lib/constants";
@@ -289,7 +291,7 @@ const Methodology = () => {
             </div>
           </div>
           <div className="mt-10">
-            <ScreenshotPlaceholder variant="inputs-panel" />
+            <ScreenshotPlaceholder variant="inputs-panel" src={appInputsPanelShot} />
           </div>
         </section>
 
@@ -335,8 +337,8 @@ const Methodology = () => {
           <div className="mt-10">
             <ScreenshotPlaceholder
               variant="matrix"
+              src={appMatrixShot}
               caption="How the rubric renders in the app"
-              hint="Capture the full matrix with one column (e.g. Lovable Cloud) highlighted and a rubric tooltip open on a single cell."
             />
           </div>
         </section>

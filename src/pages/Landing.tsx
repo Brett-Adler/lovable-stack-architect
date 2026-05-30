@@ -13,6 +13,8 @@ import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SeoHead } from "@/components/SeoHead";
 import { ScreenshotPlaceholder } from "@/components/ScreenshotPlaceholder";
+import appRecommendationShot from "@/assets/shots/app-recommendation.png";
+import appMatrixShot from "@/assets/shots/app-matrix.png";
 import { ARCHITECTURES, CRITERIA, type ArchId, type CriterionId } from "@/data/architectures";
 import { BRAND } from "@/lib/branding";
 
@@ -186,7 +188,7 @@ const Landing = () => {
 
         {/* Screenshot placeholder — tool overview */}
         <section className="mx-auto -mt-4 max-w-6xl px-4 sm:px-6">
-          <ScreenshotPlaceholder variant="recommendation" />
+          <ScreenshotPlaceholder variant="recommendation" src={appRecommendationShot} />
         </section>
 
 
@@ -446,7 +448,7 @@ const Landing = () => {
               The full-width matrix shows all 10 platforms scored across all 12 criteria.
             </p>
           </div>
-          <ScreenshotPlaceholder variant="matrix" />
+          <ScreenshotPlaceholder variant="matrix" src={appMatrixShot} />
         </section>
 
         {/* Use as a template */}
