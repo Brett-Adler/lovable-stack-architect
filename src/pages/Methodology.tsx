@@ -181,6 +181,8 @@ function ScoreLegend() {
     </div>
   );
 }
+
+const Methodology = () => {
   return (
     <div className="min-h-dvh bg-background">
       <SeoHead
