@@ -549,8 +549,26 @@ const Landing = () => {
         {/* About the builder */}
         <section className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
           <div className="rounded-3xl border border-border bg-card p-8 shadow-card sm:p-10">
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-              <div>
+            <div className="flex flex-col gap-6 sm:flex-row sm:items-center">
+              <a
+                href={AUTHOR_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group relative shrink-0 self-start"
+                aria-label={`${AUTHOR_HANDLE} on lovable.dev`}
+              >
+                <span
+                  aria-hidden="true"
+                  className="absolute -inset-1 rounded-full bg-gradient-primary opacity-60 blur-md transition-opacity group-hover:opacity-90"
+                />
+                <img
+                  src={brettPhoto}
+                  alt="Brett Adler"
+                  loading="lazy"
+                  className="relative h-24 w-24 rounded-full border-2 border-border object-cover shadow-card sm:h-28 sm:w-28"
+                />
+              </a>
+              <div className="flex-1">
                 <div className="inline-flex items-center gap-1.5 rounded-full border border-border bg-muted/40 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">
                   About the builder
                 </div>
@@ -568,17 +586,27 @@ const Landing = () => {
                 <p className="mt-2 max-w-xl text-sm text-muted-foreground sm:text-base">
                   Independent builder and Lovable superfan. Built this because friends kept asking which backend to use with Lovable and I didn't know enough to answer well. Figured other Lovable fans might want the same shortcut. Open to joining the Lovable team — say hi.
                 </p>
+                <div className="mt-5 flex flex-wrap items-center gap-3">
+                  <div className="rounded-full bg-gradient-primary p-[1.5px] shadow-elegant">
+                    <Button asChild size="lg" className="gap-2 rounded-full px-6">
+                      <a href={AUTHOR_URL} target="_blank" rel="noopener noreferrer">
+                        <img src="/logo-mark.svg" alt="" className="h-4 w-4 rounded-sm" />
+                        Lovable portfolio <ArrowRight className="h-4 w-4" />
+                      </a>
+                    </Button>
+                  </div>
+                  <Button
+                    asChild
+                    size="sm"
+                    variant="ghost"
+                    className="gap-1.5 rounded-full text-muted-foreground hover:text-foreground"
+                  >
+                    <a href={FIGMA_URL} target="_blank" rel="noopener noreferrer">
+                      Figma portfolio <ArrowRight className="h-3.5 w-3.5" />
+                    </a>
+                  </Button>
+                </div>
               </div>
-              <Button
-                asChild
-                size="lg"
-                variant="outline"
-                className="gap-2 rounded-full border-border bg-card px-6"
-              >
-                <a href={AUTHOR_URL} target="_blank" rel="noopener noreferrer">
-                  View Lovable profile <ArrowRight className="h-4 w-4" />
-                </a>
-              </Button>
             </div>
           </div>
         </section>
