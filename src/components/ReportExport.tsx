@@ -515,26 +515,125 @@ export function ReportExport(props: Props) {
     }
   };
 
+  const [hubOpen, setHubOpen] = useState(false);
+
+  const actions: {
+    id: string;
+    label: string;
+    description: string;
+    icon: typeof FileText;
+    onClick: () => void;
+    busy?: boolean;
+    hidden?: boolean;
+  }[] = [
+    {
+      id: "summary",
+      label: "Summary",
+      description: "In-app recap of your top pick and runners-up.",
+      icon: FileText,
+      onClick: () => {
+        setHubOpen(false);
+        setSummaryOpen(true);
+      },
+    },
+    {
+      id: "share",
+      label: "Share link",
+      description: "Copy a URL that encodes your scenario.",
+      icon: Link2,
+      hidden: !props.onShare,
+      onClick: async () => {
+        await props.onShare?.();
+        setHubOpen(false);
+      },
+    },
+    {
+      id: "pdf",
+      label: "Download PDF",
+      description: "Full multi-page report, saved to your device.",
+      icon: FileDown,
+      busy: pdfBusy,
+      onClick: () => {
+        downloadPdf();
+      },
+    },
+    {
+      id: "markdown",
+      label: "Download Markdown",
+      description: "Editable .md for docs, PRs, or notes.",
+      icon: Download,
+      onClick: () => {
+        downloadMd();
+        setHubOpen(false);
+      },
+    },
+    {
+      id: "preview",
+      label: "Preview / Print",
+      description: "See the report, then print or save as PDF.",
+      icon: Eye,
+      onClick: () => {
+        setHubOpen(false);
+        setOpen(true);
+      },
+    },
+  ];
+
   return (
     <>
-      <div className="no-print flex flex-wrap gap-2">
-        <Button onClick={() => setSummaryOpen(true)} variant="outline" size="sm" className="gap-1.5">
-          <FileText className="h-4 w-4" />
-          <span className="hidden sm:inline">Summary</span>
-        </Button>
-        <Button onClick={downloadPdf} disabled={pdfBusy} variant="outline" size="sm" className="gap-1.5">
-          {pdfBusy ? <Loader2 className="h-4 w-4 animate-spin" /> : <FileDown className="h-4 w-4" />}
-          <span className="hidden sm:inline">PDF</span>
-        </Button>
-        <Button onClick={downloadMd} variant="outline" size="sm" className="gap-1.5">
-          <Download className="h-4 w-4" />
-          <span className="hidden sm:inline">Markdown</span>
-        </Button>
-        <Button onClick={() => setOpen(true)} variant="outline" size="sm" className="gap-1.5">
-          <Eye className="h-4 w-4" />
-          <span className="hidden sm:inline">Preview / Print</span>
+      <div className="no-print">
+        <Button
+          onClick={() => setHubOpen(true)}
+          variant="outline"
+          size="sm"
+          className="gap-1.5"
+        >
+          <Share2 className="h-4 w-4" />
+          <span className="hidden sm:inline">Export &amp; share</span>
+          <span className="sm:hidden">Export</span>
         </Button>
       </div>
+
+      <Dialog open={hubOpen} onOpenChange={setHubOpen}>
+        <DialogContent className="no-print max-h-[90vh] max-w-lg overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Export &amp; share</DialogTitle>
+            <DialogDescription>
+              Take this recommendation with you, or send it to a teammate.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+            {actions
+              .filter((a) => !a.hidden)
+              .map((a) => {
+                const Icon = a.icon;
+                return (
+                  <button
+                    key={a.id}
+                    type="button"
+                    onClick={a.onClick}
+                    disabled={a.busy}
+                    className="group flex items-start gap-3 rounded-xl border border-border bg-card p-3 text-left shadow-card transition-all hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-elegant focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:cursor-not-allowed disabled:opacity-60"
+                  >
+                    <div className="mt-0.5 inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary transition-transform group-hover:scale-105">
+                      {a.busy ? (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      ) : (
+                        <Icon className="h-4 w-4" />
+                      )}
+                    </div>
+                    <div className="min-w-0">
+                      <div className="text-sm font-semibold text-foreground">{a.label}</div>
+                      <div className="mt-0.5 text-xs leading-relaxed text-muted-foreground">
+                        {a.description}
+                      </div>
+                    </div>
+                  </button>
+                );
+              })}
+          </div>
+        </DialogContent>
+      </Dialog>
 
       <SummaryDialog
         open={summaryOpen}
@@ -548,6 +647,7 @@ export function ReportExport(props: Props) {
           setOpen(true);
         }}
       />
+
 
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="no-print max-h-[90vh] max-w-3xl overflow-y-auto">
