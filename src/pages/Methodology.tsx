@@ -381,7 +381,10 @@ const Methodology = () => {
                       scope="row"
                       className="px-4 py-3 text-left text-sm font-medium text-foreground"
                     >
-                      {a.name}
+                      <span className="inline-flex items-center gap-2">
+                        <BrandMark archId={a.id} size="md" />
+                        {a.name}
+                      </span>
                     </th>
                     <td className="px-4 py-3 text-sm text-muted-foreground">{a.lastReviewed}</td>
                     <td className="px-4 py-3 text-right">
