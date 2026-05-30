@@ -1,40 +1,46 @@
-## Goal
+# Add platform brand logos across the app
 
-Replace the four `<ScreenshotPlaceholder>` instances on `/` and `/methodology` with real, framed screenshots of the live `/app`.
+The `BRAND` map in `src/lib/branding.ts` already maps every `ArchId` to a react-icons component (Supabase, Vercel, Netlify, AWS, GCP/Google, Azure, Heroku, Render, Fly.io) plus an SVG for Lovable Cloud. Only `Methodology.LeaderChip` uses it today. The plan is to surface those marks everywhere a platform is named, at consistent sizes.
 
-## Shots to capture
+## Step 1 — Single reusable `BrandMark` component
 
-| # | Where | Variant | Viewport | What's on screen |
-|---|---|---|---|---|
-| 1 | Landing, below hero | `recommendation` | 1440×900 | Full `/app` with all 3 columns visible (Inputs, Cost+Picker, Recommendation), default preset loaded, top of page |
-| 2 | Landing, "What you'll see" section | `matrix` | 1600×900 | Scrolled to "Full comparison matrix" section, all enabled columns visible |
-| 3 | Methodology, after the formula card | `inputs-panel` | 1000×1200 | Tight crop of just the Project Inputs panel (left column), default state |
-| 4 | Methodology, after criteria grid | `matrix` | 1600×900 | Same matrix shot as #2 (can reuse, or recapture with one column hovered) |
+Create `src/components/BrandMark.tsx`:
+- Props: `archId`, `size?: "sm" | "md" | "lg"` (12px / 16px / 20px), `colored?: boolean` (default true), `className?`.
+- Renders the `BRAND[archId].Icon` (or `<img src>` for Lovable Cloud) with `style={{ color }}` when colored, and a 1px-square fallback if missing.
+- Always `aria-hidden` — the platform name accompanies it everywhere.
 
-## Approach
+Refactor `Methodology.LeaderChip` to use it (drop the inline branching).
 
-1. **Capture raw shots** with `browser--screenshot` at the listed viewports. For the inputs-panel crop I'll screenshot full `/app` at 1440 wide, then crop to the inputs column with `image_tools--zoom_image` before framing.
-2. **Frame each shot** with the product-shot skill (`/tmp/generate.py`) using the `candy` preset (warm pink/peach to match brand magenta gradient). Save framed PNGs to `src/assets/shots/`:
-   - `app-recommendation.png`
-   - `app-matrix.png`
-   - `app-inputs-panel.png`
-3. **Extend `ScreenshotPlaceholder.tsx`** so it accepts an optional `src` prop. When `src` is provided, it renders the framed `<img>` (already has its own chrome + gradient from the product-shot output) with the caption underneath — and skips the "Placeholder" badge and dashed sketch. When `src` is absent, behavior is unchanged.
-4. **Wire the images in:**
-   - `src/pages/Landing.tsx` line 189 → `src={appRecommendation}`
-   - `src/pages/Landing.tsx` line 449 → `src={appMatrix}`
-   - `src/pages/Methodology.tsx` line 292 → `src={appInputsPanel}`
-   - `src/pages/Methodology.tsx` line 336 → `src={appMatrix}` (reuse)
-5. **Verify** by re-screenshotting `/` and `/methodology` at 1440 and 390 to confirm framed shots render crisp, are not clipped on mobile, and the captions still read well.
+## Step 2 — ComparisonMatrix (`src/components/ComparisonMatrix.tsx`)
 
-## Technical details
+- **Picker chips** (line ~213): prepend `<BrandMark size="sm" archId={a.id} />` before the `{a.short}` label. Keep the `Star` for Top-4 marker — but move it to the right of the label (or replace its current slot with the brand mark, and keep the Top-4 ring + star tooltip cue). Concretely: brand mark first, then check/plus, then label, and the gold ring + tooltip keep the Top-4 affordance. Drop the inline Star inside the chip to avoid clutter.
+- **Matrix column headers** (line ~296): add a `<BrandMark size="md" />` above the name row so each column is visually anchored by its logo. Keep the existing Star next to the name for Top-4.
+- **Legend line** "= Top 4 picks": unchanged (Star is generic, not a brand).
 
-- Imports use ES6 image imports from `src/assets/shots/` so Vite hashes them.
-- Framed PNGs already contain the mac window chrome, drop shadow, and mesh-gradient background — no extra wrapper card needed in the React component, just `<img class="mx-auto w-full max-w-5xl rounded-2xl" />` + `<figcaption>`.
-- Captions stay (helpful on Landing/Methodology), but the "To capture:" hint is dropped when a real `src` is provided since it's no longer needed.
-- Product-shot preset: `candy` (warm pink/peach/rose) to echo the brand magenta gradient used across the site. If it clashes with the white app shots in QA, fall back to `fog` (subtle silver) or `peach`.
+## Step 3 — RecommendationCard (`src/components/RecommendationCard.tsx`)
+
+- Top pick header (line ~63): render `<BrandMark size="lg" archId={top.arch.id} />` next to the `{top.arch.name}` h2.
+- Runner-up cards (line ~141): render `<BrandMark size="md" archId={r.arch.id} />` next to the runner name.
+
+## Step 4 — CostEstimate (`src/components/CostEstimate.tsx`)
+
+- Card header: add a small brand mark next to the current "Cost & scaling" / stage label so the user knows which platform the headline price belongs to (the component is rendered for `topId`).
+- "Compare at X scale" rows (line ~146): replace the plain text `{r.short}` with `<BrandMark size="sm" />` + `{r.short}` so each bar is identifiable at a glance.
+
+## Step 5 — Methodology cost-band sources table
+
+Locate the sources table on `/methodology` (the one shown in the screenshot — "Cost-band sources") and prepend a `<BrandMark size="sm" />` to each architecture cell so the logo accompanies "Lovable Cloud", "Self-host on Vercel", etc.
+
+## Sizes / visual rules
+
+- `sm` = 12px (inside chips, table rows)
+- `md` = 16px (matrix column heads, runner-ups, methodology rows)
+- `lg` = 20px (top pick h2, cost headline)
+- Always colored with the brand color from `BRAND[id].color`; Lovable Cloud uses its SVG so color is intrinsic.
+- No new dependencies — `react-icons` and `BRAND` already exist.
 
 ## Out of scope
 
-- No copy changes on Landing/Methodology beyond the swap.
-- No new screenshots on `/app` itself.
-- Mobile-specific shots — desktop shots scale down fine inside the framed PNG.
+- No data, scoring, or layout changes.
+- No new logos beyond what `BRAND` already provides.
+- No changes to `SiteHeader` / footer / landing hero.

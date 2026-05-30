@@ -4,6 +4,7 @@ import { stageFromMau } from "@/lib/scoring";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { ExternalLink, Info, Flag } from "lucide-react";
 import { GITHUB_URL } from "@/lib/constants";
+import { BrandMark } from "@/components/BrandMark";
 
 function parseBand(band: string): number | null {
   const cleaned = band.replace(/\$/g, "").replace(/\s/g, "");
@@ -59,7 +60,8 @@ export function CostEstimate({
   return (
     <div className="rounded-2xl border border-border bg-card p-5 shadow-card">
       <div className="flex items-center justify-between">
-        <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+        <h3 className="flex items-center gap-1.5 text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+          <BrandMark archId={archId} size="md" />
           Cost & scaling
         </h3>
         <span className="text-xs text-muted-foreground">at {stageLabel} scale</span>
@@ -143,7 +145,8 @@ export function CostEstimate({
               const pct = r.mid != null ? Math.max(4, (r.mid / maxMid) * 100) : 0;
               return (
                 <li key={r.id} className="flex items-center gap-2 text-xs">
-                  <div className="flex w-24 shrink-0 items-center gap-1.5">
+                  <div className="flex w-28 shrink-0 items-center gap-1.5">
+                    <BrandMark archId={r.id} size="sm" />
                     <span className={isTop ? "font-semibold text-foreground" : "text-foreground/80"}>
                       {r.short}
                     </span>

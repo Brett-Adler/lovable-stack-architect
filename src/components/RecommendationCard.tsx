@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { Link } from "react-router-dom";
 import { CheckCircle2, Info, ShieldAlert, Users } from "lucide-react";
+import { BrandMark } from "@/components/BrandMark";
 
 interface Props {
   results: RankedResult[];
@@ -60,7 +61,7 @@ export function RecommendationCard({ results, inputs, excluded = [], isNonTechni
               <div className="text-xs font-semibold uppercase tracking-wider text-primary">
                 Recommended
               </div>
-              <h2 className="mt-1 text-xl font-bold text-foreground">{top.arch.name}</h2>
+              <h2 className="mt-1 flex items-center gap-2 text-xl font-bold text-foreground"><BrandMark archId={top.arch.id} size="lg" />{top.arch.name}</h2>
               <p className="mt-1 text-sm text-muted-foreground">{top.arch.tagline}</p>
             </div>
             <ScoreBadge score={top.score} primary />
@@ -138,7 +139,7 @@ export function RecommendationCard({ results, inputs, excluded = [], isNonTechni
               <div className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
                 Runner-up #{i + 1}
               </div>
-              <h3 className="mt-0.5 text-base font-semibold text-foreground">{r.arch.name}</h3>
+              <h3 className="mt-0.5 flex items-center gap-1.5 text-base font-semibold text-foreground"><BrandMark archId={r.arch.id} size="md" />{r.arch.name}</h3>
               <p className="text-xs text-muted-foreground">{r.arch.tagline}</p>
             </div>
             <ScoreBadge score={r.score} />

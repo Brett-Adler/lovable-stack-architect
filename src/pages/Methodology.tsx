@@ -6,7 +6,7 @@ import { ScreenshotPlaceholder } from "@/components/ScreenshotPlaceholder";
 import appInputsPanelShot from "@/assets/shots/app-inputs-panel.png";
 import appMatrixShot from "@/assets/shots/app-matrix.png";
 import { CRITERIA, ARCHITECTURES, RUBRIC, type CriterionId, type ArchId } from "@/data/architectures";
-import { BRAND } from "@/lib/branding";
+import { BrandMark } from "@/components/BrandMark";
 import { LAST_REVIEWED, LOVABLE_REMIX_URL } from "@/lib/constants";
 import {
   ArrowLeft,
@@ -157,14 +157,9 @@ function Scoreboard({ criterionId }: { criterionId: CriterionId }) {
 
 function LeaderChip({ archId, score }: { archId: ArchId; score: number }) {
   const arch = ARCHITECTURES.find((a) => a.id === archId)!;
-  const brand = BRAND[archId];
   return (
     <div className="inline-flex items-center gap-1.5 rounded-full border border-border bg-muted/40 px-2 py-0.5 text-[11px] font-medium text-foreground/80">
-      {brand.src ? (
-        <img src={brand.src} alt="" className="h-3 w-3 rounded-sm" />
-      ) : brand.Icon ? (
-        <brand.Icon className="h-3 w-3" style={{ color: brand.color }} aria-hidden="true" />
-      ) : null}
+      <BrandMark archId={archId} size="sm" />
       <span className="truncate">{arch.short || arch.name}</span>
       <span className="text-muted-foreground">· {score}/5</span>
     </div>
@@ -385,7 +380,10 @@ const Methodology = () => {
                       scope="row"
                       className="px-4 py-3 text-left text-sm font-medium text-foreground"
                     >
-                      {a.name}
+                      <span className="inline-flex items-center gap-2">
+                        <BrandMark archId={a.id} size="md" />
+                        {a.name}
+                      </span>
                     </th>
                     <td className="px-4 py-3 text-sm text-muted-foreground">{a.lastReviewed}</td>
                     <td className="px-4 py-3 text-right">

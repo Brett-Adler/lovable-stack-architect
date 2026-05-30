@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
 import { Check, Plus, Star } from "lucide-react";
+import { BrandMark } from "@/components/BrandMark";
 
 interface Props {
   enabled: ArchId[];
@@ -231,6 +232,7 @@ export function ComparisonMatrix({ enabled, topId, onToggle, onSetEnabled, view 
                                 isTop4 && !active && "ring-1 ring-primary/40",
                               )}
                             >
+                              <BrandMark archId={a.id} size="sm" />
                               {isTop4 && (
                                 <Star
                                   className={cn(
@@ -299,6 +301,7 @@ export function ComparisonMatrix({ enabled, topId, onToggle, onSetEnabled, view 
                               Top pick
                             </span>
                           )}
+                          <BrandMark archId={a.id} size="md" />
                           <Tooltip>
                             <TooltipTrigger asChild>
                               <span className="inline-flex cursor-help items-center gap-1 whitespace-nowrap font-semibold text-foreground underline decoration-dotted decoration-muted-foreground/40 underline-offset-4">
