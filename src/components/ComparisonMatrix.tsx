@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
 import { Check, Plus, Star } from "lucide-react";
+import { BrandMark } from "@/components/BrandMark";
 
 interface Props {
   enabled: ArchId[];
