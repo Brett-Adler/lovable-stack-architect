@@ -15,28 +15,22 @@ export function SiteHeader({ children }: { children?: React.ReactNode }) {
 
   return (
     <header className="no-print sticky top-0 z-40 border-b border-border/60 bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/70">
-      <div className="mx-auto flex max-w-[1800px] flex-wrap items-center justify-between gap-3 px-3 py-2 sm:px-6 sm:py-2.5 2xl:px-10">
-        <Link to="/" className="flex min-w-0 items-center gap-2">
+      <div className="mx-auto flex h-12 max-w-[1800px] items-center justify-between gap-2 px-3 sm:h-14 sm:gap-3 sm:px-6 2xl:px-10">
+        <Link to="/" className="flex min-w-0 shrink-0 items-center gap-2">
           <img
             src="/logo-mark.svg"
             alt="Lovable Stack Architect"
             width={32}
             height={32}
-            className="h-8 w-8 shrink-0 rounded-lg"
+            className="h-7 w-7 shrink-0 rounded-lg sm:h-8 sm:w-8"
           />
-          <div className="min-w-0">
-            <span className="block truncate text-sm font-semibold leading-tight text-foreground sm:text-base">
-              Lovable Stack Architect
-            </span>
-            <span className="hidden text-xs text-muted-foreground">
-              Community template · not affiliated with Lovable
-            </span>
-          </div>
+          <span className="hidden truncate text-sm font-semibold leading-tight text-foreground sm:inline sm:text-base">
+            Lovable Stack Architect
+          </span>
         </Link>
 
-
-        <nav aria-label="Primary" className="order-3 w-full md:order-none md:w-auto">
-          <ul className="grid w-full grid-cols-3 items-center gap-1 rounded-full border border-border/60 bg-card/60 p-1 text-sm shadow-sm backdrop-blur md:flex md:w-auto">
+        <nav aria-label="Primary" className="min-w-0">
+          <ul className="flex items-center gap-1 rounded-full border border-border/60 bg-card/60 p-1 text-sm shadow-sm backdrop-blur">
             {NAV_ITEMS.map((item) => {
               const active = item.match(pathname);
               return (
@@ -45,7 +39,7 @@ export function SiteHeader({ children }: { children?: React.ReactNode }) {
                     to={item.to}
                     aria-current={active ? "page" : undefined}
                     className={cn(
-                      "flex w-full items-center justify-center whitespace-nowrap rounded-full px-3 py-1.5 text-xs font-medium transition-colors sm:text-sm md:inline-flex md:w-auto",
+                      "inline-flex items-center justify-center whitespace-nowrap rounded-full px-2.5 py-1 text-[11px] font-medium transition-colors sm:px-3 sm:py-1.5 sm:text-sm",
                       active
                         ? "bg-foreground text-background"
                         : "text-muted-foreground hover:bg-muted hover:text-foreground"
@@ -59,13 +53,14 @@ export function SiteHeader({ children }: { children?: React.ReactNode }) {
           </ul>
         </nav>
 
-        <div className="flex flex-wrap items-center gap-2">
+        <div className="flex shrink-0 items-center gap-2">
           {children}
           {LOVABLE_REMIX_URL && (
-            <Button asChild variant="outline" size="sm" className="gap-1.5">
+            <Button asChild variant="outline" size="sm" className="h-8 gap-1.5 px-2 sm:h-9 sm:px-3">
               <a href={LOVABLE_REMIX_URL} target="_blank" rel="noopener noreferrer">
-                <ExternalLink className="h-4 w-4" /> <span className="hidden sm:inline">Use this template</span>
-                <span className="sm:hidden">Remix</span>
+                <ExternalLink className="h-4 w-4" />
+                <span className="hidden sm:inline">Use this template</span>
+                <span className="sr-only sm:hidden">Use this template</span>
               </a>
             </Button>
           )}
