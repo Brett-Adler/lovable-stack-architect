@@ -131,19 +131,19 @@ const Index = () => {
       <section className="no-print relative overflow-hidden">
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute left-1/2 top-[-50%] -z-0 h-[260px] w-[900px] -translate-x-1/2 bg-gradient-glow blur-3xl"
+          className="pointer-events-none absolute left-1/2 top-[-50%] -z-0 hidden h-[260px] w-[900px] -translate-x-1/2 bg-gradient-glow blur-3xl md:block"
         />
-        <div className="relative z-10 mx-auto w-full max-w-[1800px] px-3 pt-4 pb-2 sm:px-6 sm:pt-6 sm:pb-4 2xl:px-10">
+        <div className="relative z-10 mx-auto w-full max-w-[1800px] px-3 pt-3 pb-2 sm:px-6 sm:pt-6 sm:pb-4 2xl:px-10">
           <div className="mx-auto max-w-3xl text-center">
-            <div className="mx-auto mb-3 inline-flex items-center gap-2 rounded-full border border-border bg-card/70 px-3 py-1 text-xs font-medium text-muted-foreground backdrop-blur-sm">
+            <div className="mx-auto mb-2 inline-flex items-center gap-2 rounded-full border border-border bg-card/70 px-3 py-1 text-xs font-medium text-muted-foreground backdrop-blur-sm sm:mb-3">
               <Sparkles className="h-3 w-3 text-brand-magenta" aria-hidden="true" />
               Stack comparator
             </div>
-            <h2 className="text-2xl font-extrabold leading-[1.05] tracking-[-0.03em] text-foreground sm:text-3xl md:text-4xl">
+            <h2 className="text-xl font-extrabold leading-[1.1] tracking-[-0.03em] text-foreground sm:text-3xl md:text-4xl">
               Tune your stack, see the{" "}
               <span className="text-gradient">right pick</span>
             </h2>
-            <p className="mx-auto mt-2 max-w-xl text-xs text-muted-foreground sm:text-sm">
+            <p className="mx-auto mt-1.5 max-w-xl text-xs text-muted-foreground sm:mt-2 sm:text-sm">
               Adjust your stage, team, budget, and workloads on the left. The recommendation,
               cost band, and rankings update live.
             </p>
@@ -264,20 +264,23 @@ const Index = () => {
           />
 
           <p className="text-[11px] leading-relaxed text-muted-foreground">
-            All four options assume Lovable handles design, frontend dev, testing, and deployment.
+            All options shown assume Lovable handles design, frontend dev, testing, and deployment.
             Costs are curated bands, not live quotes — verify against current pricing before committing.
           </p>
+
+          {/* On mobile, show the diagram inside the Pick tab so users see it with the recommendation */}
+          {topId && (
+            <div className="md:hidden">
+              <ArchitectureDiagram archId={topId} inputs={inputs} />
+            </div>
+          )}
         </aside>
       </main>
 
       {topId && (
         <section
           aria-labelledby="architecture-diagram-heading"
-          hidden={mobileTab !== "comparison"}
-          className={cn(
-            "mx-auto w-full max-w-[1800px] px-3 pb-2 sm:px-6 2xl:px-10",
-            mobileTab === "comparison" ? "block" : "hidden md:block",
-          )}
+          className="mx-auto hidden w-full max-w-[1800px] px-3 pb-2 sm:px-6 md:block 2xl:px-10"
         >
           <h2 id="architecture-diagram-heading" className="sr-only">Architecture diagram for top pick</h2>
           <ArchitectureDiagram archId={topId} inputs={inputs} />
