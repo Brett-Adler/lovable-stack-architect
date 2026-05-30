@@ -13,7 +13,10 @@ import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SeoHead } from "@/components/SeoHead";
 import { ScreenshotPlaceholder } from "@/components/ScreenshotPlaceholder";
-import { ARCHITECTURES, CRITERIA, type CriterionId } from "@/data/architectures";
+import { ARCHITECTURES, CRITERIA, type ArchId, type CriterionId } from "@/data/architectures";
+import { SiSupabase, SiVercel, SiNetlify, SiAmazon, SiGooglecloud, SiHeroku, SiRender, SiFlydotio } from "react-icons/si";
+import { VscAzure } from "react-icons/vsc";
+import type { IconType } from "react-icons";
 
 const CRITERION_ICON: Record<CriterionId, LucideIcon> = {
   "time-to-launch": Rocket,
