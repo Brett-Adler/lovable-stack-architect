@@ -14,7 +14,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
-import { Check, Plus } from "lucide-react";
+import { Check, Plus, Star } from "lucide-react";
 
 interface Props {
   enabled: ArchId[];
@@ -46,11 +46,24 @@ function ScoreDot({ score }: { score: number }) {
 }
 
 const ALL_IDS = ARCHITECTURES.map((a) => a.id);
+const TOP_4_IDS: ArchId[] = ["lovable-cloud", "lovable-supabase", "lovable-vercel", "lovable-aws"];
+const TOP_4_SET = new Set<ArchId>(TOP_4_IDS);
 
 export function ComparisonMatrix({ enabled, topId, onToggle, onSetEnabled, view = "all" }: Props) {
   const archs = ARCHITECTURES.filter((a) => enabled.includes(a.id));
   const allSelected = enabled.length === ALL_IDS.length;
   const noneSelected = enabled.length === 0;
+  const top4Selected =
+    enabled.length === TOP_4_IDS.length && TOP_4_IDS.every((id) => enabled.includes(id));
+  const isCustom = !allSelected && !noneSelected && !top4Selected;
+
+  const modeLabel = allSelected
+    ? `All ${ALL_IDS.length} selected`
+    : top4Selected
+    ? "Top 4 selected"
+    : noneSelected
+    ? "None selected"
+    : `Custom selection (${enabled.length} of ${ALL_IDS.length})`;
 
   const setCategory = (cat: ArchCategory, on: boolean) => {
     const inCat = ARCHITECTURES.filter((a) => a.category === cat).map((a) => a.id);
@@ -88,33 +101,39 @@ export function ComparisonMatrix({ enabled, topId, onToggle, onSetEnabled, view 
           <div className="flex flex-wrap gap-1.5">
             <Button
               type="button"
-              variant="outline"
+              variant={allSelected ? "default" : "outline"}
               size="sm"
-              className="h-8 text-xs"
+              className="h-8 gap-1 text-xs"
               onClick={() => onSetEnabled(ALL_IDS)}
-              disabled={allSelected}
+              aria-pressed={allSelected}
             >
+              {allSelected && <Check className="h-3 w-3" aria-hidden="true" />}
               Compare all
             </Button>
             <Button
               type="button"
-              variant="outline"
+              variant={top4Selected ? "default" : "outline"}
               size="sm"
-              className="h-8 text-xs"
-              onClick={() =>
-                onSetEnabled(["lovable-cloud", "lovable-supabase", "lovable-vercel", "lovable-aws"])
-              }
+              className="h-8 gap-1 text-xs"
+              onClick={() => onSetEnabled(TOP_4_IDS)}
+              aria-pressed={top4Selected}
             >
-              Popular 4
+              {top4Selected ? (
+                <Check className="h-3 w-3" aria-hidden="true" />
+              ) : (
+                <Star className="h-3 w-3 fill-amber-400 text-amber-400" aria-hidden="true" />
+              )}
+              Top 4
             </Button>
             <Button
               type="button"
-              variant="ghost"
+              variant={noneSelected ? "default" : "ghost"}
               size="sm"
-              className="h-8 text-xs"
+              className="h-8 gap-1 text-xs"
               onClick={() => onSetEnabled([])}
-              disabled={noneSelected}
+              aria-pressed={noneSelected}
             >
+              {noneSelected && <Check className="h-3 w-3" aria-hidden="true" />}
               Clear
             </Button>
           </div>
@@ -130,13 +149,32 @@ export function ComparisonMatrix({ enabled, topId, onToggle, onSetEnabled, view 
 
         {/* Picker region */}
         <div className="px-4 py-4 sm:px-5">
-          <div className="mb-3">
-            <h3 className="text-sm font-semibold text-foreground">
-              Choose options to compare
-            </h3>
-            <p className="text-xs text-muted-foreground">
-              {enabled.length} of {ALL_IDS.length} selected — tap any platform to add or remove it.
-            </p>
+          <div className="mb-3 flex flex-wrap items-baseline justify-between gap-2">
+            <div>
+              <h3 className="text-sm font-semibold text-foreground">
+                Choose options to compare
+              </h3>
+              <p className="text-xs text-muted-foreground">
+                Tap any platform to add or remove it.{" "}
+                <span className="inline-flex items-center gap-1 text-foreground/70">
+                  <Star className="h-3 w-3 fill-amber-400 text-amber-400" aria-hidden="true" />
+                  = Top 4 picks
+                </span>
+              </p>
+            </div>
+            <span
+              role="status"
+              aria-live="polite"
+              className={cn(
+                "rounded-full border px-2.5 py-0.5 text-[11px] font-semibold",
+                allSelected && "border-primary/30 bg-primary/10 text-primary",
+                top4Selected && "border-amber-400/40 bg-amber-400/10 text-amber-600 dark:text-amber-400",
+                noneSelected && "border-border bg-muted text-muted-foreground",
+                isCustom && "border-border bg-background text-foreground",
+              )}
+            >
+              {modeLabel}
+            </span>
           </div>
 
           <div className="space-y-3">
@@ -174,6 +212,7 @@ export function ComparisonMatrix({ enabled, topId, onToggle, onSetEnabled, view 
                   <div className="mt-2 flex flex-wrap gap-1.5">
                     {inCat.map((a) => {
                       const active = enabled.includes(a.id);
+                      const isTop4 = TOP_4_SET.has(a.id);
                       return (
                         <Tooltip key={a.id}>
                           <TooltipTrigger asChild>
@@ -181,7 +220,7 @@ export function ComparisonMatrix({ enabled, topId, onToggle, onSetEnabled, view 
                               type="button"
                               role="switch"
                               aria-checked={active}
-                              aria-label={`${active ? "Remove" : "Add"} ${a.name}`}
+                              aria-label={`${active ? "Remove" : "Add"} ${a.name}${isTop4 ? " (Top 4 pick)" : ""}`}
                               onClick={() => onToggle(a.id)}
                               className={cn(
                                 "group inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-medium transition-colors",
@@ -189,12 +228,22 @@ export function ComparisonMatrix({ enabled, topId, onToggle, onSetEnabled, view 
                                 active
                                   ? "border-primary bg-primary text-primary-foreground"
                                   : "border-border bg-background text-foreground hover:bg-muted",
+                                isTop4 && !active && "ring-1 ring-amber-400/40",
                               )}
                             >
+                              {isTop4 && (
+                                <Star
+                                  className={cn(
+                                    "h-3 w-3 fill-amber-400 text-amber-400",
+                                    active && "fill-amber-200 text-amber-200",
+                                  )}
+                                  aria-hidden="true"
+                                />
+                              )}
                               {active ? (
                                 <Check className="h-3 w-3" aria-hidden="true" />
                               ) : (
-                                <Plus className="h-3 w-3 opacity-60 group-hover:opacity-100" aria-hidden="true" />
+                                !isTop4 && <Plus className="h-3 w-3 opacity-60 group-hover:opacity-100" aria-hidden="true" />
                               )}
                               {a.short}
                             </button>
@@ -252,7 +301,13 @@ export function ComparisonMatrix({ enabled, topId, onToggle, onSetEnabled, view 
                           )}
                           <Tooltip>
                             <TooltipTrigger asChild>
-                              <span className="cursor-help whitespace-nowrap font-semibold text-foreground underline decoration-dotted decoration-muted-foreground/40 underline-offset-4">
+                              <span className="inline-flex cursor-help items-center gap-1 whitespace-nowrap font-semibold text-foreground underline decoration-dotted decoration-muted-foreground/40 underline-offset-4">
+                                {TOP_4_SET.has(a.id) && (
+                                  <Star
+                                    className="h-3 w-3 fill-amber-400 text-amber-400"
+                                    aria-label="Top 4 pick"
+                                  />
+                                )}
                                 {a.short}
                               </span>
                             </TooltipTrigger>
