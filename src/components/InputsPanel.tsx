@@ -16,6 +16,8 @@ import { cn } from "@/lib/utils";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { ChevronDown } from "lucide-react";
 import { useState } from "react";
+import { toast } from "sonner";
+
 
 interface Props {
   inputs: Inputs;
@@ -128,7 +130,14 @@ export function InputsPanel({ inputs, onChange }: Props) {
               variant="ghost"
               size="sm"
               className="h-7 text-xs focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-              onClick={() => onChange(DEFAULT_INPUTS)}
+              onClick={() => {
+                const previous = inputs;
+                onChange(DEFAULT_INPUTS);
+                toast("Inputs reset to defaults", {
+                  action: { label: "Undo", onClick: () => onChange(previous) },
+                });
+              }}
+
               aria-label="Reset all project inputs to defaults"
             >
               Reset inputs
