@@ -17,7 +17,7 @@ if (typeof window !== "undefined") {
     sessionStorage.setItem(RELOAD_KEY, String(Date.now()));
     window.location.reload();
   };
-  window.addEventListener("vite:preloadError", (e) => handleStaleChunk((e as CustomEvent).detail));
+  window.addEventListener("vite:preloadError", (e) => handleStaleChunk((e as unknown as { payload?: unknown }).payload));
   window.addEventListener("error", (e) => handleStaleChunk(e.message));
   window.addEventListener("unhandledrejection", (e) => handleStaleChunk(e.reason));
 }
