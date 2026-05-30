@@ -20,7 +20,7 @@ export function SiteFooter() {
                 GitHub
               </a>
             )}
-            <a href="https://lovable.dev" target="_blank" rel="noopener noreferrer" className="hover:text-foreground">
+            <a href={AUTHOR_URL} target="_blank" rel="noopener noreferrer" className="hover:text-foreground">
               Built with Lovable
             </a>
           </nav>
