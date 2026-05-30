@@ -20,6 +20,7 @@ interface Props {
   inputs: Inputs;
   results: RankedResult[];
   excluded?: { arch: Architecture; reason: string }[];
+  onShare?: () => void | Promise<void>;
 }
 
 const STAGE_LABEL: Record<string, string> = {
