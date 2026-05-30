@@ -1,30 +1,34 @@
-## Goal
+# Logo redesign — Stacked heart
 
-In the "Side-by-side comparison" controls, always make it obvious which selection state is active (All, None, or Top 4) and visually mark which platforms are the Top 4.
+Replace the purple pyramid mark with a new SVG mark that reads as a heart silhouette built from three stacked architecture slabs. Borrows Lovable's pink → orange → blue gradient and rounded-heart geometry, while staying clearly distinct (heart is *constructed from stack layers*, not a flat heart-arrow). Wordmark and subtitle ("Community template · not affiliated with Lovable") stay unchanged.
 
-## Changes — `src/components/ComparisonMatrix.tsx`
+## Mark concept
 
-### 1. Define and reuse the Top 4 list
-- Add a module-level `const TOP_4_IDS: ArchId[] = ["lovable-cloud", "lovable-supabase", "lovable-vercel", "lovable-aws"]` so it isn't duplicated.
-- Derive three state booleans next to the existing `allSelected` / `noneSelected`:
-  - `top4Selected` = enabled set equals `TOP_4_IDS` exactly (same length, same members).
+```text
+     ░░░░     ░░░░       <- two rounded lobes (top slab, split = "edge / client")
+   ████████████████      <- middle slab (api / functions)
+  ██████████████████     <- bottom slab (database) — widest, tapers to a soft point
+        ▼                <- bottom of heart formed by the slab taper
+```
 
-### 2. Make the three preset buttons reflect active state
-Currently "Compare all", "Popular 4", "Clear" look identical until disabled. Update so the matching button is visibly the active state:
-- Rename "Popular 4" → **"Top 4"** to match user vocabulary.
-- The button whose state matches the current selection gets `variant="default"` (filled primary) plus a small `Check` icon; the other two stay `variant="outline"` / `ghost`.
-- All three remain clickable (don't disable the active one) so the state is clear without dead-feeling controls — except "Clear" stays disabled when nothing is selected (preserves current behavior).
-- Add a short live-region label just under the buttons: when `allSelected` show "All 10 selected", when `top4Selected` show "Top 4 selected", when `noneSelected` show "None selected", otherwise show "Custom selection (X of 10)". This replaces / augments the existing "X of 10 selected — tap any platform…" line so the mode is named, not just counted.
+- Three horizontal rounded slabs, decreasing-then-tapering, arranged so the silhouette reads as a heart.
+- Slabs are filled with the Lovable-style gradient: `#FF4D8D` (pink) → `#FF7A45` (orange) → `#4D7CFF` (blue), diagonal.
+- Subtle inner highlight (white @ 12%) on the top slab for dimension.
+- Tiny spark dot above the top notch — preserves the "architect / apex" cue from today's mark.
+- Rounded-square container kept (matches current chrome), but background becomes soft off-white `#FFF7F4` with a 1px `#FFD9CB` ring — lets the gradient mark pop and signals "not the Lovable purple tile."
 
-### 3. Mark the Top 4 in the picker
-- In the per-platform chip loop, compute `isTop4 = TOP_4_IDS.includes(a.id)`.
-- When `isTop4` and not active: add a subtle ring + a tiny "★" or "Top 4" micro-badge inside the chip (e.g. an 8px star glyph before the name, `text-amber-500`).
-- When `isTop4` and active: keep filled primary styling but still show the star so the designation survives selection.
-- Add a one-line legend under the category list: `★ = Top 4 picks (most-asked combinations).`
+## Files to change
 
-### 4. Mark the Top 4 in the matrix header
-- In the matrix region (lines ~217+, not fully shown), when a column's arch id is in `TOP_4_IDS`, prepend the same ★ glyph to the column header so the designation is consistent between picker and matrix. No layout changes.
+1. `src/assets/logo-mark.svg` — rewrite as the new stacked-heart mark (square, 512×512 viewBox, gradient defs).
+2. `public/logo-mark.svg` — mirror the same SVG (used by favicon / OG references).
+3. `public/logo.svg` — rewrite the horizontal lockup: new mark on the left, existing "Lovable Stack Architect" wordmark on the right, unchanged type.
+4. `public/og-image.svg` — swap embedded mark to the new one (keep layout/copy).
+5. `index.html` — no code change needed if it already references `/logo-mark.svg`; verify only.
+
+No component code changes. Disclaimer subtitle stays as-is per your pick.
 
 ## Out of scope
-- No data model changes, no new presets, no routing/state changes outside this component.
-- Copy in the "Heads up" strip is unchanged.
+
+- No favicon `.ico` regeneration (SVG favicon already covers modern browsers).
+- No header layout changes, no chip, no wordmark restyle.
+- No raster `brett-adler.png` or other asset touched.
