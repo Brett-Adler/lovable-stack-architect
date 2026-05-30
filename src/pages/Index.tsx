@@ -139,6 +139,32 @@ const Index = () => {
       </SiteHeader>
       <h1 className="sr-only">Lovable Stack Architect — Pick the right backend stack for your Lovable app</h1>
 
+      {/* Hero band — matches Landing/Methodology language */}
+      <section className="no-print relative overflow-hidden">
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute left-1/2 top-[-30%] -z-0 h-[420px] w-[900px] -translate-x-1/2 bg-gradient-glow blur-3xl"
+        />
+        <div className="relative z-10 mx-auto w-full max-w-[1800px] px-3 pt-8 sm:px-6 sm:pt-12 2xl:px-10">
+          <div className="mx-auto max-w-3xl text-center">
+            <div className="mx-auto mb-5 inline-flex items-center gap-2 rounded-full border border-border bg-card/70 px-3 py-1 text-xs font-medium text-muted-foreground backdrop-blur-sm">
+              <Sparkles className="h-3 w-3 text-brand-magenta" aria-hidden="true" />
+              Stack comparator
+            </div>
+            <h2 className="text-3xl font-extrabold leading-[1.05] tracking-[-0.03em] text-foreground sm:text-4xl md:text-5xl">
+              Tune your stack, see the{" "}
+              <span className="text-gradient">right pick</span>
+            </h2>
+            <p className="mx-auto mt-3 max-w-xl text-sm text-muted-foreground sm:text-base">
+              Adjust your stage, team, budget, and workloads on the left. The recommendation,
+              cost band, and rankings update live.
+            </p>
+          </div>
+        </div>
+      </section>
+
+
+
 
       <main id="main-content" className="mx-auto grid w-full max-w-[1800px] gap-4 px-3 py-4 pb-24 sm:gap-6 sm:px-6 sm:py-6 md:grid-cols-[240px_minmax(0,1fr)] md:pb-6 lg:grid-cols-[260px_minmax(0,1fr)_320px] xl:grid-cols-[300px_minmax(0,1fr)_360px] 2xl:gap-8 2xl:px-10 2xl:grid-cols-[320px_minmax(0,1fr)_400px]">
         <div
