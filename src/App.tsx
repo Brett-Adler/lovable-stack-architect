@@ -1,15 +1,14 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { lazy, Suspense, useEffect } from "react";
+import { useEffect } from "react";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import Landing from "./pages/Landing.tsx";
 import NotFound from "./pages/NotFound.tsx";
+import Index from "./pages/Index.tsx";
+import Methodology from "./pages/Methodology.tsx";
 import { initAnalytics } from "@/lib/analytics";
-
-const Index = lazy(() => import("./pages/Index.tsx"));
-const Methodology = lazy(() => import("./pages/Methodology.tsx"));
 
 const queryClient = new QueryClient();
 
@@ -27,15 +26,13 @@ const App = () => {
         >
           Skip to main content
         </a>
-        <Suspense fallback={<div className="min-h-dvh bg-gradient-subtle" />}>
-          <Routes>
-            <Route path="/" element={<Landing />} />
-            <Route path="/app" element={<Index />} />
-            <Route path="/methodology" element={<Methodology />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </Suspense>
+        <Routes>
+          <Route path="/" element={<Landing />} />
+          <Route path="/app" element={<Index />} />
+          <Route path="/methodology" element={<Methodology />} />
+          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+          <Route path="*" element={<NotFound />} />
+        </Routes>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
