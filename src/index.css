@@ -131,6 +131,9 @@
   .bg-gradient-glow {
     background: var(--gradient-glow);
   }
+  .bg-gradient-aurora {
+    background: var(--gradient-aurora);
+  }
   .shadow-elegant {
     box-shadow: var(--shadow-elegant);
   }
