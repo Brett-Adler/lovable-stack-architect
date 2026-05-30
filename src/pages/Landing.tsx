@@ -32,15 +32,24 @@ const CRITERION_ICON: Record<CriterionId, LucideIcon> = {
 import { AUTHOR_HANDLE, AUTHOR_URL, LAST_REVIEWED, LOVABLE_REMIX_URL } from "@/lib/constants";
 import { PRESETS, presetShareUrl } from "@/lib/presets";
 
+const INPUT_TINT: Record<string, string> = {
+  blue: "bg-brand-blue/10 text-brand-blue",
+  magenta: "bg-brand-magenta/10 text-brand-magenta",
+  orange: "bg-brand-orange/10 text-brand-orange",
+  amber: "bg-amber-500/10 text-amber-600 dark:text-amber-400",
+  emerald: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400",
+  sky: "bg-sky-500/10 text-sky-600 dark:text-sky-400",
+};
+
 const INPUTS = [
-  { icon: Layers, label: "Stage", body: "Prototype, MVP, growth, or scale — sets what matters most." },
-  { icon: TrendingUp, label: "Expected MAU", body: "Monthly active users — drives the scaling and cost-at-scale weights." },
-  { icon: Users, label: "Team skills", body: "Frontend, backend, DevOps, data, or none — shifts ops-burden weight." },
-  { icon: Wallet, label: "Budget", body: "Low, medium, or high — tunes cost-at-small vs cost-at-large emphasis." },
-  { icon: ShieldCheck, label: "Compliance", body: "GDPR, HIPAA, SOC 2, residency — HIPAA / SOC 2 / residency act as hard filters." },
-  { icon: Workflow, label: "Workloads", body: "CRUD, realtime, files, AI, background jobs, heavy compute." },
-  { icon: Lock, label: "Lock-in tolerance", body: "How willing you are to be tied to one vendor." },
-  { icon: Zap, label: "Time-to-market", body: "1–5 priority — how much speed-to-launch should dominate the ranking." },
+  { icon: Milestone, label: "Stage", body: "Prototype, MVP, growth, or scale — sets what matters most.", tint: "magenta" },
+  { icon: LineChart, label: "Expected MAU", body: "Monthly active users — drives the scaling and cost-at-scale weights.", tint: "blue" },
+  { icon: Users, label: "Team skills", body: "Frontend, backend, DevOps, data, or none — shifts ops-burden weight.", tint: "sky" },
+  { icon: Wallet, label: "Budget", body: "Low, medium, or high — tunes cost-at-small vs cost-at-large emphasis.", tint: "amber" },
+  { icon: ShieldCheck, label: "Compliance", body: "GDPR, HIPAA, SOC 2, residency — HIPAA / SOC 2 / residency act as hard filters.", tint: "emerald" },
+  { icon: Boxes, label: "Workloads", body: "CRUD, realtime, files, AI, background jobs, heavy compute.", tint: "magenta" },
+  { icon: KeyRound, label: "Lock-in tolerance", body: "How willing you are to be tied to one vendor.", tint: "orange" },
+  { icon: Rocket, label: "Time-to-market", body: "1–5 priority — how much speed-to-launch should dominate the ranking.", tint: "blue" },
 ];
 
 const FEATURES = [
