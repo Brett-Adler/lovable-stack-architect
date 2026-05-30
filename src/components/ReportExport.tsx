@@ -628,42 +628,4 @@ export function ReportExport(props: Props) {
 }
 
 
-      {/* Always-mounted, screen-hidden, print-visible report. */}
-      {typeof document !== "undefined" &&
-        createPortal(
-          <div id="print-root" aria-hidden="true" className="hidden print:block">
-            <div style={{ width: "100%", padding: "0", color: "#0a0a0a" }}>
-              <ReportContent {...props} />
-            </div>
-          </div>,
-          document.body,
-        )}
-
-      {/* Offscreen render source for html2canvas PDF export. White bg, fixed width. */}
-      {typeof document !== "undefined" &&
-        createPortal(
-          <div
-            aria-hidden="true"
-            className="no-print"
-            style={{
-              position: "fixed",
-              left: "-10000px",
-              top: 0,
-              width: "800px",
-              background: "#ffffff",
-              color: "#0a0a0a",
-              pointerEvents: "none",
-            }}
-          >
-            <div ref={pdfSourceRef} style={{ padding: "32px", background: "#ffffff" }}>
-              <ReportContent {...props} />
-            </div>
-          </div>,
-          document.body,
-        )}
-
-    </>
-  );
-}
-
 export { buildMarkdown };
