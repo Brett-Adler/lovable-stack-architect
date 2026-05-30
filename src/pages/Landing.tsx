@@ -330,8 +330,11 @@ const Landing = () => {
                   key={i.label}
                   className="rounded-3xl border border-border bg-card p-5 shadow-card transition-all hover:-translate-y-0.5 hover:shadow-elegant"
                 >
-                  <div className="mb-3 inline-flex h-9 w-9 items-center justify-center rounded-xl bg-brand-blue/10 text-brand-blue">
-                    <Icon className="h-4 w-4" />
+                  <div className={cn(
+                    "mb-3 inline-flex h-12 w-12 items-center justify-center rounded-2xl ring-1 ring-inset ring-border/40 shadow-sm",
+                    INPUT_TINT[i.tint],
+                  )}>
+                    <Icon className="h-5 w-5" strokeWidth={2.25} />
                   </div>
                   <div className="text-sm font-semibold text-foreground">{i.label}</div>
                   <p className="mt-1 text-xs leading-relaxed text-muted-foreground">{i.body}</p>
