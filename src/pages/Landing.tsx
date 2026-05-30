@@ -35,6 +35,9 @@ const CRITERION_ICON: Record<CriterionId, LucideIcon> = {
 };
 import { AUTHOR_HANDLE, AUTHOR_URL, LAST_REVIEWED, LOVABLE_REMIX_URL } from "@/lib/constants";
 import { PRESETS, presetShareUrl } from "@/lib/presets";
+import brettPhoto from "@/assets/brett-adler.png";
+
+const FIGMA_URL = "https://www.figma.com/@brettadler";
 
 const INPUT_TINT: Record<string, string> = {
   blue: "bg-brand-blue/10 text-brand-blue",
