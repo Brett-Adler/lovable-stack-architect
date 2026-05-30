@@ -1,28 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 280" role="img" aria-label="Lovable Stack Architect">
   <defs>
-    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#5B2BE6"/>
-      <stop offset="55%" stop-color="#6E3CF1"/>
-      <stop offset="100%" stop-color="#A371FF"/>
+    <linearGradient id="stackGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#FF4D8D"/>
+      <stop offset="55%" stop-color="#FF7A45"/>
+      <stop offset="100%" stop-color="#4D7CFF"/>
     </linearGradient>
-    <linearGradient id="sheen" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.18"/>
-      <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0"/>
-    </linearGradient>
+    <clipPath id="heartClipLockup">
+      <path d="M140,242 C140,242 30,177 30,109 C30,70 62,49 95,49 C116,49 132,62 140,82 C148,62 164,49 185,49 C218,49 250,70 250,109 C250,177 140,242 140,242 Z"/>
+    </clipPath>
   </defs>
 
   <!-- Mark -->
   <g transform="translate(20,20)">
-    <rect x="0" y="0" width="240" height="240" rx="52" fill="url(#bg)"/>
-    <rect x="0" y="0" width="240" height="240" rx="52" fill="url(#sheen)"/>
-    <g fill="#FFFFFF">
-      <rect x="42" y="160" width="156" height="22" rx="11"/>
-      <rect x="62" y="124" width="116" height="22" rx="11" opacity="0.92"/>
-      <rect x="82" y="88"  width="76"  height="22" rx="11" opacity="0.84"/>
-      <path d="M120 42 L130 70 L120 80 L110 70 Z" opacity="0.96"/>
-      <circle cx="120" cy="60" r="3.2" opacity="0.9"/>
+    <rect x="0" y="0" width="240" height="240" rx="52" fill="#FFF7F4"/>
+    <rect x="0.5" y="0.5" width="239" height="239" rx="51.5" fill="none" stroke="#FFD9CB"/>
+    <g clip-path="url(#heartClipLockup)">
+      <rect x="20" y="170" width="240" height="80" fill="url(#stackGrad)"/>
+      <rect x="20" y="108" width="240" height="60" fill="url(#stackGrad)"/>
+      <rect x="20" y="44" width="240" height="62" fill="url(#stackGrad)"/>
+      <rect x="20" y="106" width="240" height="2.5" fill="#FFF7F4"/>
+      <rect x="20" y="168" width="240" height="2.5" fill="#FFF7F4"/>
     </g>
+    <path d="M140,242 C140,242 30,177 30,109 C30,70 62,49 95,49 C116,49 132,62 140,82 C148,62 164,49 185,49 C218,49 250,70 250,109 C250,177 140,242 140,242 Z"
+          fill="none" stroke="#B33A6B" stroke-opacity="0.18" stroke-width="1.5"/>
+    <path d="M140 18 L147 36 L140 44 L133 36 Z" fill="#FF7A45" opacity="0.95"/>
+    <circle cx="140" cy="30" r="2.4" fill="#FFFFFF"/>
   </g>
 
   <!-- Wordmark -->
