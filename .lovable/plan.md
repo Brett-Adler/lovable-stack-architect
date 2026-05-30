@@ -1,24 +1,73 @@
 ## Goal
 
-Make it visually clear that `@brettadler` is a Lovable profile (lovable.dev URL) wherever the handle appears, so visitors trust the link before they click.
+The "Export & share" hub currently mixes in-app browsing (Summary dialog, HTML "preview" that's really a print-staging screen) with actual exports. Strip it down to exports only, and make share-link copying obvious and clean.
 
-## Changes
+## What changes in `src/components/ReportExport.tsx`
 
-### 1. `src/components/SiteFooter.tsx` (line ~36)
-Change displayed link text from `{AUTHOR_HANDLE}` to `{AUTHOR_HANDLE} on lovable.dev` so the trust signal is visible without hovering. `href` already points to `AUTHOR_URL`.
+### 1. Reduce the hub to 4 actions
 
-### 2. `src/pages/Landing.tsx`
-- **Hero byline (~line 121):** same change — show `@brettadler on lovable.dev` as the link text.
-- **Built-by line (~line 475–487):** same change.
-- **FAQ "Is this an official Lovable product?" answer (line 61):** the answer is currently a plain string rendered inside `AccordionContent`. Convert this single FAQ item so its `a` field can be either a string or a JSX node, and render the @brettadler mention as an inline link to `AUTHOR_URL` with visible "on lovable.dev" suffix. Minimal type change: `a: string | React.ReactNode` and render directly inside `AccordionContent`.
+Remove these two cards from the export hub grid:
+- **Summary** — redundant; the RecommendationCard already shows the in-app recap on the page.
+- **Preview / Print** — confusing combo. "Preview" should mean the full report, not a print-staging modal.
 
-### 3. `src/components/ReportExport.tsx` (Markdown + PDF footer, lines 46 & 166)
-Append the profile URL alongside the handle so exported reports also carry the trust signal: `Maintained by @brettadler (https://lovable.dev/@brettadler)` in Markdown, and a real `<a>` in the PDF/HTML footer.
+Keep / rework:
+- **Copy share link** (was "Share link") — new behavior below.
+- **Download PDF** — unchanged.
+- **Download Markdown** — unchanged.
+- **View full report** (replaces "Preview / Print") — opens the full report in a new browser tab so the user can read, scroll, and use the browser's own Print/Save-as-PDF if they want. No nested dialog, no separate Print button in the app.
 
-### 4. `public/llms.txt` (line 5)
-Append the URL after the handle: `by @brettadler (https://lovable.dev/@brettadler)`.
+Delete the `SummaryDialog` component entirely and its state (`summaryOpen`, `onOpenFullPreview` plumbing).
+
+### 2. Rework "Share link" UX
+
+Today, "Share link" calls `onShare` in `Index.tsx`, which writes to clipboard and shows a toast — or on failure, dumps the giant URL into a `toast.message` (the screenshot the user showed). That's the messy part.
+
+New behavior: clicking the **Copy share link** card opens a small dialog containing:
+- A readonly `<input>` pre-filled with the full URL, auto-selected on open.
+- A primary **Copy** button next to it (changes to "Copied ✓" for 2s on success).
+- One-line helper text: "Anyone with this link sees your exact scenario."
+
+Compute the URL locally in `ReportExport` from the existing `s` query param logic — easiest is to pass the share URL (or a `getShareUrl()` function) down from `Index.tsx` instead of the current `onShare` callback that does its own clipboard/toast work. New prop: `shareUrl: string` (recomputed on every render from `state`). Drop `onShare`.
+
+This replaces the toast-with-wrapped-URL fallback with a proper, selectable, copyable field.
+
+### 3. "View full report" → new tab
+
+Instead of the current preview modal (`open`/`setOpen` + the Report preview dialog with Close / Download PDF / Print buttons), render the full report into a new tab:
+- On click, `window.open("", "_blank")`, then write a minimal HTML document containing the same `ReportContent` markup (server-rendered via `renderToStaticMarkup` from `react-dom/server`) plus a small inline stylesheet for print-friendly typography.
+- The user then uses the browser's own print / save-as-PDF if they want a hard copy. No in-app Print button.
+
+This removes the entire `Report preview` Dialog and its footer.
+
+### 4. Keep but simplify the offscreen PDF source
+
+The hidden offscreen `<div ref={pdfSourceRef}>` that html2canvas captures stays — it's how Download PDF works. Keep the hidden print-root portal too so direct `Ctrl+P` on the app still produces a clean report (unrelated to the export hub).
+
+## What changes in `src/pages/Index.tsx`
+
+Replace the `onShare` plumbing:
+
+```ts
+// before
+<ReportExport ... onShare={shareLink} />
+
+// after
+const shareUrl = useMemo(() => {
+  const compressed = LZString.compressToEncodedURIComponent(JSON.stringify(state));
+  return `${window.location.origin}${window.location.pathname}?s=${compressed}`;
+}, [state]);
+
+<ReportExport ... shareUrl={shareUrl} />
+```
+
+The existing `shareLink()` function can be removed (its analytics `track("Share link", ...)` call moves into `ReportExport`'s Copy handler).
 
 ## Out of scope
 
-- `AUTHOR_URL` constant — already correct.
-- No new components, no styling overhauls; reuse existing dotted-underline link styles.
+- No changes to PDF/Markdown content or `buildMarkdown`.
+- No changes to `RecommendationCard` (that's the in-app summary the user referenced).
+- No styling overhaul of the hub cards beyond removing two of them.
+
+## Result
+
+The Export & share dialog becomes a tidy 2×2 grid (Copy share link · Download PDF · Download Markdown · View full report). "Preview" means the real, full report opened in a new tab. Copying the share link is a one-click action with a visible, selectable URL — no more giant URL inside a toast.

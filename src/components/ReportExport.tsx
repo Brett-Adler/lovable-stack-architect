@@ -1,20 +1,22 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import { renderToStaticMarkup } from "react-dom/server";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Download, Eye, Printer, FileDown, FileText, Loader2, Share2, Link2 } from "lucide-react";
+import { Download, ExternalLink, FileDown, Loader2, Share2, Link2, Check, Copy } from "lucide-react";
 import { CRITERIA, RUBRIC, type Architecture } from "@/data/architectures";
 import type { Inputs, RankedResult } from "@/lib/scoring";
 import { stageFromMau } from "@/lib/scoring";
 import { toast } from "sonner";
 import { LAST_REVIEWED, SITE_URL, AUTHOR_HANDLE } from "@/lib/constants";
+import { track } from "@/lib/analytics";
 
 interface Props {
   inputs: Inputs;
