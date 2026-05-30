@@ -1,28 +1,64 @@
-# Truly sticky, single-row header at every viewport
+## What's wrong today
 
-The header already has `sticky top-0` but on mobile it wraps to a second row (the pill nav is `order-3 w-full md:order-none`), so it stretches to ~110px tall and reads more like a banner than a sticky bar. On `/app` that also pushes the mobile section-tab nav (offset `top-12`) underneath the header.
+The file `public/logo-mark.svg` is actually the **Stack Architect's own logo** (the gradient heart-with-stacked-bars mark). But it's being rendered next to the word "Lovable" in several "Built with Lovable" placements, which both (a) misrepresents Lovable's real brand and (b) reads as if the app might be a Lovable product.
 
-Goal: one compact sticky row at every breakpoint, same height, same behavior on `/`, `/methodology`, and `/app`.
+Current "Built with Lovable" uses of the wrong mark:
 
-## Changes — `src/components/SiteHeader.tsx`
+1. `src/components/SiteFooter.tsx` line 40 — "open to joining the [mark] Lovable team"
+2. `src/pages/Landing.tsx` line 161 — hero "Built with [mark] Lovable" chip
+3. `src/pages/Landing.tsx` line 578 — about-me card "Lovable portfolio" link
+4. `src/pages/Methodology.tsx` line 223 — top-of-page "Built with [mark] Lovable" chip
+5. `src/lib/branding.ts` line 8 — `lovable-cloud` architecture brand entry (this represents Lovable Cloud itself, not our app)
 
-1. **Drop the wrap.** Remove `flex-wrap` and remove the nav's `order-3 w-full md:order-none` so the row stays single-line from 320px up.
-2. **Compact logo on mobile.** Below `sm`, hide the wordmark text and show only the 32×32 mark. From `sm` up, show mark + "Lovable Stack Architect".
-3. **Compact pill nav on mobile.** Keep all three items inline but tighten: `px-2 py-1 text-[11px]` below `sm`, current sizes from `sm` up. Drop the `grid grid-cols-3 w-full` mobile layout — use `flex` at every size.
-4. **Compact CTA on mobile.** Keep the "Remix" / "Use this template" button but switch to icon-only below `sm` (just the `ExternalLink` icon with `sr-only` label) so the row never wraps.
-5. **Lock the header height.** Set the outer row to `h-12 sm:h-14` so the sticky surface is predictable and identical across pages.
+Meanwhile the Stack Architect mark should keep its current home:
+- `SiteHeader` logo
+- favicons / `og-image` / manifest
+- App-identity contexts (NotFound page, ReportExport header, etc.)
 
-## Change — `src/pages/Index.tsx`
+## Plan
 
-- Update the mobile section-tab nav's sticky offset from `sticky top-12` to `sticky top-12 sm:top-14` so it sits flush against the (now consistent-height) header at both mobile and small-desktop widths. No other changes to that nav.
+### 1. Add a real Lovable brand mark asset
 
-## Out of scope
+Create `public/lovable-brand.svg` — the official Lovable heart logo (clean pink/red heart, no stacked-bars). Single-color heart on transparent background so it adapts to light/dark surfaces.
 
-- No changes to nav items, page content, hero sections, or any other component.
-- No changes to colors, blur, or border styling on the header — only layout/sizing.
-- `ReportExport` (the extra child passed on `/app`) keeps its current sizing; on very narrow screens it will sit beside the CTA in the same row.
+```text
+public/
+  logo-mark.svg        ← unchanged. Stack Architect's own mark.
+  lovable-brand.svg    ← NEW. Official Lovable heart, used only for
+                         "Built with Lovable" and Lovable Cloud brand.
+```
 
-## Files touched
+### 2. Swap the five "Built with Lovable" / Lovable-brand spots
 
-- `src/components/SiteHeader.tsx`
-- `src/pages/Index.tsx` (one line, the sticky offset)
+Replace `src="/logo-mark.svg"` with `src="/lovable-brand.svg"` in exactly these five places — nothing else changes (sizes, alt text, surrounding copy all stay):
+
+- `src/components/SiteFooter.tsx` (footer disclaimer)
+- `src/pages/Landing.tsx` line 161 (hero "Built with Lovable" chip)
+- `src/pages/Landing.tsx` line 578 (about-me "Lovable portfolio" link)
+- `src/pages/Methodology.tsx` line 223 ("Built with Lovable" chip)
+- `src/lib/branding.ts` `lovable-cloud.src` (this entry represents Lovable Cloud's brand in the comparator/diagram/scoring UI)
+
+Add `alt="Lovable"` (instead of the current empty alt) on the four chip placements so the brand is announced correctly — the word "Lovable" is already in the visible text alongside, so the alt won't double-read awkwardly for sighted users but does name the mark for assistive tech.
+
+### 3. Leave the app's own identity alone
+
+No changes to:
+- `SiteHeader` logo (`/logo-mark.svg` stays — this is the app's identity)
+- Favicons, manifest, OG image
+- `NotFound`, `ReportExport`, `ComparisonMatrix` Stack Architect mark usages
+
+### Out of scope
+
+- No new "Built with Lovable" placements added.
+- No copy changes ("Built with Lovable", "Lovable team", "Lovable portfolio", etc. stay verbatim).
+- No layout / sizing changes to the chips themselves.
+- No changes to other architecture brand entries in `branding.ts`.
+
+## One question before I build
+
+Asset source for the Lovable heart — pick one:
+
+- **A.** I generate a clean inline SVG heart in Lovable's pink (≈ `#FF4D8D` → `#FF7A45` gradient already in your tokens) and ship it as `public/lovable-brand.svg`. Fast, no external dependency, close-enough to Lovable's brand without copying their exact file.
+- **B.** You drop the official `lovable-brand.svg` (downloaded from lovable.dev's brand assets) into `public/` yourself, and I just wire the five swaps.
+
+If you don't reply, I'll go with **A**.
