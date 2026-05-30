@@ -101,33 +101,39 @@ export function ComparisonMatrix({ enabled, topId, onToggle, onSetEnabled, view 
           <div className="flex flex-wrap gap-1.5">
             <Button
               type="button"
-              variant="outline"
+              variant={allSelected ? "default" : "outline"}
               size="sm"
-              className="h-8 text-xs"
+              className="h-8 gap-1 text-xs"
               onClick={() => onSetEnabled(ALL_IDS)}
-              disabled={allSelected}
+              aria-pressed={allSelected}
             >
+              {allSelected && <Check className="h-3 w-3" aria-hidden="true" />}
               Compare all
             </Button>
             <Button
               type="button"
-              variant="outline"
+              variant={top4Selected ? "default" : "outline"}
               size="sm"
-              className="h-8 text-xs"
-              onClick={() =>
-                onSetEnabled(["lovable-cloud", "lovable-supabase", "lovable-vercel", "lovable-aws"])
-              }
+              className="h-8 gap-1 text-xs"
+              onClick={() => onSetEnabled(TOP_4_IDS)}
+              aria-pressed={top4Selected}
             >
-              Popular 4
+              {top4Selected ? (
+                <Check className="h-3 w-3" aria-hidden="true" />
+              ) : (
+                <Star className="h-3 w-3 fill-amber-400 text-amber-400" aria-hidden="true" />
+              )}
+              Top 4
             </Button>
             <Button
               type="button"
-              variant="ghost"
+              variant={noneSelected ? "default" : "ghost"}
               size="sm"
-              className="h-8 text-xs"
+              className="h-8 gap-1 text-xs"
               onClick={() => onSetEnabled([])}
-              disabled={noneSelected}
+              aria-pressed={noneSelected}
             >
+              {noneSelected && <Check className="h-3 w-3" aria-hidden="true" />}
               Clear
             </Button>
           </div>
