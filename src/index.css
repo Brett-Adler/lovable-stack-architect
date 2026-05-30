@@ -148,15 +148,25 @@
 
 @media print {
   .no-print { display: none !important; }
-  body { background: white !important; }
+  html, body { background: white !important; }
   .print-block { display: block !important; }
   .print-break-before { page-break-before: always; }
   .shadow-card, .shadow-elegant { box-shadow: none !important; }
   /* When a dedicated #print-root is mounted, print only that content. */
-  body:has(#print-root) > *:not(#print-root) { display: none !important; }
-  body:has(#print-root) #print-root { display: block !important; }
+  body > *:not(#print-root) { display: none !important; }
+  #print-root {
+    display: block !important;
+    position: static !important;
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: white !important;
+  }
+  #print-root * { background-color: transparent !important; }
   @page { margin: 0.6in; }
 }
+
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
