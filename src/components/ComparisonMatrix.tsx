@@ -149,13 +149,32 @@ export function ComparisonMatrix({ enabled, topId, onToggle, onSetEnabled, view 
 
         {/* Picker region */}
         <div className="px-4 py-4 sm:px-5">
-          <div className="mb-3">
-            <h3 className="text-sm font-semibold text-foreground">
-              Choose options to compare
-            </h3>
-            <p className="text-xs text-muted-foreground">
-              {enabled.length} of {ALL_IDS.length} selected — tap any platform to add or remove it.
-            </p>
+          <div className="mb-3 flex flex-wrap items-baseline justify-between gap-2">
+            <div>
+              <h3 className="text-sm font-semibold text-foreground">
+                Choose options to compare
+              </h3>
+              <p className="text-xs text-muted-foreground">
+                Tap any platform to add or remove it.{" "}
+                <span className="inline-flex items-center gap-1 text-foreground/70">
+                  <Star className="h-3 w-3 fill-amber-400 text-amber-400" aria-hidden="true" />
+                  = Top 4 picks
+                </span>
+              </p>
+            </div>
+            <span
+              role="status"
+              aria-live="polite"
+              className={cn(
+                "rounded-full border px-2.5 py-0.5 text-[11px] font-semibold",
+                allSelected && "border-primary/30 bg-primary/10 text-primary",
+                top4Selected && "border-amber-400/40 bg-amber-400/10 text-amber-600 dark:text-amber-400",
+                noneSelected && "border-border bg-muted text-muted-foreground",
+                isCustom && "border-border bg-background text-foreground",
+              )}
+            >
+              {modeLabel}
+            </span>
           </div>
 
           <div className="space-y-3">
