@@ -677,7 +677,7 @@ export function ReportExport(props: Props) {
       {typeof document !== "undefined" &&
         createPortal(
           <div id="print-root" aria-hidden="true" className="hidden print:block">
-            <div className="p-8">
+            <div style={{ width: "100%", padding: "0", color: "#0a0a0a" }}>
               <ReportContent {...props} />
             </div>
           </div>,
@@ -689,6 +689,7 @@ export function ReportExport(props: Props) {
         createPortal(
           <div
             aria-hidden="true"
+            className="no-print"
             style={{
               position: "fixed",
               left: "-10000px",
@@ -699,12 +700,13 @@ export function ReportExport(props: Props) {
               pointerEvents: "none",
             }}
           >
-            <div ref={pdfSourceRef} style={{ padding: "32px" }}>
+            <div ref={pdfSourceRef} style={{ padding: "32px", background: "#ffffff" }}>
               <ReportContent {...props} />
             </div>
           </div>,
           document.body,
         )}
+
     </>
   );
 }
