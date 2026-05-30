@@ -1,73 +1,51 @@
 ## Goal
 
-The "Export & share" hub currently mixes in-app browsing (Summary dialog, HTML "preview" that's really a print-staging screen) with actual exports. Strip it down to exports only, and make share-link copying obvious and clean.
+Give each "What we score on" card a small icon so the 12 criteria are scannable instead of a wall of text.
 
-## What changes in `src/components/ReportExport.tsx`
+## Change
 
-### 1. Reduce the hub to 4 actions
+Edit `src/pages/Landing.tsx` only — keep `src/data/architectures.ts` icon-free (presentation stays in the page).
 
-Remove these two cards from the export hub grid:
-- **Summary** — redundant; the RecommendationCard already shows the in-app recap on the page.
-- **Preview / Print** — confusing combo. "Preview" should mean the full report, not a print-staging modal.
+### 1. Add a local icon map keyed by `CriterionId`
 
-Keep / rework:
-- **Copy share link** (was "Share link") — new behavior below.
-- **Download PDF** — unchanged.
-- **Download Markdown** — unchanged.
-- **View full report** (replaces "Preview / Print") — opens the full report in a new browser tab so the user can read, scroll, and use the browser's own Print/Save-as-PDF if they want. No nested dialog, no separate Print button in the app.
-
-Delete the `SummaryDialog` component entirely and its state (`summaryOpen`, `onOpenFullPreview` plumbing).
-
-### 2. Rework "Share link" UX
-
-Today, "Share link" calls `onShare` in `Index.tsx`, which writes to clipboard and shows a toast — or on failure, dumps the giant URL into a `toast.message` (the screenshot the user showed). That's the messy part.
-
-New behavior: clicking the **Copy share link** card opens a small dialog containing:
-- A readonly `<input>` pre-filled with the full URL, auto-selected on open.
-- A primary **Copy** button next to it (changes to "Copied ✓" for 2s on success).
-- One-line helper text: "Anyone with this link sees your exact scenario."
-
-Compute the URL locally in `ReportExport` from the existing `s` query param logic — easiest is to pass the share URL (or a `getShareUrl()` function) down from `Index.tsx` instead of the current `onShare` callback that does its own clipboard/toast work. New prop: `shareUrl: string` (recomputed on every render from `state`). Drop `onShare`.
-
-This replaces the toast-with-wrapped-URL fallback with a proper, selectable, copyable field.
-
-### 3. "View full report" → new tab
-
-Instead of the current preview modal (`open`/`setOpen` + the Report preview dialog with Close / Download PDF / Print buttons), render the full report into a new tab:
-- On click, `window.open("", "_blank")`, then write a minimal HTML document containing the same `ReportContent` markup (server-rendered via `renderToStaticMarkup` from `react-dom/server`) plus a small inline stylesheet for print-friendly typography.
-- The user then uses the browser's own print / save-as-PDF if they want a hard copy. No in-app Print button.
-
-This removes the entire `Report preview` Dialog and its footer.
-
-### 4. Keep but simplify the offscreen PDF source
-
-The hidden offscreen `<div ref={pdfSourceRef}>` that html2canvas captures stays — it's how Download PDF works. Keep the hidden print-root portal too so direct `Ctrl+P` on the app still produces a clean report (unrelated to the export hub).
-
-## What changes in `src/pages/Index.tsx`
-
-Replace the `onShare` plumbing:
+Import the needed icons from `lucide-react` (already used elsewhere) and define:
 
 ```ts
-// before
-<ReportExport ... onShare={shareLink} />
-
-// after
-const shareUrl = useMemo(() => {
-  const compressed = LZString.compressToEncodedURIComponent(JSON.stringify(state));
-  return `${window.location.origin}${window.location.pathname}?s=${compressed}`;
-}, [state]);
-
-<ReportExport ... shareUrl={shareUrl} />
+const CRITERION_ICON: Record<CriterionId, LucideIcon> = {
+  "time-to-launch":  Rocket,
+  "dx-with-lovable": Sparkles,
+  "cost-small":      PiggyBank,
+  "cost-large":      TrendingUp,
+  "scaling-ceiling": Gauge,
+  "realtime":        Radio,
+  "storage":         FolderOpen,
+  "ai-compute":      Cpu,
+  "compliance":      ShieldCheck,
+  "lock-in":         Unlock,
+  "ops-burden":      Wrench,
+  "migration":       ArrowRightLeft,
+};
 ```
 
-The existing `shareLink()` function can be removed (its analytics `track("Share link", ...)` call moves into `ReportExport`'s Copy handler).
+### 2. Render the icon inside each card (lines ~330–338)
+
+Replace the existing card body with a layout that puts a small icon tile to the left of the label:
+
+```tsx
+<div className="flex items-start gap-3 ...">
+  <div className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+    <Icon className="h-4 w-4" />
+  </div>
+  <div className="min-w-0">
+    <div className="text-sm font-semibold text-foreground">{c.label}</div>
+    <p className="mt-1 text-xs leading-relaxed text-muted-foreground">{c.hint}</p>
+  </div>
+</div>
+```
+
+Keep the existing card chrome (rounded-2xl border, hover lift, shadow). Icon tile uses the same `bg-primary/10 text-primary` pattern already used in the Export & share cards and the inputs section so it feels native.
 
 ## Out of scope
 
-- No changes to PDF/Markdown content or `buildMarkdown`.
-- No changes to `RecommendationCard` (that's the in-app summary the user referenced).
-- No styling overhaul of the hub cards beyond removing two of them.
-
-## Result
-
-The Export & share dialog becomes a tidy 2×2 grid (Copy share link · Download PDF · Download Markdown · View full report). "Preview" means the real, full report opened in a new tab. Copying the share link is a one-click action with a visible, selectable URL — no more giant URL inside a toast.
+- No new criteria, copy, or layout changes.
+- No icons on other criteria-mentioning surfaces (Methodology page, matrix headers) — only the "What we score on" grid on the home page, which is what the screenshot shows.
