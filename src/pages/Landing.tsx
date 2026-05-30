@@ -411,16 +411,33 @@ const Landing = () => {
             </p>
           </div>
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
-            {ARCHITECTURES.map((a) => (
-              <div
-                key={a.id}
-                className="rounded-2xl border border-border bg-card p-4 text-center shadow-card transition-all hover:-translate-y-0.5 hover:shadow-elegant"
-              >
-                <div className="text-sm font-semibold text-foreground">{a.short}</div>
-                <div className="mt-1 text-xs text-muted-foreground">{a.tagline}</div>
-              </div>
-            ))}
+            {ARCHITECTURES.map((a) => {
+              const brand = BRAND[a.id];
+              const Icon = brand.Icon;
+              return (
+                <div
+                  key={a.id}
+                  className="rounded-2xl border border-border bg-card p-5 text-center shadow-card transition-all hover:-translate-y-0.5 hover:shadow-elegant"
+                >
+                  <div
+                    className="mx-auto mb-3 inline-flex h-12 w-12 items-center justify-center rounded-xl ring-1 ring-inset ring-border/40"
+                    style={{ backgroundColor: `${brand.color}14`, color: brand.color }}
+                  >
+                    {brand.src ? (
+                      <img src={brand.src} alt="" className="h-7 w-7" />
+                    ) : Icon ? (
+                      <Icon className="h-6 w-6" aria-hidden="true" />
+                    ) : null}
+                  </div>
+                  <div className="text-sm font-semibold text-foreground">{a.short}</div>
+                  <div className="mt-1 text-xs text-muted-foreground">{a.tagline}</div>
+                </div>
+              );
+            })}
           </div>
+          <p className="mt-6 text-center text-xs italic text-muted-foreground/70">
+            Logos are trademarks of their respective owners. Shown for identification only — this site is not affiliated with or endorsed by any of them.
+          </p>
         </section>
 
         {/* Screenshot placeholder — comparison matrix */}
