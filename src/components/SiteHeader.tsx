@@ -36,16 +36,16 @@ export function SiteHeader({ children }: { children?: React.ReactNode }) {
         </Link>
 
         <nav aria-label="Primary" className="order-3 w-full md:order-none md:w-auto">
-          <ul className="flex items-center gap-1 rounded-full border border-border/60 bg-card/60 p-1 text-sm shadow-sm backdrop-blur">
+          <ul className="grid w-full grid-cols-3 items-center gap-1 rounded-full border border-border/60 bg-card/60 p-1 text-sm shadow-sm backdrop-blur md:flex md:w-auto">
             {NAV_ITEMS.map((item) => {
               const active = item.match(pathname);
               return (
-                <li key={item.to}>
+                <li key={item.to} className="min-w-0">
                   <Link
                     to={item.to}
                     aria-current={active ? "page" : undefined}
                     className={cn(
-                      "inline-flex items-center rounded-full px-3 py-1.5 text-sm font-medium transition-colors",
+                      "flex w-full items-center justify-center whitespace-nowrap rounded-full px-3 py-1.5 text-xs font-medium transition-colors sm:text-sm md:inline-flex md:w-auto",
                       active
                         ? "bg-foreground text-background"
                         : "text-muted-foreground hover:bg-muted hover:text-foreground"
