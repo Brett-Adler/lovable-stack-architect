@@ -45,6 +45,19 @@ const INPUT_TINT: Record<string, string> = {
   sky: "bg-sky-500/10 text-sky-600 dark:text-sky-400",
 };
 
+const BRAND: Record<ArchId, { Icon?: IconType; src?: string; color: string }> = {
+  "lovable-cloud":    { src: "/logo-mark.svg",  color: "#E94BD2" },
+  "lovable-supabase": { Icon: SiSupabase,       color: "#3ECF8E" },
+  "lovable-vercel":   { Icon: SiVercel,         color: "#000000" },
+  "lovable-netlify":  { Icon: SiNetlify,        color: "#00C7B7" },
+  "lovable-aws":      { Icon: FaAws,            color: "#FF9900" },
+  "lovable-gcp":      { Icon: SiGooglecloud,    color: "#4285F4" },
+  "lovable-azure":    { Icon: VscAzure,         color: "#0078D4" },
+  "lovable-heroku":   { Icon: SiHeroku,         color: "#430098" },
+  "lovable-render":   { Icon: SiRender,         color: "#000000" },
+  "lovable-fly":      { Icon: SiFlydotio,       color: "#7B3FE4" },
+};
+
 const INPUTS = [
   { icon: Milestone, label: "Stage", body: "Prototype, MVP, growth, or scale — sets what matters most.", tint: "magenta" },
   { icon: LineChart, label: "Expected MAU", body: "Monthly active users — drives the scaling and cost-at-scale weights.", tint: "blue" },
