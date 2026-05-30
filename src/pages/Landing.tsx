@@ -12,7 +12,22 @@ import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SeoHead } from "@/components/SeoHead";
 import { ScreenshotPlaceholder } from "@/components/ScreenshotPlaceholder";
-import { ARCHITECTURES, CRITERIA } from "@/data/architectures";
+import { ARCHITECTURES, CRITERIA, type CriterionId } from "@/data/architectures";
+
+const CRITERION_ICON: Record<CriterionId, LucideIcon> = {
+  "time-to-launch": Rocket,
+  "dx-with-lovable": Sparkles,
+  "cost-small": PiggyBank,
+  "cost-large": TrendingUp,
+  "scaling-ceiling": Gauge,
+  "realtime": Radio,
+  "storage": FolderOpen,
+  "ai-compute": Cpu,
+  "compliance": ShieldCheck,
+  "lock-in": Unlock,
+  "ops-burden": Wrench,
+  "migration": ArrowRightLeft,
+};
 import { AUTHOR_HANDLE, AUTHOR_URL, LAST_REVIEWED, LOVABLE_REMIX_URL } from "@/lib/constants";
 import { PRESETS, presetShareUrl } from "@/lib/presets";
 
