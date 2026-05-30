@@ -14,7 +14,8 @@ import { SiteFooter } from "@/components/SiteFooter";
 import { SeoHead } from "@/components/SeoHead";
 import { ScreenshotPlaceholder } from "@/components/ScreenshotPlaceholder";
 import { ARCHITECTURES, CRITERIA, type ArchId, type CriterionId } from "@/data/architectures";
-import { SiSupabase, SiVercel, SiNetlify, SiAmazon, SiGooglecloud, SiHeroku, SiRender, SiFlydotio } from "react-icons/si";
+import { SiSupabase, SiVercel, SiNetlify, SiGooglecloud, SiHeroku, SiRender, SiFlydotio } from "react-icons/si";
+import { FaAws } from "react-icons/fa";
 import { VscAzure } from "react-icons/vsc";
 import type { IconType } from "react-icons";
 
