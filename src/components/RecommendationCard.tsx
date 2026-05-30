@@ -61,7 +61,7 @@ export function RecommendationCard({ results, inputs, excluded = [], isNonTechni
               <div className="text-xs font-semibold uppercase tracking-wider text-primary">
                 Recommended
               </div>
-              <h2 className="mt-1 text-xl font-bold text-foreground">{top.arch.name}</h2>
+              <h2 className="mt-1 flex items-center gap-2 text-xl font-bold text-foreground"><BrandMark archId={top.arch.id} size="lg" />{top.arch.name}</h2>
               <p className="mt-1 text-sm text-muted-foreground">{top.arch.tagline}</p>
             </div>
             <ScoreBadge score={top.score} primary />
