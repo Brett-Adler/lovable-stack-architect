@@ -1,41 +1,41 @@
-# Make /methodology look + feel + read like /
+# Give the 12 Criteria real visual signal
 
-Bring the Methodology page in line with the Landing page's visual language and voice, without losing any of the substance (rubric explanation, 12 criteria, cost-band sources table, biases, "make it your own" CTA).
+Right now every criterion card looks identical — icon, title, one-liner. The section explains what's being scored but shows none of the scoring. Each card can carry the actual rubric data for that criterion, turning the section from a glossary into a useful "at a glance, here's where vendors differ and who leads."
 
-## Visual changes
+## What each card gains (in addition to icon + title + hint)
 
-1. **Hero** — match Landing's hero treatment exactly:
-   - Swap the small `bg-gradient-glow` blob for the full-width `bg-gradient-aurora` (the blue→white→pink→orange wash used on `/`).
-   - Pill chip gets the animated ping dot (the same `bg-brand-magenta` ping + `bg-gradient-primary` core used on Landing), keeping the existing "Methodology · Last reviewed May 2026" label.
-   - Heading bumps from `text-4xl sm:text-5xl md:text-6xl` to `text-5xl sm:text-6xl md:text-7xl` with `leading-[0.95] tracking-[-0.04em]` to match.
-   - Subtitle expands to two short sentences in the Landing voice (see Copy below), `text-base sm:text-lg`.
-   - Add a "Built with Lovable" pill below the subtitle (same component as Landing).
-   - Replace the bare "Back home" text link with two pill CTAs at the bottom of the hero: primary gradient‑bordered black pill "Open the tool" → `/app`, outline pill "Back home" → `/`. Mirrors the Landing CTA row.
+1. **10-vendor scoreboard strip** — a tight row of 10 small squares (one per architecture), color-coded by the 1–5 rubric score (red → amber → green). Squares stay in a consistent vendor order across all 12 cards so the eye learns the shape: a card where most squares are green tells you "everyone is fine here"; a card with a mix tells you "this is where the decision happens." Each square has a `title` tooltip (`Lovable Cloud — 5/5`) and the top-scoring vendor's square gets a thin ring.
 
-2. **Section rhythm** — drop the numbered circle "01/02/03/04/05" section heads (those don't appear anywhere on Landing). Replace with Landing's section-head pattern:
-   - Centered small pill chip ("The rubric", "Criteria", "Cost-band sources", "Known biases", "Fork it") with the gradient dot.
-   - Big `text-3xl sm:text-4xl` heading with one gradient word per Landing convention ("How the score is **computed**", "The 12 **criteria**", "Cost-band **sources**", "Known **biases**", "Make it **your own**").
-   - One-line subtitle below.
+2. **Leader chip** — a small pill under the scoreboard: brand mark + vendor name + score, e.g. `[LC] Lovable Cloud · 5/5`. Uses the existing `BRAND` icon mapping. Ties top-pick on this criterion back to vendors the user already knows from the comparator.
 
-3. **Cards** — bump every `rounded-2xl` → `rounded-3xl`, keep the `shadow-card` + hover `-translate-y-0.5 hover:shadow-elegant` lift used in Landing bento tiles. Criteria grid keeps 3 columns but each card adopts the Landing tile icon treatment (colored 10% tint icon square instead of the mono numbered badge).
+3. **Spread micro-label** — a faint right-aligned label that summarises the distribution in one phrase: `Differentiating · 2–5` when the range is wide, `Everyone scores 3+` when concentrated, `Tight race · 4–5` when high+narrow. Computed from min/max + std-dev of the 10 scores. Lets users skim for the criteria that actually move the ranking.
 
-4. **Biases section** — convert from a 2-up neutral grid into a 2-up bento. The "Built by a Lovable fan" tile becomes the dark `bg-foreground text-background` tile (same treatment as Landing's "What's Lovable Cloud?" tile) with the magenta corner-glow, so the most important caveat reads with the same weight as the Lovable Cloud feature tile on `/`. Other biases stay as soft cream cards.
+## Layout
 
-5. **"Make it your own" CTA** — keep the gradient-bordered card pattern but align spacing, CTA pill style, and the inner code-file mini-cards (`rounded-2xl`, mono labels, body copy) with Landing's bento and footer-CTA conventions.
+- Card body grows from ~6 lines to ~10 lines. Grid stays 3 columns on `lg`, 2 on `sm`, 1 on mobile.
+- Scoreboard renders as a single flex row, 10 × `h-3 w-3 rounded-sm` squares with a 2px gap. Fits comfortably even on mobile cards.
+- Color tokens reuse existing semantic colors: 1 → `bg-destructive/70`, 2 → `bg-destructive/40`, 3 → `bg-warning/60`, 4 → `bg-success/50`, 5 → `bg-success/80`. No new design tokens.
+- Legend strip above the grid: one row with the five color squares labeled "Poor → Excellent" so users decode the dots without hovering.
 
-## Copy changes (light, in Landing's voice)
+## Why this is the right add
 
-- Hero subtitle → "The rubric, the weights, the sources, and where the tool is opinionated — all in one place. Same voice as the home page: a Lovable fan being honest about how this thing was built."
-- Section subtitles trimmed to one short sentence each, matching the casual fan-built tone of `/` (no jargon-y filler like "Each of the 10 architectures is scored 1–5 on each of the 12 criteria…" — moved into the body of the rubric card instead).
-- Bias tile "Built by a Lovable fan" body kept verbatim (already on-voice).
+- Reuses data that already exists (`RUBRIC` in `src/data/architectures.ts`) — no new content to maintain.
+- Makes the section *useful*: it answers "which criteria actually differentiate the 10 options?" before the user opens the comparator.
+- Visually differentiates each card by pattern, not just by text — the section becomes scannable.
+- Ties the methodology directly to vendors the user sees on `/app`, reinforcing the brand mapping established on `/`.
 
-## Out of scope
+## Optional add-ons (only if you want more)
 
-- No changes to the 12 criteria list, cost-band table data, bias content, or rubric explanation.
-- No changes to `SiteHeader` / `SiteFooter`.
-- No new routes, no logo change, no design-system token changes.
-- Landing page is not touched.
+- Click a card → deep-link to `/app` with the comparator scrolled to that criterion's row and highlighted.
+- Tiny histogram instead of vendor dots (counts of 1s/2s/3s/4s/5s) — denser but loses the "who leads" info; I'd skip it in favor of the scoreboard.
 
 ## Files
 
-- `src/pages/Methodology.tsx` — the only file that changes.
+- `src/pages/Methodology.tsx` — update the Criteria section's card to render the scoreboard, leader chip, and spread label. Add a small helper or inline computation for spread + leader. Reuse the `BRAND` mapping by importing it (currently lives in `Landing.tsx` — extract to `src/lib/branding.ts` so both pages share it).
+- `src/lib/branding.ts` (new, ~30 lines) — exports the `ArchId → { Icon|src, color, name }` map currently inlined in `Landing.tsx`. Landing.tsx switches to importing from here.
+
+## Out of scope
+
+- No rubric data changes.
+- No changes to other Methodology sections, the hero, or Landing.
+- No interactivity beyond the hover tooltip and (if you greenlight the optional add-on) the deep link.
