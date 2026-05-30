@@ -43,7 +43,7 @@ function buildMarkdown({ inputs, results, excluded = [] }: Props): string {
   lines.push(`# Stack Architect — Architecture Recommendation`);
   lines.push("");
   lines.push(`> Generated ${new Date().toLocaleString()} · Rubric last reviewed ${LAST_REVIEWED}`);
-  lines.push(`> Source: ${SITE_URL} · Maintained by ${AUTHOR_HANDLE} · Community template, not affiliated with Lovable`);
+  lines.push(`> Source: ${SITE_URL} · Maintained by [${AUTHOR_HANDLE}](https://lovable.dev/${AUTHOR_HANDLE}) on lovable.dev · Community template, not affiliated with Lovable`);
   lines.push("");
 
   if (!top) {
