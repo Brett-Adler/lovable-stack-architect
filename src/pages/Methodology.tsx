@@ -150,7 +150,12 @@ const Methodology = () => {
               </div>
             </div>
           </div>
+          <div className="mt-10">
+            <ScreenshotPlaceholder variant="inputs-panel" />
+          </div>
         </section>
+
+
 
         {/* 2. Criteria */}
         <section className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
