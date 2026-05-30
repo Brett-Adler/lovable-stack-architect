@@ -154,7 +154,7 @@ const Index = () => {
 
       {/* Mobile section pill nav */}
       <nav
-        className="no-print sticky top-12 z-30 mx-auto w-full max-w-[1800px] px-3 pt-4 sm:px-6 md:hidden"
+        className="no-print sticky top-12 z-30 mx-auto w-full max-w-[1800px] px-3 pt-4 sm:top-14 sm:px-6 md:hidden"
         aria-label="Switch between Inputs, Recommendation, and Comparison sections"
       >
         <div
