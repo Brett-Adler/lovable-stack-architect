@@ -13,6 +13,8 @@ interface Props {
   hint?: string;
   aspect?: "video" | "wide" | "square" | "portrait";
   url?: string;
+  src?: string;
+  alt?: string;
 }
 
 const DEFAULTS: Record<
@@ -206,9 +208,25 @@ function Sketch({ variant }: { variant: Variant }) {
   );
 }
 
-export function ScreenshotPlaceholder({ variant, caption, hint, aspect, url }: Props) {
+export function ScreenshotPlaceholder({ variant, caption, hint, aspect, url, src, alt }: Props) {
   const d = DEFAULTS[variant];
   const a = aspect ?? d.aspect ?? "video";
+
+  if (src) {
+    return (
+      <figure className="mx-auto w-full max-w-5xl">
+        <img
+          src={src}
+          alt={alt ?? caption ?? d.caption}
+          loading="lazy"
+          className="mx-auto w-full rounded-2xl"
+        />
+        <figcaption className="mx-auto mt-4 max-w-2xl text-center text-sm font-semibold text-foreground">
+          {caption ?? d.caption}
+        </figcaption>
+      </figure>
+    );
+  }
 
   return (
     <figure className="mx-auto w-full max-w-5xl">
