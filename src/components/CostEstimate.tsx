@@ -156,7 +156,7 @@ export function CostEstimate({
                   <div className="relative h-2 flex-1 overflow-hidden rounded-full bg-muted/40">
                     {r.mid != null && (
                       <div
-                        className={`h-full rounded-full ${isTop ? "bg-primary/70" : "bg-foreground/30"}`}
+                        className={`h-full rounded-full ${isTop ? "bg-gradient-primary" : "bg-foreground/30"}`}
                         style={{ width: `${pct}%` }}
                       />
                     )}
