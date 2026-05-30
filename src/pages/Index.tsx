@@ -14,7 +14,7 @@ import { SeoHead } from "@/components/SeoHead";
 import { toast } from "sonner";
 import { ARCHITECTURES, type ArchId } from "@/data/architectures";
 import { DEFAULT_INPUTS, type Inputs, rankFull } from "@/lib/scoring";
-import { track } from "@/lib/analytics";
+
 
 const STORAGE_KEY = "stack-architect:v2";
 const DEFAULT_ENABLED: ArchId[] = [
@@ -110,18 +110,10 @@ const Index = () => {
   const setEnabled = (next: ArchId[]) =>
     setState((s) => ({ ...s, enabled: next }));
 
-  const shareLink = async () => {
+  const shareUrl = useMemo(() => {
     const compressed = LZString.compressToEncodedURIComponent(JSON.stringify(state));
-    const url = `${window.location.origin}${window.location.pathname}?s=${compressed}`;
-    track("Share link", { top: topId ?? "none" });
-    try {
-      await navigator.clipboard.writeText(url);
-      toast.success("Share link copied to clipboard");
-    } catch {
-      window.history.replaceState(null, "", `?s=${compressed}`);
-      toast.message("Share link", { description: url });
-    }
-  };
+    return `${window.location.origin}${window.location.pathname}?s=${compressed}`;
+  }, [state]);
 
   return (
     <div className="min-h-dvh bg-background">
@@ -131,7 +123,7 @@ const Index = () => {
         path="/app"
       />
       <SiteHeader>
-        <ReportExport inputs={inputs} results={results} excluded={excluded} onShare={shareLink} />
+        <ReportExport inputs={inputs} results={results} excluded={excluded} shareUrl={shareUrl} />
       </SiteHeader>
       <h1 className="sr-only">Lovable Stack Architect — Pick the right backend stack for your Lovable app</h1>
 

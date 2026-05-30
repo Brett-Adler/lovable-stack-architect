@@ -1,27 +1,30 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import { renderToStaticMarkup } from "react-dom/server";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Download, Eye, Printer, FileDown, FileText, Loader2, Share2, Link2 } from "lucide-react";
+import { Download, ExternalLink, FileDown, Loader2, Share2, Link2, Check, Copy } from "lucide-react";
 import { CRITERIA, RUBRIC, type Architecture } from "@/data/architectures";
 import type { Inputs, RankedResult } from "@/lib/scoring";
 import { stageFromMau } from "@/lib/scoring";
 import { toast } from "sonner";
 import { LAST_REVIEWED, SITE_URL, AUTHOR_HANDLE } from "@/lib/constants";
+import { track } from "@/lib/analytics";
 
 interface Props {
   inputs: Inputs;
   results: RankedResult[];
   excluded?: { arch: Architecture; reason: string }[];
-  onShare?: () => void | Promise<void>;
+  shareUrl?: string;
 }
+
 
 const STAGE_LABEL: Record<string, string> = {
   prototype: "Prototype",
@@ -327,133 +330,20 @@ function ReportContent({ inputs, results, excluded = [] }: Props) {
   );
 }
 
-const STAGE_LABEL_LOCAL: Record<string, string> = {
-  prototype: "Prototype",
-  mvp: "MVP",
-  growth: "Growth",
-  scale: "Scale",
-};
-
-function SummaryDialog({
-  open,
-  onOpenChange,
-  inputs,
-  results,
-  onDownloadPdf,
-  onOpenFullPreview,
-  pdfBusy,
-}: {
-  open: boolean;
-  onOpenChange: (v: boolean) => void;
-  inputs: Inputs;
-  results: RankedResult[];
-  onDownloadPdf: () => void;
-  onOpenFullPreview: () => void;
-  pdfBusy: boolean;
-}) {
-  const top = results[0];
-  const runners = results.slice(1, 3);
-  const stage = stageFromMau(inputs.mau);
-  return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="no-print max-h-[90vh] max-w-2xl overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle>Recommendation summary</DialogTitle>
-          <DialogDescription>
-            A one-glance recap of your top pick. Download the full PDF for the complete report.
-          </DialogDescription>
-        </DialogHeader>
-
-        {!top ? (
-          <p className="text-sm text-muted-foreground">
-            No architecture met your hard requirements. Loosen the compliance filter to see options.
-          </p>
-        ) : (
-          <div className="space-y-5">
-            <div className="rounded-xl border border-border bg-card p-4">
-              <div className="flex items-baseline justify-between gap-3">
-                <h3 className="text-xl font-semibold text-foreground">{top.arch.name}</h3>
-                <span className="font-mono text-sm text-muted-foreground">
-                  {Math.round(top.score)}/100
-                </span>
-              </div>
-              <p className="mt-1 text-sm italic text-muted-foreground">{top.arch.tagline}</p>
-              <p className="mt-2 text-sm text-foreground">{top.arch.description}</p>
-            </div>
-
-            <div>
-              <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                Why this fits
-              </h4>
-              <ul className="mt-2 list-disc space-y-1 pl-5 text-sm">
-                {top.rationale.slice(0, 4).map((r, i) => (
-                  <li key={i}>{r}</li>
-                ))}
-              </ul>
-            </div>
-
-            <div className="rounded-xl border border-border bg-muted/30 p-4">
-              <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                Cost & scaling
-              </h4>
-              <p className="mt-1 text-sm">
-                <strong>{top.arch.costBands[stage]}</strong> / month at {STAGE_LABEL_LOCAL[stage]} scale.
-              </p>
-              <p className="mt-1 text-xs text-muted-foreground">
-                Ceiling: {top.arch.scaleCeiling}
-              </p>
-            </div>
-
-            {runners.length > 0 && (
-              <div>
-                <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                  Runners-up
-                </h4>
-                <ul className="mt-2 space-y-1.5 text-sm">
-                  {runners.map((r, i) => (
-                    <li
-                      key={r.arch.id}
-                      className="flex items-baseline justify-between gap-3 border-b border-border/60 pb-1.5 last:border-0"
-                    >
-                      <span>
-                        <span className="text-muted-foreground">#{i + 2}</span>{" "}
-                        <strong>{r.arch.name}</strong>{" "}
-                        <span className="text-xs text-muted-foreground">— {r.arch.tagline}</span>
-                      </span>
-                      <span className="font-mono text-xs text-muted-foreground">
-                        {Math.round(r.score)}/100
-                      </span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-          </div>
-        )}
-
-        <DialogFooter className="gap-2 sm:gap-2">
-          <Button variant="outline" onClick={onOpenFullPreview}>
-            <Eye className="mr-1.5 h-4 w-4" /> Full preview
-          </Button>
-          <Button onClick={onDownloadPdf} disabled={pdfBusy} className="gap-1.5">
-            {pdfBusy ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
-            ) : (
-              <FileDown className="h-4 w-4" />
-            )}
-            Download PDF
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
-  );
-}
 
 export function ReportExport(props: Props) {
-  const [open, setOpen] = useState(false);
-  const [summaryOpen, setSummaryOpen] = useState(false);
   const [pdfBusy, setPdfBusy] = useState(false);
+  const [hubOpen, setHubOpen] = useState(false);
+  const [shareOpen, setShareOpen] = useState(false);
+  const [copied, setCopied] = useState(false);
   const pdfSourceRef = useRef<HTMLDivElement | null>(null);
+  const shareInputRef = useRef<HTMLInputElement | null>(null);
+
+  useEffect(() => {
+    if (!copied) return;
+    const t = setTimeout(() => setCopied(false), 2000);
+    return () => clearTimeout(t);
+  }, [copied]);
 
   const downloadMd = () => {
     const md = buildMarkdown(props);
@@ -464,10 +354,6 @@ export function ReportExport(props: Props) {
     a.download = `stack-architect-${props.results[0]?.arch.short.toLowerCase() ?? "report"}.md`;
     a.click();
     URL.revokeObjectURL(url);
-  };
-
-  const printNow = () => {
-    setTimeout(() => window.print(), 50);
   };
 
   const downloadPdf = async () => {
@@ -508,43 +394,87 @@ export function ReportExport(props: Props) {
     } catch (err) {
       console.error(err);
       toast.error("Couldn't generate PDF", {
-        description: "Try the Print → Save as PDF fallback.",
+        description: "Try opening the full report and using your browser's Save as PDF.",
       });
     } finally {
       setPdfBusy(false);
     }
   };
 
-  const [hubOpen, setHubOpen] = useState(false);
+  const openFullReport = () => {
+    const win = window.open("", "_blank", "noopener,noreferrer");
+    if (!win) {
+      toast.error("Pop-up blocked", { description: "Allow pop-ups to open the full report." });
+      return;
+    }
+    const body = renderToStaticMarkup(<ReportContent {...props} />);
+    win.document.write(`<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Stack Architect — Full report</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<style>
+  :root { color-scheme: light; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #f5f3ee; color: #0a0a0a; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, sans-serif; }
+  .page { max-width: 860px; margin: 32px auto; padding: 40px; background: #ffffff; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+  h1, h2, h3, h4 { color: #0a0a0a; }
+  a { color: #6d28d9; }
+  table { width: 100%; border-collapse: collapse; }
+  th, td { border: 1px solid #d4d4d8; padding: 6px 8px; font-size: 12px; }
+  th { background: #f4f4f5; text-align: left; }
+  ul, ol { padding-left: 20px; }
+  .text-muted-foreground { color: #6b7280; }
+  .italic { font-style: italic; }
+  .font-mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+  .border, .border-border { border-color: #e5e7eb; }
+  .bg-muted\\/30 { background: #f9fafb; }
+  .rounded-lg { border-radius: 8px; }
+  @media print {
+    body { background: #ffffff; }
+    .page { box-shadow: none; margin: 0; padding: 0; max-width: none; border-radius: 0; }
+    .print-break-before { page-break-before: always; }
+  }
+</style>
+</head>
+<body>
+  <div class="page">${body}</div>
+</body>
+</html>`);
+    win.document.close();
+  };
+
+  const copyShareUrl = async () => {
+    const url = props.shareUrl ?? window.location.href;
+    try {
+      await navigator.clipboard.writeText(url);
+      setCopied(true);
+      track("Share link", { top: props.results[0]?.arch.id ?? "none" });
+    } catch {
+      shareInputRef.current?.select();
+      toast.message("Copy not allowed", { description: "Select the URL and copy manually." });
+    }
+  };
 
   const actions: {
     id: string;
     label: string;
     description: string;
-    icon: typeof FileText;
+    icon: typeof Download;
     onClick: () => void;
     busy?: boolean;
     hidden?: boolean;
   }[] = [
     {
-      id: "summary",
-      label: "Summary",
-      description: "In-app recap of your top pick and runners-up.",
-      icon: FileText,
+      id: "share",
+      label: "Copy share link",
+      description: "A URL that encodes your exact scenario.",
+      icon: Link2,
+      hidden: !props.shareUrl,
       onClick: () => {
         setHubOpen(false);
-        setSummaryOpen(true);
-      },
-    },
-    {
-      id: "share",
-      label: "Share link",
-      description: "Copy a URL that encodes your scenario.",
-      icon: Link2,
-      hidden: !props.onShare,
-      onClick: async () => {
-        await props.onShare?.();
-        setHubOpen(false);
+        setShareOpen(true);
       },
     },
     {
@@ -569,12 +499,12 @@ export function ReportExport(props: Props) {
     },
     {
       id: "preview",
-      label: "Preview / Print",
-      description: "See the report, then print or save as PDF.",
-      icon: Eye,
+      label: "View full report",
+      description: "Open the complete report in a new tab.",
+      icon: ExternalLink,
       onClick: () => {
         setHubOpen(false);
-        setOpen(true);
+        openFullReport();
       },
     },
   ];
@@ -635,41 +565,27 @@ export function ReportExport(props: Props) {
         </DialogContent>
       </Dialog>
 
-      <SummaryDialog
-        open={summaryOpen}
-        onOpenChange={setSummaryOpen}
-        inputs={props.inputs}
-        results={props.results}
-        pdfBusy={pdfBusy}
-        onDownloadPdf={downloadPdf}
-        onOpenFullPreview={() => {
-          setSummaryOpen(false);
-          setOpen(true);
-        }}
-      />
-
-
-      <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="no-print max-h-[90vh] max-w-3xl overflow-y-auto">
+      <Dialog open={shareOpen} onOpenChange={setShareOpen}>
+        <DialogContent className="no-print max-w-lg">
           <DialogHeader>
-            <DialogTitle>Report preview</DialogTitle>
+            <DialogTitle>Share link</DialogTitle>
             <DialogDescription>
-              This is what your printed or saved-as-PDF report will look like.
+              Anyone with this link sees your exact scenario.
             </DialogDescription>
           </DialogHeader>
-          <div className="rounded-lg border border-border bg-card p-6">
-            <ReportContent {...props} />
+          <div className="flex items-center gap-2">
+            <Input
+              ref={shareInputRef}
+              readOnly
+              value={props.shareUrl ?? ""}
+              onFocus={(e) => e.currentTarget.select()}
+              className="font-mono text-xs"
+            />
+            <Button onClick={copyShareUrl} className="gap-1.5 shrink-0">
+              {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+              {copied ? "Copied" : "Copy"}
+            </Button>
           </div>
-          <DialogFooter className="gap-2 sm:gap-2">
-            <Button variant="outline" onClick={() => setOpen(false)}>Close</Button>
-            <Button onClick={downloadPdf} disabled={pdfBusy} variant="outline" className="gap-1.5">
-              {pdfBusy ? <Loader2 className="h-4 w-4 animate-spin" /> : <FileDown className="h-4 w-4" />}
-              Download PDF
-            </Button>
-            <Button onClick={printNow} className="gap-1.5">
-              <Printer className="h-4 w-4" /> Print / Save as PDF
-            </Button>
-          </DialogFooter>
         </DialogContent>
       </Dialog>
 
@@ -710,5 +626,6 @@ export function ReportExport(props: Props) {
     </>
   );
 }
+
 
 export { buildMarkdown };
