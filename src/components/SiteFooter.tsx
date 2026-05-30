@@ -35,8 +35,13 @@ export function SiteFooter() {
           >
             {AUTHOR_HANDLE} on lovable.dev
           </a>
-          {" "}— open to joining the Lovable team. Not affiliated with, endorsed by, or representing Lovable.
-          “Lovable” and the Lovable brand belong to Lovable.
+          {" "}— open to joining the{" "}
+          <span className="inline-flex items-center gap-1 align-baseline">
+            <img src="/logo-mark.svg" alt="" className="inline-block h-3 w-3 rounded-sm" />
+            <span className="font-medium text-foreground/80">Lovable</span>
+          </span>
+          {" "}team. Not affiliated with, endorsed by, or representing Lovable.
+          "Lovable" and the Lovable brand belong to Lovable.
         </p>
       </div>
     </footer>
