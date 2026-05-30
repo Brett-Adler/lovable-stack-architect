@@ -46,11 +46,24 @@ function ScoreDot({ score }: { score: number }) {
 }
 
 const ALL_IDS = ARCHITECTURES.map((a) => a.id);
+const TOP_4_IDS: ArchId[] = ["lovable-cloud", "lovable-supabase", "lovable-vercel", "lovable-aws"];
+const TOP_4_SET = new Set<ArchId>(TOP_4_IDS);
 
 export function ComparisonMatrix({ enabled, topId, onToggle, onSetEnabled, view = "all" }: Props) {
   const archs = ARCHITECTURES.filter((a) => enabled.includes(a.id));
   const allSelected = enabled.length === ALL_IDS.length;
   const noneSelected = enabled.length === 0;
+  const top4Selected =
+    enabled.length === TOP_4_IDS.length && TOP_4_IDS.every((id) => enabled.includes(id));
+  const isCustom = !allSelected && !noneSelected && !top4Selected;
+
+  const modeLabel = allSelected
+    ? `All ${ALL_IDS.length} selected`
+    : top4Selected
+    ? "Top 4 selected"
+    : noneSelected
+    ? "None selected"
+    : `Custom selection (${enabled.length} of ${ALL_IDS.length})`;
 
   const setCategory = (cat: ArchCategory, on: boolean) => {
     const inCat = ARCHITECTURES.filter((a) => a.category === cat).map((a) => a.id);
