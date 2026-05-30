@@ -3,7 +3,7 @@ import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SeoHead } from "@/components/SeoHead";
 import { ScreenshotPlaceholder } from "@/components/ScreenshotPlaceholder";
-import { CRITERIA, ARCHITECTURES } from "@/data/architectures";
+import { CRITERIA, ARCHITECTURES, type CriterionId } from "@/data/architectures";
 import { LAST_REVIEWED, LOVABLE_REMIX_URL } from "@/lib/constants";
 import {
   ArrowLeft,
@@ -12,26 +12,68 @@ import {
   ExternalLink,
   SlidersHorizontal,
   FileText,
+  Rocket,
+  Sparkles,
+  PiggyBank,
+  TrendingUp,
+  Gauge,
+  Radio,
+  FolderOpen,
+  Cpu,
+  ShieldCheck,
+  Unlock,
+  Wrench,
+  ArrowRightLeft,
+  type LucideIcon,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
+const CRITERION_ICON: Record<CriterionId, LucideIcon> = {
+  "time-to-launch": Rocket,
+  "dx-with-lovable": Sparkles,
+  "cost-small": PiggyBank,
+  "cost-large": TrendingUp,
+  "scaling-ceiling": Gauge,
+  "realtime": Radio,
+  "storage": FolderOpen,
+  "ai-compute": Cpu,
+  "compliance": ShieldCheck,
+  "lock-in": Unlock,
+  "ops-burden": Wrench,
+  "migration": ArrowRightLeft,
+};
+
+const CRITERION_TINTS = [
+  "bg-brand-blue/10 text-brand-blue",
+  "bg-brand-magenta/10 text-brand-magenta",
+  "bg-brand-orange/10 text-brand-orange",
+  "bg-amber-500/10 text-amber-600 dark:text-amber-400",
+  "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400",
+  "bg-sky-500/10 text-sky-600 dark:text-sky-400",
+];
+
 function SectionHead({
-  n,
+  pill,
   title,
+  accent,
   subtitle,
 }: {
-  n: number;
+  pill: string;
   title: string;
+  accent: string;
   subtitle?: React.ReactNode;
 }) {
   return (
-    <div className="mb-8 text-center">
-      <div className="mx-auto inline-flex h-10 w-10 items-center justify-center rounded-full bg-gradient-primary text-sm font-bold text-white shadow-card">
-        {n}
+    <div className="mb-10 text-center">
+      <div className="mx-auto mb-4 inline-flex items-center gap-2 rounded-full border border-border bg-card/70 px-3 py-1 text-xs font-medium text-muted-foreground backdrop-blur-sm">
+        <span className="h-2 w-2 rounded-full bg-gradient-primary" aria-hidden="true" />
+        {pill}
       </div>
-      <h2 className="mt-3 text-2xl font-extrabold tracking-[-0.02em] text-foreground sm:text-3xl">{title}</h2>
+      <h2 className="text-3xl font-extrabold tracking-[-0.02em] text-foreground sm:text-4xl">
+        {title} <span className="text-gradient">{accent}</span>
+      </h2>
       {subtitle ? (
-        <p className="mx-auto mt-2 max-w-2xl text-sm text-muted-foreground sm:text-base">
+        <p className="mx-auto mt-3 max-w-2xl text-sm text-muted-foreground sm:text-base">
           {subtitle}
         </p>
       ) : null}
@@ -78,27 +120,49 @@ const Methodology = () => {
         <section className="relative overflow-hidden">
           <div
             aria-hidden="true"
-            className="pointer-events-none absolute left-1/2 top-[-10%] -z-0 h-[500px] w-[900px] -translate-x-1/2 bg-gradient-glow blur-3xl"
+            className="pointer-events-none absolute inset-x-0 top-0 -z-0 h-[900px] bg-gradient-aurora blur-2xl"
           />
-          <div className="relative z-10 mx-auto max-w-6xl px-4 pb-12 pt-16 text-center sm:px-6 sm:pt-24 sm:pb-20">
+          <div className="relative z-10 mx-auto max-w-6xl px-4 pb-16 pt-16 text-center sm:px-6 sm:pt-24 sm:pb-20">
             <div className="mx-auto mb-8 inline-flex items-center gap-2 rounded-full border border-border bg-card/70 px-3 py-1 text-xs font-medium text-muted-foreground backdrop-blur-sm">
-              <span className="h-2 w-2 rounded-full bg-gradient-primary" aria-hidden="true" />
+              <span className="relative flex h-2 w-2">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-brand-magenta opacity-60" />
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-gradient-primary" />
+              </span>
               Methodology · Last reviewed {LAST_REVIEWED}
             </div>
-            <h1 className="mx-auto max-w-4xl text-4xl font-extrabold leading-[1.05] tracking-[-0.03em] text-foreground sm:text-5xl md:text-6xl">
+            <h1 className="mx-auto max-w-4xl text-5xl font-extrabold leading-[0.95] tracking-[-0.04em] text-foreground sm:text-6xl md:text-7xl">
               How the recommendation is <span className="text-gradient">built</span>
             </h1>
-            <p className="mx-auto mt-5 max-w-2xl text-base text-muted-foreground sm:text-lg">
-              The rubric, the weights, the sources, and where we know the tool is biased — all in
-              one place.
+            <p className="mx-auto mt-6 max-w-2xl text-base text-muted-foreground sm:text-lg">
+              The rubric, the weights, the sources, and where the tool is opinionated — all in one place.
+              Same voice as the home page: a Lovable fan being honest about how this thing was built.
             </p>
-            <div className="mt-8">
-              <Link
-                to="/"
-                className="inline-flex items-center gap-1.5 rounded text-sm font-medium text-foreground/70 transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+            <a
+              href="https://lovable.dev"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mx-auto mt-4 inline-flex items-center gap-1.5 rounded-full border border-border bg-card/70 px-3 py-1 text-xs text-muted-foreground backdrop-blur-sm transition-colors hover:text-foreground"
+            >
+              Built with <img src="/logo-mark.svg" alt="" className="h-3.5 w-3.5 rounded" /> <span className="font-medium">Lovable</span>
+            </a>
+            <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
+              <div className="rounded-full bg-gradient-primary p-[1.5px] shadow-elegant transition-transform hover:scale-[1.02]">
+                <Button asChild size="lg" className="gap-2 rounded-full px-7">
+                  <Link to="/app">
+                    <SlidersHorizontal className="h-4 w-4" /> Open the tool <ArrowRight className="h-4 w-4" />
+                  </Link>
+                </Button>
+              </div>
+              <Button
+                asChild
+                size="lg"
+                variant="outline"
+                className="gap-2 rounded-full border-border bg-card px-7"
               >
-                <ArrowLeft className="h-4 w-4" aria-hidden="true" /> Back home
-              </Link>
+                <Link to="/">
+                  <ArrowLeft className="h-4 w-4" /> Back home
+                </Link>
+              </Button>
             </div>
           </div>
         </section>
@@ -106,20 +170,17 @@ const Methodology = () => {
         {/* 1. How the score is computed */}
         <section className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
           <SectionHead
-            n={1}
-            title="How the score is computed"
-            subtitle={
-              <>
-                Each of the 10 architectures is scored 1–5 on each of the {CRITERIA.length}{" "}
-                criteria. Your inputs derive a per-criterion weight, and the final 0–100 score is
-                the weighted sum normalized by the maximum possible score.
-              </>
-            }
+            pill="The rubric"
+            title="How the score is"
+            accent="computed"
+            subtitle="One file, one formula, no magic. Every criterion starts equal — your inputs nudge the weights from there."
           />
           <div className="mx-auto max-w-3xl">
-            <div className="rounded-2xl border border-border bg-card p-6 shadow-card sm:p-8">
+            <div className="rounded-3xl border border-border bg-card p-6 shadow-card transition-all hover:-translate-y-0.5 hover:shadow-elegant sm:p-8">
               <p className="leading-relaxed text-foreground/90">
-                The rubric lives in{" "}
+                Each of the 10 architectures is scored 1–5 on each of the {CRITERIA.length}{" "}
+                criteria. Your inputs derive a per-criterion weight, and the final 0–100 score is the
+                weighted sum normalized by the maximum possible score. The rubric lives in{" "}
                 <code className="rounded bg-primary/10 px-1.5 py-0.5 font-mono text-sm text-primary">
                   src/data/architectures.ts
                 </code>{" "}
@@ -137,7 +198,7 @@ const Methodology = () => {
                 </code>
                 .
               </p>
-              <div className="mt-6 rounded-xl border border-border bg-muted/40 p-5">
+              <div className="mt-6 rounded-2xl border border-border bg-muted/40 p-5">
                 <p className="mb-2 text-xs font-bold uppercase tracking-wider text-muted-foreground">
                   The formula
                 </p>
@@ -155,28 +216,33 @@ const Methodology = () => {
           </div>
         </section>
 
-
-
         {/* 2. Criteria */}
         <section className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
           <SectionHead
-            n={2}
-            title="Criteria"
-            subtitle={`The ${CRITERIA.length} dimensions every architecture is scored against.`}
+            pill="The dimensions"
+            title={`The ${CRITERIA.length}`}
+            accent="criteria"
+            subtitle="Every architecture is scored 1–5 on each of these. Tap a column in the comparator to see why it scored the way it did."
           />
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {CRITERIA.map((c, i) => (
-              <div
-                key={c.id}
-                className="rounded-2xl border border-border bg-card p-6 shadow-card"
-              >
-                <div className="mb-3 inline-flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 font-mono text-sm font-semibold text-primary">
-                  {String(i + 1).padStart(2, "0")}
+            {CRITERIA.map((c, i) => {
+              const Icon = CRITERION_ICON[c.id] ?? Sparkles;
+              const tint = CRITERION_TINTS[i % CRITERION_TINTS.length];
+              return (
+                <div
+                  key={c.id}
+                  className="group rounded-3xl border border-border bg-card p-6 shadow-card transition-all hover:-translate-y-0.5 hover:shadow-elegant"
+                >
+                  <div
+                    className={`mb-4 inline-flex h-11 w-11 items-center justify-center rounded-2xl ${tint} transition-transform group-hover:scale-110`}
+                  >
+                    <Icon className="h-5 w-5" />
+                  </div>
+                  <h3 className="text-base font-semibold text-foreground">{c.label}</h3>
+                  <p className="mt-1.5 text-sm text-muted-foreground">{c.hint}</p>
                 </div>
-                <h3 className="text-base font-semibold text-foreground">{c.label}</h3>
-                <p className="mt-1.5 text-sm text-muted-foreground">{c.hint}</p>
-              </div>
-            ))}
+              );
+            })}
           </div>
           <div className="mt-10">
             <ScreenshotPlaceholder
@@ -187,15 +253,15 @@ const Methodology = () => {
           </div>
         </section>
 
-
         {/* 3. Cost-band sources */}
         <section className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
           <SectionHead
-            n={3}
-            title="Cost-band sources"
-            subtitle="Cost bands are curated estimates from public vendor pricing pages, not live quotes. Always verify against current pricing before committing."
+            pill="Receipts"
+            title="Cost-band"
+            accent="sources"
+            subtitle="Curated from public vendor pricing pages — not live quotes. Verify against current pricing before committing."
           />
-          <div className="overflow-hidden rounded-2xl border border-border bg-card shadow-card">
+          <div className="overflow-hidden rounded-3xl border border-border bg-card shadow-card">
             <table className="min-w-full divide-y divide-border">
               <caption className="sr-only">
                 Cost-band sources by vendor, with last-reviewed date and links to pricing pages.
@@ -258,29 +324,36 @@ const Methodology = () => {
         {/* 4. Known biases & caveats */}
         <section className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
           <SectionHead
-            n={4}
-            title="Known biases & caveats"
-            subtitle="Where the rubric is opinionated, approximate, or unavoidably our point of view."
+            pill="Full disclosure"
+            title="Known"
+            accent="biases"
+            subtitle="Where the rubric is opinionated, approximate, or unavoidably my point of view."
           />
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="grid grid-cols-12 gap-4 sm:gap-5">
             {BIASES.map((b) =>
               b.accent ? (
                 <div
                   key={b.title}
-                  className="flex gap-4 rounded-2xl border border-warning/30 bg-warning/10 p-6"
+                  className="group relative col-span-12 overflow-hidden rounded-3xl border border-white/10 bg-foreground p-8 text-background shadow-elegant md:col-span-12"
                 >
-                  <div className="shrink-0 text-warning">
-                    <AlertTriangle className="h-5 w-5" aria-hidden="true" />
-                  </div>
-                  <div>
-                    <h3 className="text-base font-semibold text-foreground">{b.title}</h3>
-                    <p className="mt-1.5 text-sm leading-relaxed text-foreground/80">{b.body}</p>
+                  <div
+                    aria-hidden="true"
+                    className="pointer-events-none absolute right-[-4rem] top-[-4rem] h-64 w-64 rounded-full bg-gradient-primary opacity-40 blur-3xl transition-opacity group-hover:opacity-70"
+                  />
+                  <div className="relative z-10">
+                    <div className="mb-4 inline-flex w-fit items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-widest text-white/70">
+                      <AlertTriangle className="h-3 w-3" /> The big one
+                    </div>
+                    <h3 className="text-2xl font-bold tracking-tight sm:text-3xl">{b.title}</h3>
+                    <p className="mt-3 max-w-3xl text-base leading-relaxed text-white/70">
+                      {b.body}
+                    </p>
                   </div>
                 </div>
               ) : (
                 <div
                   key={b.title}
-                  className="rounded-2xl border border-border bg-card p-6 shadow-card"
+                  className="col-span-12 rounded-3xl border border-border bg-card p-6 shadow-card transition-all hover:-translate-y-0.5 hover:shadow-elegant md:col-span-6"
                 >
                   <h3 className="text-base font-semibold text-foreground">{b.title}</h3>
                   <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">{b.body}</p>
@@ -292,6 +365,12 @@ const Methodology = () => {
 
         {/* 5. Make it your own */}
         <section className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
+          <SectionHead
+            pill="Fork it"
+            title="Make it"
+            accent="your own"
+            subtitle="The whole app is data-driven. Edit one file and you have a picker for CMSs, databases, AI models — anything."
+          />
           <div className="rounded-[2rem] bg-gradient-primary p-[1.5px] shadow-elegant">
             <div className="rounded-[calc(2rem-1.5px)] bg-card p-8 sm:p-12">
               <div className="grid gap-8 lg:grid-cols-[1.1fr_1fr] lg:items-center">
@@ -299,22 +378,29 @@ const Methodology = () => {
                   <div className="text-xs font-semibold uppercase tracking-wider text-primary">
                     For builders
                   </div>
-                  <h2 className="mt-2 text-2xl font-bold text-foreground sm:text-3xl">
-                    Make it your own
-                  </h2>
+                  <h3 className="mt-2 text-2xl font-bold text-foreground sm:text-3xl">
+                    Two files do all the work
+                  </h3>
                   <p className="mt-3 text-sm text-muted-foreground sm:text-base">
-                    The whole app is data-driven. Fork it, edit the architectures and rubric in one
-                    file, then tune the input weights if they don't match your domain.
+                    Fork it, edit the architectures and rubric in one file, then tune the input
+                    weights if they don't match your domain.
                   </p>
                   <div className="mt-6 flex flex-wrap gap-3">
                     {LOVABLE_REMIX_URL && (
-                      <Button asChild size="lg" className="gap-2">
-                        <a href={LOVABLE_REMIX_URL} target="_blank" rel="noopener noreferrer">
-                          <ExternalLink className="h-4 w-4" aria-hidden="true" /> Remix on Lovable
-                        </a>
-                      </Button>
+                      <div className="rounded-full bg-gradient-primary p-[1.5px] shadow-elegant transition-transform hover:scale-[1.02]">
+                        <Button asChild size="lg" className="gap-2 rounded-full px-7">
+                          <a href={LOVABLE_REMIX_URL} target="_blank" rel="noopener noreferrer">
+                            <ExternalLink className="h-4 w-4" aria-hidden="true" /> Remix on Lovable
+                          </a>
+                        </Button>
+                      </div>
                     )}
-                    <Button asChild size="lg" variant="outline" className="gap-2">
+                    <Button
+                      asChild
+                      size="lg"
+                      variant="outline"
+                      className="gap-2 rounded-full border-border bg-card px-7"
+                    >
                       <Link to="/app">
                         <SlidersHorizontal className="h-4 w-4" aria-hidden="true" /> Open the tool
                         <ArrowRight className="h-4 w-4" aria-hidden="true" />
@@ -333,10 +419,7 @@ const Methodology = () => {
                       body: "deriveWeights turns user inputs into per-criterion weights.",
                     },
                   ].map((b) => (
-                    <div
-                      key={b.file}
-                      className="rounded-xl border border-border bg-muted/40 p-4"
-                    >
+                    <div key={b.file} className="rounded-2xl border border-border bg-muted/40 p-4">
                       <div className="flex items-center gap-2 font-mono text-xs text-primary">
                         <FileText className="h-3.5 w-3.5" aria-hidden="true" /> {b.file}
                       </div>
