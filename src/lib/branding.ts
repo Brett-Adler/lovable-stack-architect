@@ -5,7 +5,7 @@ import { VscAzure } from "react-icons/vsc";
 import type { ArchId } from "@/data/architectures";
 
 export const BRAND: Record<ArchId, { Icon?: IconType; src?: string; color: string }> = {
-  "lovable-cloud":    { src: "/logo-mark.svg",  color: "#E94BD2" },
+  "lovable-cloud":    { src: "/lovable-brand.svg",  color: "#E94BD2" },
   "lovable-supabase": { Icon: SiSupabase,       color: "#3ECF8E" },
   "lovable-vercel":   { Icon: SiVercel,         color: "#000000" },
   "lovable-netlify":  { Icon: SiNetlify,        color: "#00C7B7" },
