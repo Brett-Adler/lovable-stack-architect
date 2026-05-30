@@ -51,14 +51,30 @@
 <line x1="0" y1="600" x2="1200" y2="600"/>
   </g>
   <g transform="translate(80,150)">
-    <rect x="0" y="0" width="280" height="280" rx="60" fill="url(#brand)"/>
-    <g fill="#FFFFFF">
-      <rect x="48" y="186" width="184" height="26" rx="13"/>
-      <rect x="72" y="144" width="136" height="26" rx="13" opacity="0.92"/>
-      <rect x="96" y="102" width="88"  height="26" rx="13" opacity="0.84"/>
-      <path d="M140 50 L152 82 L140 94 L128 82 Z" opacity="0.96"/>
+    <defs>
+      <linearGradient id="stackGrad" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#FF4D8D"/>
+        <stop offset="55%" stop-color="#FF7A45"/>
+        <stop offset="100%" stop-color="#4D7CFF"/>
+      </linearGradient>
+      <clipPath id="heartClipOg">
+        <path d="M140,246 C140,246 22,176 22,108 C22,66 56,44 90,44 C112,44 128,58 140,80 C152,58 168,44 190,44 C224,44 258,66 258,108 C258,176 140,246 140,246 Z"/>
+      </clipPath>
+    </defs>
+    <rect x="0" y="0" width="280" height="280" rx="60" fill="#FFF7F4"/>
+    <g clip-path="url(#heartClipOg)">
+      <rect x="0" y="172" width="280" height="80" fill="url(#stackGrad)"/>
+      <rect x="0" y="108" width="280" height="62" fill="url(#stackGrad)"/>
+      <rect x="0" y="40" width="280" height="66" fill="url(#stackGrad)"/>
+      <rect x="0" y="106" width="280" height="3" fill="#FFF7F4"/>
+      <rect x="0" y="170" width="280" height="3" fill="#FFF7F4"/>
     </g>
+    <path d="M140,246 C140,246 22,176 22,108 C22,66 56,44 90,44 C112,44 128,58 140,80 C152,58 168,44 190,44 C224,44 258,66 258,108 C258,176 140,246 140,246 Z"
+          fill="none" stroke="#B33A6B" stroke-opacity="0.2" stroke-width="1.5"/>
+    <path d="M140 12 L150 36 L140 46 L130 36 Z" fill="#FF7A45" opacity="0.95"/>
+    <circle cx="140" cy="28" r="3" fill="#FFFFFF"/>
   </g>
+
   <g font-family="DejaVu Sans, Verdana, sans-serif" fill="#FFFFFF">
     <text x="420" y="262" font-size="78" font-weight="700" letter-spacing="-2">Lovable Stack</text>
     <text x="420" y="346" font-size="78" font-weight="300" letter-spacing="-2" fill="#C4B7FF">Architect</text>
