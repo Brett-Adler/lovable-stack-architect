@@ -145,7 +145,7 @@ export function CostEstimate({
               const pct = r.mid != null ? Math.max(4, (r.mid / maxMid) * 100) : 0;
               return (
                 <li key={r.id} className="flex items-center gap-2 text-xs">
-                  <div className="flex w-24 shrink-0 items-center gap-1.5">
+                  <div className="flex w-28 shrink-0 items-center gap-1.5">
                     <BrandMark archId={r.id} size="sm" />
                     <span className={isTop ? "font-semibold text-foreground" : "text-foreground/80"}>
                       {r.short}
