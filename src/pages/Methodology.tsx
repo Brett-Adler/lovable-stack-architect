@@ -3,7 +3,8 @@ import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SeoHead } from "@/components/SeoHead";
 import { ScreenshotPlaceholder } from "@/components/ScreenshotPlaceholder";
-import { CRITERIA, ARCHITECTURES, type CriterionId } from "@/data/architectures";
+import { CRITERIA, ARCHITECTURES, RUBRIC, type CriterionId, type ArchId } from "@/data/architectures";
+import { BRAND } from "@/lib/branding";
 import { LAST_REVIEWED, LOVABLE_REMIX_URL } from "@/lib/constants";
 import {
   ArrowLeft,
