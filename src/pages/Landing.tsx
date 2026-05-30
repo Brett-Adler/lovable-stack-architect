@@ -135,6 +135,13 @@ const Landing = () => {
           </div>
         </section>
 
+        {/* Screenshot placeholder — tool overview */}
+        <section className="mx-auto -mt-4 max-w-6xl px-4 sm:px-6">
+          <ScreenshotPlaceholder variant="recommendation" />
+        </section>
+
+
+
         {/* Bento: features + Lovable Cloud tile */}
         <section className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
           <div className="grid grid-cols-12 gap-4 sm:gap-5">
