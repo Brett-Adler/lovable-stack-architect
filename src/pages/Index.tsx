@@ -7,7 +7,7 @@ import { CostEstimate } from "@/components/CostEstimate";
 import { ArchitectureDiagram } from "@/components/ArchitectureDiagram";
 import { ReportExport } from "@/components/ReportExport";
 import { Button } from "@/components/ui/button";
-import { Link2, SlidersHorizontal, Sparkle, Columns3 } from "lucide-react";
+import { Link2, SlidersHorizontal, Sparkle, Columns3, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
