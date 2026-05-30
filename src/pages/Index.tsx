@@ -280,7 +280,7 @@ const Index = () => {
         aria-labelledby="full-matrix-heading"
         hidden={mobileTab !== "comparison"}
         className={cn(
-          "mx-auto w-full max-w-[1800px] px-3 pb-24 sm:px-6 md:pb-6 2xl:px-10",
+          "mx-auto w-full max-w-[1800px] px-3 pb-6 sm:px-6 2xl:px-10",
           "mt-4 border-t border-border pt-8 sm:mt-8 sm:pt-10",
           mobileTab === "comparison" ? "block" : "hidden md:block",
         )}
@@ -296,77 +296,8 @@ const Index = () => {
         <ComparisonMatrix view="matrix" enabled={enabled} topId={topId} onToggle={toggleArch} onSetEnabled={setEnabled} />
       </section>
 
-
-
-      {/* Mobile bottom tab nav */}
-      <nav
-        className="no-print fixed bottom-0 left-0 right-0 z-40 border-t border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80 md:hidden"
-        aria-label="Switch between Inputs, Recommendation, and Comparison sections"
-      >
-        <div
-          role="tablist"
-          aria-label="App sections"
-          className="mx-auto grid max-w-[1400px] grid-cols-3"
-          style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
-          onKeyDown={(e) => {
-            const order = ["inputs", "recommendation", "comparison"] as const;
-            const idx = order.indexOf(mobileTab);
-            if (e.key === "ArrowRight") {
-              e.preventDefault();
-              setMobileTab(order[(idx + 1) % order.length]);
-            } else if (e.key === "ArrowLeft") {
-              e.preventDefault();
-              setMobileTab(order[(idx - 1 + order.length) % order.length]);
-            } else if (e.key === "Home") {
-              e.preventDefault();
-              setMobileTab(order[0]);
-            } else if (e.key === "End") {
-              e.preventDefault();
-              setMobileTab(order[order.length - 1]);
-            }
-          }}
-        >
-          {([
-            { id: "inputs", label: "Inputs", Icon: SlidersHorizontal },
-            { id: "recommendation", label: "Pick", Icon: Sparkle },
-            { id: "comparison", label: "Compare", Icon: Columns3 },
-          ] as const).map(({ id, label, Icon }) => {
-            const active = mobileTab === id;
-            return (
-              <button
-                key={id}
-                id={`tab-${id}`}
-                type="button"
-                role="tab"
-                aria-selected={active}
-                aria-controls={`panel-${id}`}
-                tabIndex={active ? 0 : -1}
-                onClick={() => {
-                  setMobileTab(id);
-                  const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-                  window.scrollTo({ top: 0, behavior: prefersReduced ? "auto" : "smooth" });
-                }}
-                className={cn(
-                  "flex min-h-[48px] flex-col items-center justify-center gap-0.5 py-2.5 text-[11px] font-medium transition-colors",
-                  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring",
-                  active
-                    ? "text-primary"
-                    : "text-muted-foreground hover:text-foreground",
-                )}
-              >
-                <Icon
-                  aria-hidden="true"
-                  className={cn("h-5 w-5", active && "drop-shadow-[0_0_8px_hsl(var(--primary)/0.4)]")}
-                />
-                <span>{label}</span>
-                {active && <span className="sr-only"> (current section)</span>}
-              </button>
-            );
-          })}
-        </div>
-      </nav>
-
       <SiteFooter />
+
     </div>
   );
 };
