@@ -1,6 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ExternalLink, Sparkles } from "lucide-react";
+import { ExternalLink } from "lucide-react";
 import { LOVABLE_REMIX_URL } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 
@@ -12,7 +12,6 @@ const NAV_ITEMS = [
 
 export function SiteHeader({ children }: { children?: React.ReactNode }) {
   const { pathname } = useLocation();
-  const onApp = pathname.startsWith("/app");
 
   return (
     <header className="no-print sticky top-0 z-40 border-b border-border/60 bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/70">
@@ -61,13 +60,6 @@ export function SiteHeader({ children }: { children?: React.ReactNode }) {
 
         <div className="flex flex-wrap items-center gap-2">
           {children}
-          {!onApp && (
-            <Button asChild size="sm" className="gap-1.5">
-              <Link to="/app">
-                <Sparkles className="h-4 w-4" /> Open the tool
-              </Link>
-            </Button>
-          )}
           {LOVABLE_REMIX_URL && (
             <Button asChild variant="outline" size="sm" className="gap-1.5">
               <a href={LOVABLE_REMIX_URL} target="_blank" rel="noopener noreferrer">
