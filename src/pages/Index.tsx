@@ -6,8 +6,7 @@ import { RecommendationCard } from "@/components/RecommendationCard";
 import { CostEstimate } from "@/components/CostEstimate";
 import { ArchitectureDiagram } from "@/components/ArchitectureDiagram";
 import { ReportExport } from "@/components/ReportExport";
-import { Button } from "@/components/ui/button";
-import { Link2, SlidersHorizontal, Sparkle, Columns3, Sparkles } from "lucide-react";
+import { SlidersHorizontal, Sparkle, Columns3, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
@@ -132,10 +131,7 @@ const Index = () => {
         path="/app"
       />
       <SiteHeader>
-        <Button onClick={shareLink} variant="outline" size="sm" className="gap-1.5">
-          <Link2 className="h-4 w-4" /> <span className="hidden sm:inline">Share</span>
-        </Button>
-        <ReportExport inputs={inputs} results={results} excluded={excluded} />
+        <ReportExport inputs={inputs} results={results} excluded={excluded} onShare={shareLink} />
       </SiteHeader>
       <h1 className="sr-only">Lovable Stack Architect — Pick the right backend stack for your Lovable app</h1>
 
