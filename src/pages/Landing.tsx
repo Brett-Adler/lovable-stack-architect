@@ -7,14 +7,25 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { ArrowRight, Sparkles, ExternalLink, Gauge, Share2, FileDown, SlidersHorizontal, Trophy, FileText, Database, Info } from "lucide-react";
+import { ArrowRight, Sparkles, ExternalLink, Gauge, Share2, FileDown, SlidersHorizontal, Trophy, FileText, Database, Info, Layers, Users, Wallet, ShieldCheck, Workflow, Lock, Zap, TrendingUp } from "lucide-react";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SeoHead } from "@/components/SeoHead";
 import { ScreenshotPlaceholder } from "@/components/ScreenshotPlaceholder";
-import { ARCHITECTURES } from "@/data/architectures";
+import { ARCHITECTURES, CRITERIA } from "@/data/architectures";
 import { AUTHOR_HANDLE, AUTHOR_URL, LAST_REVIEWED, LOVABLE_REMIX_URL } from "@/lib/constants";
 import { PRESETS, presetShareUrl } from "@/lib/presets";
+
+const INPUTS = [
+  { icon: Layers, label: "Stage", body: "Prototype, MVP, growth, or scale — sets what matters most." },
+  { icon: TrendingUp, label: "Expected MAU", body: "Monthly active users — drives the scaling and cost-at-scale weights." },
+  { icon: Users, label: "Team skills", body: "Frontend, backend, DevOps, data, or none — shifts ops-burden weight." },
+  { icon: Wallet, label: "Budget", body: "Low, medium, or high — tunes cost-at-small vs cost-at-large emphasis." },
+  { icon: ShieldCheck, label: "Compliance", body: "GDPR, HIPAA, SOC 2, residency — HIPAA / SOC 2 / residency act as hard filters." },
+  { icon: Workflow, label: "Workloads", body: "CRUD, realtime, files, AI, background jobs, heavy compute." },
+  { icon: Lock, label: "Lock-in tolerance", body: "How willing you are to be tied to one vendor." },
+  { icon: Zap, label: "Time-to-market", body: "1–5 priority — how much speed-to-launch should dominate the ranking." },
+];
 
 const FEATURES = [
   {
