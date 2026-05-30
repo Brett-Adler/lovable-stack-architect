@@ -4,6 +4,7 @@ import { stageFromMau } from "@/lib/scoring";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { ExternalLink, Info, Flag } from "lucide-react";
 import { GITHUB_URL } from "@/lib/constants";
+import { BrandMark } from "@/components/BrandMark";
 
 function parseBand(band: string): number | null {
   const cleaned = band.replace(/\$/g, "").replace(/\s/g, "");
