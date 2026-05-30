@@ -61,13 +61,6 @@ export function SiteHeader({ children }: { children?: React.ReactNode }) {
 
         <div className="flex flex-wrap items-center gap-2">
           {children}
-          {!onApp && (
-            <Button asChild size="sm" className="gap-1.5">
-              <Link to="/app">
-                <Sparkles className="h-4 w-4" /> Open the tool
-              </Link>
-            </Button>
-          )}
           {LOVABLE_REMIX_URL && (
             <Button asChild variant="outline" size="sm" className="gap-1.5">
               <a href={LOVABLE_REMIX_URL} target="_blank" rel="noopener noreferrer">
