@@ -287,6 +287,66 @@ const Landing = () => {
           </div>
         </section>
 
+        {/* Inputs you give */}
+        <section className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
+          <div className="mb-10 text-center">
+            <h2 className="text-3xl font-extrabold tracking-[-0.02em] text-foreground sm:text-4xl">
+              Inputs you give
+            </h2>
+            <p className="mt-2 text-sm text-muted-foreground sm:text-base">
+              Eight inputs shape the recommendation — each one reweights the criteria below.
+            </p>
+          </div>
+          <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
+            {INPUTS.map((i) => {
+              const Icon = i.icon;
+              return (
+                <div
+                  key={i.label}
+                  className="rounded-3xl border border-border bg-card p-5 shadow-card transition-all hover:-translate-y-0.5 hover:shadow-elegant"
+                >
+                  <div className="mb-3 inline-flex h-9 w-9 items-center justify-center rounded-xl bg-brand-blue/10 text-brand-blue">
+                    <Icon className="h-4 w-4" />
+                  </div>
+                  <div className="text-sm font-semibold text-foreground">{i.label}</div>
+                  <p className="mt-1 text-xs leading-relaxed text-muted-foreground">{i.body}</p>
+                </div>
+              );
+            })}
+          </div>
+        </section>
+
+        {/* What we score on */}
+        <section className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
+          <div className="mb-10 text-center">
+            <h2 className="text-3xl font-extrabold tracking-[-0.02em] text-foreground sm:text-4xl">
+              What we score on
+            </h2>
+            <p className="mt-2 text-sm text-muted-foreground sm:text-base">
+              Every option is scored 1–5 on these {CRITERIA.length} criteria. Your inputs shift the weights.
+            </p>
+          </div>
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {CRITERIA.map((c) => (
+              <div
+                key={c.id}
+                className="rounded-2xl border border-border bg-card p-5 shadow-card transition-all hover:-translate-y-0.5 hover:shadow-elegant"
+              >
+                <div className="text-sm font-semibold text-foreground">{c.label}</div>
+                <p className="mt-1 text-xs leading-relaxed text-muted-foreground">{c.hint}</p>
+              </div>
+            ))}
+          </div>
+          <div className="mt-8 text-center">
+            <Link
+              to="/methodology"
+              className="inline-flex items-center gap-1 text-sm font-semibold text-foreground underline-offset-4 hover:underline"
+            >
+              See the full rubric & weights <ArrowRight className="h-3 w-3" />
+            </Link>
+          </div>
+        </section>
+
         {/* Platforms */}
         <section className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
           <div className="mb-10 text-center">
