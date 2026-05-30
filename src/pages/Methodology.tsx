@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SeoHead } from "@/components/SeoHead";
+import { ScreenshotPlaceholder } from "@/components/ScreenshotPlaceholder";
 import { CRITERIA, ARCHITECTURES } from "@/data/architectures";
 import { LAST_REVIEWED, LOVABLE_REMIX_URL } from "@/lib/constants";
 import {
