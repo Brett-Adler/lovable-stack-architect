@@ -1,64 +1,40 @@
-## What's wrong today
+## Goal
 
-The file `public/logo-mark.svg` is actually the **Stack Architect's own logo** (the gradient heart-with-stacked-bars mark). But it's being rendered next to the word "Lovable" in several "Built with Lovable" placements, which both (a) misrepresents Lovable's real brand and (b) reads as if the app might be a Lovable product.
+Replace the four `<ScreenshotPlaceholder>` instances on `/` and `/methodology` with real, framed screenshots of the live `/app`.
 
-Current "Built with Lovable" uses of the wrong mark:
+## Shots to capture
 
-1. `src/components/SiteFooter.tsx` line 40 — "open to joining the [mark] Lovable team"
-2. `src/pages/Landing.tsx` line 161 — hero "Built with [mark] Lovable" chip
-3. `src/pages/Landing.tsx` line 578 — about-me card "Lovable portfolio" link
-4. `src/pages/Methodology.tsx` line 223 — top-of-page "Built with [mark] Lovable" chip
-5. `src/lib/branding.ts` line 8 — `lovable-cloud` architecture brand entry (this represents Lovable Cloud itself, not our app)
+| # | Where | Variant | Viewport | What's on screen |
+|---|---|---|---|---|
+| 1 | Landing, below hero | `recommendation` | 1440×900 | Full `/app` with all 3 columns visible (Inputs, Cost+Picker, Recommendation), default preset loaded, top of page |
+| 2 | Landing, "What you'll see" section | `matrix` | 1600×900 | Scrolled to "Full comparison matrix" section, all enabled columns visible |
+| 3 | Methodology, after the formula card | `inputs-panel` | 1000×1200 | Tight crop of just the Project Inputs panel (left column), default state |
+| 4 | Methodology, after criteria grid | `matrix` | 1600×900 | Same matrix shot as #2 (can reuse, or recapture with one column hovered) |
 
-Meanwhile the Stack Architect mark should keep its current home:
-- `SiteHeader` logo
-- favicons / `og-image` / manifest
-- App-identity contexts (NotFound page, ReportExport header, etc.)
+## Approach
 
-## Plan
+1. **Capture raw shots** with `browser--screenshot` at the listed viewports. For the inputs-panel crop I'll screenshot full `/app` at 1440 wide, then crop to the inputs column with `image_tools--zoom_image` before framing.
+2. **Frame each shot** with the product-shot skill (`/tmp/generate.py`) using the `candy` preset (warm pink/peach to match brand magenta gradient). Save framed PNGs to `src/assets/shots/`:
+   - `app-recommendation.png`
+   - `app-matrix.png`
+   - `app-inputs-panel.png`
+3. **Extend `ScreenshotPlaceholder.tsx`** so it accepts an optional `src` prop. When `src` is provided, it renders the framed `<img>` (already has its own chrome + gradient from the product-shot output) with the caption underneath — and skips the "Placeholder" badge and dashed sketch. When `src` is absent, behavior is unchanged.
+4. **Wire the images in:**
+   - `src/pages/Landing.tsx` line 189 → `src={appRecommendation}`
+   - `src/pages/Landing.tsx` line 449 → `src={appMatrix}`
+   - `src/pages/Methodology.tsx` line 292 → `src={appInputsPanel}`
+   - `src/pages/Methodology.tsx` line 336 → `src={appMatrix}` (reuse)
+5. **Verify** by re-screenshotting `/` and `/methodology` at 1440 and 390 to confirm framed shots render crisp, are not clipped on mobile, and the captions still read well.
 
-### 1. Add a real Lovable brand mark asset
+## Technical details
 
-Create `public/lovable-brand.svg` — the official Lovable heart logo (clean pink/red heart, no stacked-bars). Single-color heart on transparent background so it adapts to light/dark surfaces.
+- Imports use ES6 image imports from `src/assets/shots/` so Vite hashes them.
+- Framed PNGs already contain the mac window chrome, drop shadow, and mesh-gradient background — no extra wrapper card needed in the React component, just `<img class="mx-auto w-full max-w-5xl rounded-2xl" />` + `<figcaption>`.
+- Captions stay (helpful on Landing/Methodology), but the "To capture:" hint is dropped when a real `src` is provided since it's no longer needed.
+- Product-shot preset: `candy` (warm pink/peach/rose) to echo the brand magenta gradient used across the site. If it clashes with the white app shots in QA, fall back to `fog` (subtle silver) or `peach`.
 
-```text
-public/
-  logo-mark.svg        ← unchanged. Stack Architect's own mark.
-  lovable-brand.svg    ← NEW. Official Lovable heart, used only for
-                         "Built with Lovable" and Lovable Cloud brand.
-```
+## Out of scope
 
-### 2. Swap the five "Built with Lovable" / Lovable-brand spots
-
-Replace `src="/logo-mark.svg"` with `src="/lovable-brand.svg"` in exactly these five places — nothing else changes (sizes, alt text, surrounding copy all stay):
-
-- `src/components/SiteFooter.tsx` (footer disclaimer)
-- `src/pages/Landing.tsx` line 161 (hero "Built with Lovable" chip)
-- `src/pages/Landing.tsx` line 578 (about-me "Lovable portfolio" link)
-- `src/pages/Methodology.tsx` line 223 ("Built with Lovable" chip)
-- `src/lib/branding.ts` `lovable-cloud.src` (this entry represents Lovable Cloud's brand in the comparator/diagram/scoring UI)
-
-Add `alt="Lovable"` (instead of the current empty alt) on the four chip placements so the brand is announced correctly — the word "Lovable" is already in the visible text alongside, so the alt won't double-read awkwardly for sighted users but does name the mark for assistive tech.
-
-### 3. Leave the app's own identity alone
-
-No changes to:
-- `SiteHeader` logo (`/logo-mark.svg` stays — this is the app's identity)
-- Favicons, manifest, OG image
-- `NotFound`, `ReportExport`, `ComparisonMatrix` Stack Architect mark usages
-
-### Out of scope
-
-- No new "Built with Lovable" placements added.
-- No copy changes ("Built with Lovable", "Lovable team", "Lovable portfolio", etc. stay verbatim).
-- No layout / sizing changes to the chips themselves.
-- No changes to other architecture brand entries in `branding.ts`.
-
-## One question before I build
-
-Asset source for the Lovable heart — pick one:
-
-- **A.** I generate a clean inline SVG heart in Lovable's pink (≈ `#FF4D8D` → `#FF7A45` gradient already in your tokens) and ship it as `public/lovable-brand.svg`. Fast, no external dependency, close-enough to Lovable's brand without copying their exact file.
-- **B.** You drop the official `lovable-brand.svg` (downloaded from lovable.dev's brand assets) into `public/` yourself, and I just wire the five swaps.
-
-If you don't reply, I'll go with **A**.
+- No copy changes on Landing/Methodology beyond the swap.
+- No new screenshots on `/app` itself.
+- Mobile-specific shots — desktop shots scale down fine inside the framed PNG.
