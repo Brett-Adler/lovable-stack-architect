@@ -7,7 +7,8 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { ArrowRight, Sparkles, ExternalLink, Gauge, Share2, FileDown, SlidersHorizontal, Trophy, FileText, Database, Info, Layers, Users, Wallet, ShieldCheck, Workflow, Lock, Zap, TrendingUp, Rocket, PiggyBank, Radio, FolderOpen, Cpu, Unlock, Wrench, ArrowRightLeft, type LucideIcon } from "lucide-react";
+import { ArrowRight, Sparkles, ExternalLink, Gauge, Share2, FileDown, SlidersHorizontal, Trophy, FileText, Database, Info, Layers, Users, Wallet, ShieldCheck, Workflow, Lock, Zap, TrendingUp, Rocket, PiggyBank, Radio, FolderOpen, Cpu, Unlock, Wrench, ArrowRightLeft, Milestone, LineChart, Boxes, KeyRound, type LucideIcon } from "lucide-react";
+import { cn } from "@/lib/utils";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SeoHead } from "@/components/SeoHead";
@@ -31,15 +32,24 @@ const CRITERION_ICON: Record<CriterionId, LucideIcon> = {
 import { AUTHOR_HANDLE, AUTHOR_URL, LAST_REVIEWED, LOVABLE_REMIX_URL } from "@/lib/constants";
 import { PRESETS, presetShareUrl } from "@/lib/presets";
 
+const INPUT_TINT: Record<string, string> = {
+  blue: "bg-brand-blue/10 text-brand-blue",
+  magenta: "bg-brand-magenta/10 text-brand-magenta",
+  orange: "bg-brand-orange/10 text-brand-orange",
+  amber: "bg-amber-500/10 text-amber-600 dark:text-amber-400",
+  emerald: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400",
+  sky: "bg-sky-500/10 text-sky-600 dark:text-sky-400",
+};
+
 const INPUTS = [
-  { icon: Layers, label: "Stage", body: "Prototype, MVP, growth, or scale — sets what matters most." },
-  { icon: TrendingUp, label: "Expected MAU", body: "Monthly active users — drives the scaling and cost-at-scale weights." },
-  { icon: Users, label: "Team skills", body: "Frontend, backend, DevOps, data, or none — shifts ops-burden weight." },
-  { icon: Wallet, label: "Budget", body: "Low, medium, or high — tunes cost-at-small vs cost-at-large emphasis." },
-  { icon: ShieldCheck, label: "Compliance", body: "GDPR, HIPAA, SOC 2, residency — HIPAA / SOC 2 / residency act as hard filters." },
-  { icon: Workflow, label: "Workloads", body: "CRUD, realtime, files, AI, background jobs, heavy compute." },
-  { icon: Lock, label: "Lock-in tolerance", body: "How willing you are to be tied to one vendor." },
-  { icon: Zap, label: "Time-to-market", body: "1–5 priority — how much speed-to-launch should dominate the ranking." },
+  { icon: Milestone, label: "Stage", body: "Prototype, MVP, growth, or scale — sets what matters most.", tint: "magenta" },
+  { icon: LineChart, label: "Expected MAU", body: "Monthly active users — drives the scaling and cost-at-scale weights.", tint: "blue" },
+  { icon: Users, label: "Team skills", body: "Frontend, backend, DevOps, data, or none — shifts ops-burden weight.", tint: "sky" },
+  { icon: Wallet, label: "Budget", body: "Low, medium, or high — tunes cost-at-small vs cost-at-large emphasis.", tint: "amber" },
+  { icon: ShieldCheck, label: "Compliance", body: "GDPR, HIPAA, SOC 2, residency — HIPAA / SOC 2 / residency act as hard filters.", tint: "emerald" },
+  { icon: Boxes, label: "Workloads", body: "CRUD, realtime, files, AI, background jobs, heavy compute.", tint: "magenta" },
+  { icon: KeyRound, label: "Lock-in tolerance", body: "How willing you are to be tied to one vendor.", tint: "orange" },
+  { icon: Rocket, label: "Time-to-market", body: "1–5 priority — how much speed-to-launch should dominate the ranking.", tint: "blue" },
 ];
 
 const FEATURES = [
@@ -320,8 +330,11 @@ const Landing = () => {
                   key={i.label}
                   className="rounded-3xl border border-border bg-card p-5 shadow-card transition-all hover:-translate-y-0.5 hover:shadow-elegant"
                 >
-                  <div className="mb-3 inline-flex h-9 w-9 items-center justify-center rounded-xl bg-brand-blue/10 text-brand-blue">
-                    <Icon className="h-4 w-4" />
+                  <div className={cn(
+                    "mb-3 inline-flex h-12 w-12 items-center justify-center rounded-2xl ring-1 ring-inset ring-border/40 shadow-sm",
+                    INPUT_TINT[i.tint],
+                  )}>
+                    <Icon className="h-5 w-5" strokeWidth={2.25} />
                   </div>
                   <div className="text-sm font-semibold text-foreground">{i.label}</div>
                   <p className="mt-1 text-xs leading-relaxed text-muted-foreground">{i.body}</p>
