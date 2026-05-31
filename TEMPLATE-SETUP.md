@@ -8,6 +8,9 @@ Everything you need to rebrand this template after remixing. Work top-to-bottom;
 
 - `AUTHOR_HANDLE` — shown in header subtitle, footer, hero, FAQ, About tile.
 - `AUTHOR_URL` — linked from every author reference.
+- `AUTHOR_EMAIL` — used by the in-app Feedback dialog (`mailto:`). Set to `null` to hide the feedback button.
+- `AUTHOR_PORTFOLIO_URL` — optional extra link shown inside the feedback dialog (Figma, portfolio, etc.). `null` hides it.
+- `AUTHOR_URL` — linked from every author reference.
 - `SITE_URL` — used by `SeoHead` for canonical and OG URLs.
 - `LAST_REVIEWED` — bump when you re-review the rubric.
 - `LOVABLE_REMIX_URL` — `null` hides every "Use this template / Remix" CTA. Set to your project's public Remix URL to enable.

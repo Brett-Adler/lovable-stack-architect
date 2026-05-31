@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { AUTHOR_HANDLE, AUTHOR_URL, GITHUB_URL, LAST_REVIEWED, LOVABLE_REMIX_URL } from "@/lib/constants";
+import { FeedbackDialog } from "@/components/FeedbackDialog";
 
 export function SiteFooter() {
   return (
@@ -20,6 +21,13 @@ export function SiteFooter() {
                 GitHub
               </a>
             )}
+            <FeedbackDialog
+              trigger={
+                <button type="button" className="hover:text-foreground">
+                  Feedback / hire me
+                </button>
+              }
+            />
             <a href={AUTHOR_URL} target="_blank" rel="noopener noreferrer" className="hover:text-foreground">
               Built with Lovable
             </a>
@@ -33,15 +41,9 @@ export function SiteFooter() {
             rel="noopener noreferrer"
             className="underline decoration-dotted underline-offset-2 hover:text-foreground"
           >
-            {AUTHOR_HANDLE} on lovable.dev
+            {AUTHOR_HANDLE}
           </a>
-          {" "}— open to joining the{" "}
-          <span className="inline-flex items-center gap-1 align-baseline">
-            <img src="/lovable-brand.svg" alt="Lovable" className="inline-block h-3 w-3" />
-            <span className="font-medium text-foreground/80">Lovable</span>
-          </span>
-          {" "}team. Not affiliated with, endorsed by, or representing Lovable.
-          "Lovable" and the Lovable brand belong to Lovable.
+          . Not affiliated with, endorsed by, or representing Lovable. "Lovable" and the Lovable brand belong to Lovable.
         </p>
       </div>
     </footer>
