@@ -213,8 +213,10 @@ export function ScreenshotPlaceholder({ variant, caption, hint, aspect, url, src
   const a = aspect ?? d.aspect ?? "video";
 
   if (src) {
+    const isPortrait = a === "portrait" || a === "square";
+    const wrapperMax = isPortrait ? "max-w-sm sm:max-w-md" : "max-w-5xl";
     return (
-      <figure className="mx-auto w-full max-w-5xl">
+      <figure className={`mx-auto w-full ${wrapperMax}`}>
         <img
           src={src}
           alt={alt ?? caption ?? d.caption}
