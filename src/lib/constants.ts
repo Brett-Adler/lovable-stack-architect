@@ -6,6 +6,10 @@ export const LAST_REVIEWED = "May 2026";
 export const SITE_URL = "https://lovable-stack-architect.lovable.app";
 export const AUTHOR_HANDLE = "@brettadler";
 export const AUTHOR_URL = "https://lovable.dev/@brettadler";
+// Email used by the in-app feedback dialog (mailto:). Set to null to hide the feedback button.
+export const AUTHOR_EMAIL: string | null = "brett.adler@hey.com";
+// Optional: external link shown in the feedback dialog (Figma, portfolio, etc.).
+export const AUTHOR_PORTFOLIO_URL: string | null = "https://www.figma.com/@brettadler";
 export const IS_OFFICIAL = false;
 // Optional privacy-friendly analytics. Set to your Plausible domain
 // (e.g. "lovable-stack-architect.lovable.app") to enable. Leave null to disable.

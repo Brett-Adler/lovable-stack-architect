@@ -150,9 +150,9 @@ const Landing = () => {
                 rel="noopener noreferrer"
                 className="underline decoration-dotted underline-offset-2 hover:text-foreground"
               >
-                {AUTHOR_HANDLE} on lovable.dev
+                {AUTHOR_HANDLE}
               </a>
-              . Not a Lovable product, not affiliated with any platform listed below — just a Lovable nerd who kept getting asked which backend to pick and finally built the answer.
+              {" "}— not affiliated with Lovable.
             </p>
             <a
               href="https://lovable.dev"
