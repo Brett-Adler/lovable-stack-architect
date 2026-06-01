@@ -1,58 +1,90 @@
-# Pre-launch checklist — make it template-ready and Lovable-friendly
+# Brand refresh — staged plan
 
-Here's what's still missing or worth tightening before this is something you'd be proud to put in front of someone at Lovable. Grouped by priority.
+Break the work into three approve-as-you-go stages so the mark gets the attention it deserves before we burn cycles exporting 25+ files against the wrong shape.
 
-## P0 — Must do before sharing
+---
 
-1. **Add the feedback / "get in touch" surface** (you asked for this earlier, then skipped the questions, so it never landed). Proposal: one `<FeedbackButton />` component mounted in `SiteFooter` + a floating button on `/app`, opening a small dialog with:
-   - Three quick intents (radio): "Found something wrong / missing", "Want to hire me (Lovable or elsewhere)", "Just saying hi"
-   - Optional name + email, message textarea
-   - Submit = `mailto:` with prefilled subject/body (no backend, keeps the template zero-config). Plus visible direct links to your Lovable profile and Figma.
-   - Why mailto and not a form: keeps the template forkable with zero setup; anyone remixing inherits a working contact path by changing one constant.
-   - Add `AUTHOR_EMAIL` to `src/lib/constants.ts`.
+## Stage 1 — Redesign the mark (interactive)
 
-2. **Set `LOVABLE_REMIX_URL`** in `src/lib/constants.ts`. It's still `null`, so every "Use this template / Remix" CTA in the header, hero, and footer is hidden. Until this is set, the landing page literally has no template-launch button — which is the whole point of the project.
-   - Publish the project, then paste the Remix URL here.
+Goal: land on a single mark you love before touching anything else.
 
-3. **Replace `docs/screenshots/*.png`** with current screenshots. The landing/methodology pages have been redesigned multiple times since those were captured (bento, brand logos, new methodology table, portrait inputs panel fix). README and the SEO image references look stale.
-   - Re-shoot: `landing-hero.png`, `app-viewport.png`, `methodology.png`, `mobile-landing.png`.
+**1a. Pin the direction.** I ask one round of visual questions:
+- **Motif** — which conceptual hook should the mark lean on? (e.g. *stacked layers* (current), *blueprint/architect grid*, *heart + circuit*, *abstract monogram "LSA"*, *modular tile*).
+- **Feel** — *technical & precise* / *playful & warm* / *editorial & quiet* / *bold & poster-like*.
+- **Palette posture** — keep the current magenta→orange→blue gradient, or shift to a tighter 2-color system (more grown-up, prints better in mono).
 
-4. **Sanity check `og-image.png`**. If it predates the rebrand and the new logo set, regenerate it so LinkedIn/Twitter previews match the current site. Test at opengraph.xyz against the published URL.
+**1b. Three mark concepts.** I hand-author three distinct SVG marks (not AI-generated — vector, pixel-snapped, editable) at 512×512, each rendered on light + dark + mono backgrounds in a single preview sheet. They share the picks from 1a but diverge in form, weight, and construction.
 
-## P1 — Strongly recommended for "Lovable would receive this well"
+**1c. You pick one.** Single question, three thumbnails. Optional small tweaks (rotate, recolor, tighten counter) before locking.
 
-5. **Tone down the affiliation disclaimer redundancy.** It currently appears in: hero subhead, hero italic line, FAQ #1, footer (twice), llms.txt, README, TEMPLATE-SETUP. That's a lot. Keep the strong disclosure in the footer + FAQ + README; trim the hero italic line to one short sentence ("A fan project — not affiliated with Lovable."). Over-disclaiming reads as anxious; one clean line reads as respectful.
+**Exit criteria:** one locked `logo-mark.svg` + the wordmark treatment that goes with it.
 
-6. **Make the "open to joining Lovable" line less buried.** Right now it's a footer aside in tiny text. Either:
-   - (a) Promote it to the "About the builder" tile on the landing page as an explicit line ("Open to roles at Lovable — [contact]"), OR
-   - (b) Drop it from the footer entirely and put it in the feedback dialog under the "Want to hire me" intent.
-   - (b) is more dignified; (a) is more direct. Pick one — having it in the footer only is the worst of both.
+---
 
-7. **Re-review the rubric for Lovable Cloud bias.** Since the audience includes Lovable themselves, the Methodology page's "known biases" section should explicitly acknowledge:
-   - You're a Lovable fan (already there ✓)
-   - Confirm DX-with-Lovable scores were sanity-checked against the other 9 platforms (not just Lovable Cloud = 5)
-   - The native-integration flag isn't double-counted into scoring (verify in `scoring.ts`)
+## Stage 2 — Logo system (after mark is locked)
 
-8. **Spot-check cost bands against current vendor pricing** for at least Vercel, Netlify, Render, Fly (these change quarterly). Bump `lastReviewed` per platform in `architectures.ts` where you've verified, and update `LAST_REVIEWED` in `constants.ts`.
+Hand-authored SVGs derived from the locked mark:
+- `logo.svg` — horizontal lockup, light bg
+- `logo-dark.svg` — horizontal lockup, dark bg
+- `logo-stacked.svg` — vertical lockup (mark over wordmark) for square placements
+- `logo-mono-light.svg` — single-color white
+- `logo-mono-dark.svg` — single-color ink
+- `logo-mark.svg` — icon only (from Stage 1)
 
-9. **Run `npm run build`, `npm run lint`, `npm test`** and fix anything red. The TEMPLATE-SETUP "sanity check" section already lists this — it's worth actually doing it.
+Quick visual check sheet before moving on.
 
-## P2 — Polish
+---
 
-10. **`TEMPLATE-SETUP.md` — add the missing constant.** It documents `AUTHOR_HANDLE`, `AUTHOR_URL`, etc. but if we add `AUTHOR_EMAIL` in P0, document it too.
+## Stage 3 — Export the full asset set
 
-11. **`README.md` "Live demo" link** — already points to the published URL ✓. Double-check it actually loads after publish.
+Driven by a checked-in Node script (`scripts/build-brand-assets.mjs`, using `sharp`) so anything can be regenerated by re-running the script. All written to `public/`.
 
-12. **`PLAUSIBLE_DOMAIN`** is `null` in constants. If you want analytics on the demo (useful to know if Lovable folks actually click through), set it. Optional.
+**Favicons & bookmark**
+- `favicon.ico` (16/32/48 multi-res), `favicon-16/32/48/192/512.png`
 
-13. **`sitemap.xml` / `robots.txt`** — verify they reference the final published domain and that `/` `/app` `/methodology` are all listed.
+**Apple**
+- `apple-touch-icon.png` (180×180, opaque)
 
-## Out of scope for this pass
+**Android / PWA**
+- `android-chrome-192.png`, `android-chrome-512.png`, `maskable-512.png` (with safe-zone padding)
 
-- New features in the comparator itself (scoring, criteria, presets) — the surface area is good.
-- Visual redesign — the bento + brand-logo work just landed and looks consistent.
-- Backend / auth — intentionally a static client-side app; don't add Lovable Cloud just to have it.
+**Microsoft tiles**
+- `mstile-150.png`, `mstile-310.png` + fix `browserconfig.xml` TileColor to match manifest
 
-## Suggested order of execution
+**Social / OG**
+- `og-image.png` (1200×630) — primary OG, rendered from a refreshed `og-image.svg`
+- `og-image-square.png` (1200×1200) — IG / LinkedIn square
+- `twitter-card.png` (1200×675, 16:9) — explicit Twitter/X card
+- `linkedin-share.png` (1200×627)
+- `facebook-share.png` (1200×630)
 
-P0 (1 → 2 → 3 → 4) in one build pass, then P1 (5, 6, 7) as a second pass before publish, then P2 cleanups. The feedback dialog + setting the remix URL are the only items that meaningfully change "is this shareable yet" — everything else is polish.
+**Email**
+- `email-header.png` (600×200, opaque, no SVG — Gmail/Outlook safe)
+
+**Splash / startup**
+- `splash-light.png` (2048×2732) + `splash-dark.png` — single light/dark pair; full per-device iOS matrix is opt-in later.
+
+**Wiring**
+- `index.html` — add missing `<meta name="twitter:image">` pointing at `twitter-card.png`, verify every icon link resolves.
+- `public/site.webmanifest` — align `theme_color` / `background_color` with the locked palette (currently `#0B0B1F` / `#6E3CF1` — leftovers from an older palette).
+- `public/browserconfig.xml` — TileColor aligned with manifest.
+
+**Asset guide**
+- `docs/BRAND-ASSETS.md` — table of every file with dimensions, format, what references it, clear-space and color rules, mono usage, do/don't, and the regenerate command.
+
+Also drops `og-image.png` from the P0 list in `.lovable/plan.md` (this work supersedes it) and updates the screenshots note if any brand artwork shows in them.
+
+---
+
+## Out of scope
+
+- Re-shooting the product screenshots in `docs/screenshots/` (separate P0 task).
+- Animated/Lottie logo variants.
+- Per-device iOS splash matrix (10+ sizes).
+- Marketing illustrations beyond the OG/social cards.
+
+---
+
+## What I need from you to start
+
+Approve this plan, then I'll kick off Stage 1 with the three motif/feel/palette questions. Nothing in `public/` gets touched until Stage 2.
