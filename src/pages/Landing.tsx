@@ -102,7 +102,39 @@ const FAQ = [
   { q: "Does it store my data?", a: "No backend. Your inputs live in your browser's localStorage and in the share URL you generate. Nothing leaves your device." },
 ];
 
+const FAQ_PLAIN: { q: string; a: string }[] = [
+  { q: "Is this an official Lovable product?", a: "No. It's an independent, community-built template by @brettadler on lovable.dev, inspired by Lovable's design language. Not affiliated with, endorsed by, or representing Lovable. The Lovable name and brand belong to Lovable." },
+  { q: "Where does the data come from?", a: "Curated from public vendor pricing pages, docs, and hands-on experience. Every score is editable in one file, and every cost band links to its source on the Methodology page." },
+  { q: "How is bias handled?", a: "I built this and I'm a Lovable fan, so it has a perspective. Every criterion starts at the same baseline weight to avoid structurally favoring Lovable Cloud, and the recommendation card shows the top criteria that drove the score so you can sanity-check it. Full disclosure on the Methodology page." },
+  { q: "What's actually in Lovable Cloud?", a: "Postgres database, auth, file storage, edge functions, and the Lovable AI Gateway (managed Gemini/Claude/GPT calls — no API keys to rotate). It's powered by Supabase under the hood, so if you outgrow Cloud you can detach to a self-owned Supabase project." },
+  { q: "Do the other 8 platforms work with Lovable too?", a: "Not as native integrations. Only Lovable Cloud and external Supabase are wired in. For Vercel, Netlify, AWS, GCP, Azure, Heroku, Render, and Fly.io you export your Lovable project to GitHub and deploy the backend yourself." },
+  { q: "How fresh is it?", a: `Cost bands and rubric were last reviewed ${LAST_REVIEWED}. Always verify against current vendor pricing before committing.` },
+  { q: "Can I customize it for a different decision?", a: "Yes — that's the point. The whole app is data-driven. Edit architectures.ts and you have a picker for CMSs, databases, auth providers, AI models, anything." },
+  { q: "Is it free?", a: "Yes, MIT licensed. Fork it, ship it, sell a branded version — all fine." },
+  { q: "Does it store my data?", a: "No backend. Your inputs live in your browser's localStorage and in the share URL you generate. Nothing leaves your device." },
+];
+
 const Landing = () => {
+  useEffect(() => {
+    const ld = {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      mainEntity: FAQ_PLAIN.map((f) => ({
+        "@type": "Question",
+        name: f.q,
+        acceptedAnswer: { "@type": "Answer", text: f.a },
+      })),
+    };
+    const script = document.createElement("script");
+    script.type = "application/ld+json";
+    script.dataset.seo = "faq";
+    script.textContent = JSON.stringify(ld);
+    document.head.appendChild(script);
+    return () => {
+      script.remove();
+    };
+  }, []);
+
   return (
     <div className="min-h-dvh bg-background">
       <SeoHead
