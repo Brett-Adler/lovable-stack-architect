@@ -245,9 +245,9 @@ const Landing = () => {
                 <div className="mb-4 inline-flex w-fit items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-widest text-white/70">
                   <Database className="h-3 w-3" /> Lovable Cloud
                 </div>
-                <h3 className="text-2xl font-bold tracking-tight sm:text-3xl">
+                <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
                   What's Lovable Cloud?
-                </h3>
+                </h2>
                 <p className="mt-3 max-w-xl text-base leading-relaxed text-white/70">
                   Lovable's integrated backend: Postgres, auth, file storage, edge functions, and
                   the Lovable AI Gateway (managed Gemini/Claude/GPT — no API keys to rotate),
