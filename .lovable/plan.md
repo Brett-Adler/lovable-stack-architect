@@ -1,53 +1,31 @@
-# Next step — pre-publish polish (revised)
+## What I found
 
-`LOVABLE_REMIX_URL` is parked until after you publish. Everything else can ship now.
+Good news: the **active logo system already matches** the Stratum mark in your screenshots (pink/orange/blue slabs, top slab nudged right). The source of truth lives in `scripts/brand-source.mjs` and is rendered into every favicon, OG image, splash, tile, and lockup in `public/` by `scripts/build-brand-assets.mjs`.
 
----
+The only mismatch is one **orphaned old file**:
 
-## Stage A — Refresh stale screenshots (P0)
+- `src/assets/logo-mark.svg` — the *previous* heart-shaped mark with gradient bands. **Not imported anywhere** (verified via grep). It's a leftover from an earlier iteration.
 
-Screenshots in `docs/screenshots/` predate the bento landing, brand logos, new methodology table, and the inputs-panel fix. Plan:
+All live references already point at the new mark:
+- `index.html` → `/logo-mark.svg` (the new Stratum SVG in `public/`)
+- `src/components/SiteHeader.tsx` → `/logo-mark.svg`
+- All PWA/social/tile rasters in `public/` were regenerated earlier from `brand-source.mjs`
 
-1. Read `README.md` to enumerate every screenshot filename it references — those are the targets to refresh.
-2. For each one, open the relevant route in the preview via the browser tool, set the right viewport (1440×900 desktop, 390×844 mobile when a mobile shot exists), and capture.
-3. Overwrite the files in `docs/screenshots/` using the existing filenames so README links keep working. Don't introduce new filenames in this pass.
-4. If README references a screenshot whose subject no longer exists (e.g. an old layout that's been replaced), I'll flag it for your call rather than silently dropping it.
+## Plan
 
-No visual edits to the app — just captures.
+1. **Delete** `src/assets/logo-mark.svg` (the orphan old heart mark).
+2. **Re-run the brand asset generator** to guarantee every raster in `public/` is freshly rendered from the current `brand-source.mjs` (favicons, apple-touch, android-chrome, maskable, mstile, og-image, og-image-square, twitter-card, linkedin-share, facebook-share, email-header, splash-light, splash-dark, favicon.ico).
+   ```bash
+   node scripts/build-brand-assets.mjs
+   ```
+3. **Spot-check** a few outputs (favicon-512, og-image, apple-touch-icon, maskable-512) to confirm they show the three-slab Stratum mark.
+4. **Verify** no other file references the old heart mark, the previous wordmark, or the `lovable-brand.svg` heart (which is the *Lovable platform* mark used in "Built with Lovable" badges — that one stays, it's not ours).
+5. Report which files changed and confirm the manifest/`browserconfig.xml`/`index.html` theme colors still match (`#FF3D7F`).
 
----
+## Technical notes
 
-## Stage B — P1 audits
+- `public/lovable-brand.svg` is the **Lovable platform heart**, used by the BrandMark component for the `lovable-cloud` row in the comparison matrix. It is intentionally not part of the Stratum identity and will be left alone.
+- `public/placeholder.svg` is shadcn boilerplate, also untouched.
+- No source code (`src/components/*`, `src/pages/*`) needs editing — the references are already correct.
 
-### B1. Methodology rubric sanity-check
-Re-read `src/data/architectures.ts` and `src/pages/Methodology.tsx`. Specifically check:
-- Whether "DX with Lovable" double-counts the "native integration" flag (could be inflating Lovable Cloud's score).
-- Spot-check 2–3 platforms where the score feels off and verify the per-criterion math matches what the page claims.
-
-If I find a real bias, I'll surface a diff for your approval before changing scores — no silent re-ranking.
-
-### B2. Cost-band spot-check
-Spot-check cost bands in `src/data/architectures.ts` against current public pricing for the platforms most likely to have moved: Vercel, Netlify, Render, Fly. Web-fetch each pricing page, compare, flag anything stale. Same rule: diff first, then change.
-
-### B3. Build + lint + smoke
-Run `npm run build` and `npm run lint`. Fix breakages. Quick click-through of `/`, `/app`, `/methodology` in the preview to catch any runtime fallout from the brand-asset wiring.
-
----
-
-## Post-publish followup (one item, do this after you ship)
-
-Set `LOVABLE_REMIX_URL` in `src/lib/constants.ts` to the public Remix link from Lovable's Share panel, then republish. All "Use this template" / "Remix" CTAs will light up automatically. No other code changes required.
-
-I'll add a `TODO(post-publish): set LOVABLE_REMIX_URL` comment next to the constant so it's obvious when you come back.
-
----
-
-## Explicitly skipped this pass
-
-- P2 polish (extra docs entries, sitemap host check, analytics domain).
-- New features or visual changes.
-- Re-opening brand mark or screenshots of new layouts.
-
----
-
-Ready when you are — approve and I'll run A → B in one pass and stop at B1/B2 if I find anything that would change rubric scores or cost numbers.
+Net result: one deleted orphan file, plus regenerated rasters if any drifted. No visual change to the live site if the rasters were already current; this is a cleanup + safety pass.
