@@ -1,6 +1,6 @@
-import { Camera, Expand, X } from "lucide-react";
+import { Camera, Expand } from "lucide-react";
 import { useState } from "react";
-import { Dialog, DialogContent, DialogClose, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 
 type Variant =
