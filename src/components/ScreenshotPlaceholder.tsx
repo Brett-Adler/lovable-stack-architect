@@ -1,4 +1,7 @@
-import { Camera } from "lucide-react";
+import { Camera, Expand } from "lucide-react";
+import { useState } from "react";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 
 type Variant =
   | "recommendation"
@@ -211,59 +214,117 @@ function Sketch({ variant }: { variant: Variant }) {
 export function ScreenshotPlaceholder({ variant, caption, hint, aspect, url, src, alt }: Props) {
   const d = DEFAULTS[variant];
   const a = aspect ?? d.aspect ?? "video";
+  const [open, setOpen] = useState(false);
+  const label = alt ?? caption ?? d.caption;
 
   if (src) {
     const isPortrait = a === "portrait" || a === "square";
     const wrapperMax = isPortrait ? "max-w-sm sm:max-w-md" : "max-w-5xl";
     return (
-      <figure className={`mx-auto w-full ${wrapperMax}`}>
-        <img
-          src={src}
-          alt={alt ?? caption ?? d.caption}
-          loading="lazy"
-          className="mx-auto w-full rounded-2xl"
-        />
-        <figcaption className="mx-auto mt-4 max-w-2xl text-center text-sm font-semibold text-foreground">
-          {caption ?? d.caption}
-        </figcaption>
-      </figure>
+      <>
+        <figure className={`mx-auto w-full ${wrapperMax}`}>
+          <button
+            type="button"
+            onClick={() => setOpen(true)}
+            className="group relative block w-full overflow-hidden rounded-2xl focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            aria-label={`View ${label} full screen`}
+          >
+            <img
+              src={src}
+              alt={label}
+              loading="lazy"
+              className="mx-auto w-full rounded-2xl transition-transform duration-300 group-hover:scale-[1.01]"
+            />
+            <span className="pointer-events-none absolute right-3 top-3 inline-flex items-center gap-1 rounded-full bg-background/80 px-2 py-1 text-[10px] font-semibold uppercase tracking-wider text-foreground opacity-0 backdrop-blur-sm transition-opacity group-hover:opacity-100">
+              <Expand className="h-3 w-3" aria-hidden="true" /> Expand
+            </span>
+          </button>
+          <figcaption className="mx-auto mt-4 max-w-2xl text-center text-sm font-semibold text-foreground">
+            {caption ?? d.caption}
+          </figcaption>
+        </figure>
+        <Lightbox open={open} onOpenChange={setOpen} src={src} alt={label} />
+      </>
     );
   }
 
   return (
-    <figure className="mx-auto w-full max-w-5xl">
-      <div className="overflow-hidden rounded-2xl border border-border bg-card shadow-card">
-        {/* Title bar */}
-        <div className="flex items-center gap-3 border-b border-border bg-muted/40 px-4 py-2.5">
-          <div className="flex gap-1.5">
-            <span className="h-2.5 w-2.5 rounded-full bg-destructive/70" />
-            <span className="h-2.5 w-2.5 rounded-full bg-warning/70" />
-            <span className="h-2.5 w-2.5 rounded-full bg-success/70" />
+    <>
+      <figure className="mx-auto w-full max-w-5xl">
+        <button
+          type="button"
+          onClick={() => setOpen(true)}
+          className="group block w-full overflow-hidden rounded-2xl border border-border bg-card text-left shadow-card focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          aria-label={`View ${label} full screen`}
+        >
+          {/* Title bar */}
+          <div className="flex items-center gap-3 border-b border-border bg-muted/40 px-4 py-2.5">
+            <div className="flex gap-1.5">
+              <span className="h-2.5 w-2.5 rounded-full bg-destructive/70" />
+              <span className="h-2.5 w-2.5 rounded-full bg-warning/70" />
+              <span className="h-2.5 w-2.5 rounded-full bg-success/70" />
+            </div>
+            <div className="mx-auto w-full max-w-sm truncate rounded-md bg-background/60 px-3 py-1 text-center font-mono text-[11px] text-muted-foreground">
+              {url ?? d.url}
+            </div>
           </div>
-          <div className="mx-auto w-full max-w-sm truncate rounded-md bg-background/60 px-3 py-1 text-center font-mono text-[11px] text-muted-foreground">
-            {url ?? d.url}
+          {/* Canvas */}
+          <div className="relative bg-background">
+            <div className="absolute right-3 top-3 z-10 inline-flex items-center gap-1 rounded-full border border-dashed border-border bg-card/80 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground backdrop-blur-sm">
+              <Camera className="h-3 w-3" aria-hidden="true" />
+              Placeholder
+            </div>
+            <div className={`${ASPECT_CLASS[a]} w-full border-2 border-dashed border-border/60 bg-muted/20`}>
+              <Sketch variant={variant} />
+            </div>
           </div>
+        </button>
+        <figcaption className="mx-auto mt-4 max-w-2xl text-center">
+          <div className="text-sm font-semibold text-foreground">{caption ?? d.caption}</div>
+          <div className="mt-1 text-xs leading-relaxed text-muted-foreground">
+            <span className="font-semibold uppercase tracking-wider text-muted-foreground/80">
+              To capture:
+            </span>{" "}
+            {hint ?? d.hint}
+          </div>
+        </figcaption>
+      </figure>
+      <Lightbox open={open} onOpenChange={setOpen} alt={label}>
+        <div className={`${ASPECT_CLASS[a]} w-full max-w-[90vw] overflow-hidden rounded-xl border border-border bg-card`}>
+          <Sketch variant={variant} />
         </div>
-        {/* Canvas */}
-        <div className="relative bg-background">
-          <div className="absolute right-3 top-3 z-10 inline-flex items-center gap-1 rounded-full border border-dashed border-border bg-card/80 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground backdrop-blur-sm">
-            <Camera className="h-3 w-3" aria-hidden="true" />
-            Placeholder
-          </div>
-          <div className={`${ASPECT_CLASS[a]} w-full border-2 border-dashed border-border/60 bg-muted/20`}>
-            <Sketch variant={variant} />
-          </div>
+      </Lightbox>
+    </>
+  );
+}
+
+function Lightbox({
+  open,
+  onOpenChange,
+  src,
+  alt,
+  children,
+}: {
+  open: boolean;
+  onOpenChange: (v: boolean) => void;
+  src?: string;
+  alt: string;
+  children?: React.ReactNode;
+}) {
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="max-w-[95vw] border-none bg-transparent p-0 shadow-none sm:max-w-[95vw]">
+        <VisuallyHidden>
+          <DialogTitle>{alt}</DialogTitle>
+        </VisuallyHidden>
+        <div className="flex max-h-[95vh] items-center justify-center">
+          {src ? (
+            <img src={src} alt={alt} className="max-h-[95vh] w-auto max-w-full rounded-xl object-contain" />
+          ) : (
+            children
+          )}
         </div>
-      </div>
-      <figcaption className="mx-auto mt-4 max-w-2xl text-center">
-        <div className="text-sm font-semibold text-foreground">{caption ?? d.caption}</div>
-        <div className="mt-1 text-xs leading-relaxed text-muted-foreground">
-          <span className="font-semibold uppercase tracking-wider text-muted-foreground/80">
-            To capture:
-          </span>{" "}
-          {hint ?? d.hint}
-        </div>
-      </figcaption>
-    </figure>
+      </DialogContent>
+    </Dialog>
   );
 }
