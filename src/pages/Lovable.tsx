@@ -102,7 +102,7 @@ export default function Lovable() {
               Open template
             </div>
             <h1 className="text-4xl font-black tracking-tight text-foreground sm:text-6xl">
-              Remix this in <span className="bg-gradient-primary bg-clip-text text-transparent">Lovable</span>
+              Remix this in <span className="inline-block bg-gradient-primary bg-clip-text text-transparent">Lovable</span>
             </h1>
             <p className="mx-auto mt-5 max-w-2xl text-balance text-base text-muted-foreground sm:text-lg">
               Stack Architect is a weighted decision comparator built on a generic template.
