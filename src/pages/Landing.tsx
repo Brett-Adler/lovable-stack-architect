@@ -227,9 +227,9 @@ const Landing = () => {
               <div className="mb-5 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-orange/10 text-brand-orange transition-transform group-hover:scale-110">
                 <Share2 className="h-6 w-6" />
               </div>
-              <h3 className="text-xl font-bold tracking-tight text-foreground">
+              <h2 className="text-xl font-bold tracking-tight text-foreground">
                 {FEATURES[2].title}
-              </h3>
+              </h2>
               <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
                 {FEATURES[2].body}
               </p>
