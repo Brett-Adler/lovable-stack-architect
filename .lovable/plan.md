@@ -1,8 +1,14 @@
-## Change
+# Plan: Make Inputs the Default Mobile Tab
 
-In `src/pages/Landing.tsx` (line 162), reduce the base (mobile) font size on the hero `<h1>`:
+## What we will change
+In `src/pages/Index.tsx`, change the initial state of the `mobileTab` hook from `"recommendation"` to `"inputs"`.
 
-- Current: `text-5xl font-extrabold ... sm:text-6xl md:text-7xl`
-- New: `text-[2.5rem] font-extrabold ... sm:text-6xl md:text-7xl`
+## Why
+Currently, when a user first loads the app on mobile (or any narrow viewport), they land on the "Pick" (recommendation) tab. The user wants new visitors to start on the "Inputs" tab so they see the controls first and understand how to tune the comparator before viewing results.
 
-This drops the mobile size from 48px to 40px so "your Lovable" and "backend for" wrap more naturally on 320–390px viewports. `sm:` and `md:` sizes are unchanged, so tablet/desktop look identical.
+## Technical detail
+Line 88 in `src/pages/Index.tsx`:
+- **Current:** `const [mobileTab, setMobileTab] = useState<...>("recommendation");`
+- **New:** `const [mobileTab, setMobileTab] = useState<...>("inputs");`
+
+This only affects the mobile tab switcher (hidden on `md` and up). Desktop layout is unchanged.
