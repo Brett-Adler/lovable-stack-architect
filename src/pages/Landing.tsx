@@ -201,9 +201,9 @@ const Landing = () => {
               <div className="mb-6 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-blue/10 text-brand-blue transition-transform group-hover:scale-110">
                 <Trophy className="h-6 w-6" />
               </div>
-              <h3 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+              <h2 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
                 {FEATURES[0].title}
-              </h3>
+              </h2>
               <p className="mt-3 max-w-lg text-base leading-relaxed text-muted-foreground sm:text-lg">
                 {FEATURES[0].body}
               </p>
