@@ -1,31 +1,39 @@
 ## What I found
 
-Good news: the **active logo system already matches** the Stratum mark in your screenshots (pink/orange/blue slabs, top slab nudged right). The source of truth lives in `scripts/brand-source.mjs` and is rendered into every favicon, OG image, splash, tile, and lockup in `public/` by `scripts/build-brand-assets.mjs`.
-
-The only mismatch is one **orphaned old file**:
-
-- `src/assets/logo-mark.svg` — the *previous* heart-shaped mark with gradient bands. **Not imported anywhere** (verified via grep). It's a leftover from an earlier iteration.
-
-All live references already point at the new mark:
-- `index.html` → `/logo-mark.svg` (the new Stratum SVG in `public/`)
-- `src/components/SiteHeader.tsx` → `/logo-mark.svg`
-- All PWA/social/tile rasters in `public/` were regenerated earlier from `brand-source.mjs`
+- The live header is using `public/logo-mark.svg`, which is the correct three-bar logo.
+- The SVG source files in `public/` and `scripts/brand-source.mjs` are correct.
+- The raster/app icon files in `public/` are stale and still show the old purple document icon from earlier branding.
+- The old heart logo is still visible in `src/assets/logo-mark.svg` in your screenshots and should be removed if it still exists in the current workspace.
+- `public/lovable-brand.svg` is a separate Lovable platform badge used in “Built with Lovable” UI, not the app logo; I would leave it unless you want those badges removed too.
 
 ## Plan
 
-1. **Delete** `src/assets/logo-mark.svg` (the orphan old heart mark).
-2. **Re-run the brand asset generator** to guarantee every raster in `public/` is freshly rendered from the current `brand-source.mjs` (favicons, apple-touch, android-chrome, maskable, mstile, og-image, og-image-square, twitter-card, linkedin-share, facebook-share, email-header, splash-light, splash-dark, favicon.ico).
-   ```bash
-   node scripts/build-brand-assets.mjs
-   ```
-3. **Spot-check** a few outputs (favicon-512, og-image, apple-touch-icon, maskable-512) to confirm they show the three-slab Stratum mark.
-4. **Verify** no other file references the old heart mark, the previous wordmark, or the `lovable-brand.svg` heart (which is the *Lovable platform* mark used in "Built with Lovable" badges — that one stays, it's not ours).
-5. Report which files changed and confirm the manifest/`browserconfig.xml`/`index.html` theme colors still match (`#FF3D7F`).
+1. **Make `scripts/brand-source.mjs` the single source of truth**
+   - Keep the three-bar mark geometry/color there as the canonical logo.
+   - Ensure generated outputs all come from that file.
 
-## Technical notes
+2. **Regenerate every public brand asset from the correct logo**
+   - Re-run the existing brand builder to overwrite:
+     - `favicon-16/32/48/64/96/192/512.png`
+     - `favicon.ico`
+     - `apple-touch-icon.png`
+     - `android-chrome-192/512.png`
+     - `maskable-512.png`
+     - `mstile-150/310.png`
+     - `og-image*.png`, `twitter-card.png`, `linkedin-share.png`, `facebook-share.png`
+     - `email-header.png`, splash images, and logo SVG variants
 
-- `public/lovable-brand.svg` is the **Lovable platform heart**, used by the BrandMark component for the `lovable-cloud` row in the comparison matrix. It is intentionally not part of the Stratum identity and will be left alone.
-- `public/placeholder.svg` is shadcn boilerplate, also untouched.
-- No source code (`src/components/*`, `src/pages/*`) needs editing — the references are already correct.
+3. **Delete old/orphan logo files**
+   - Remove any lingering old heart/logo source such as `src/assets/logo-mark.svg` if present.
+   - Keep only the intentional public logo set generated from the three-bar mark.
 
-Net result: one deleted orphan file, plus regenerated rasters if any drifted. No visual change to the live site if the rasters were already current; this is a cleanup + safety pass.
+4. **Verify all references point to the right files**
+   - Check `index.html`, `site.webmanifest`, `browserconfig.xml`, `SiteHeader`, and app pages.
+   - Confirm nothing imports or references the old heart, purple document, or unused logo asset.
+
+5. **Visual spot-check the generated outputs**
+   - Inspect key outputs after regeneration: `favicon-512.png`, `android-chrome-512.png`, `apple-touch-icon.png`, `maskable-512.png`, and `og-image.png`.
+   - Confirm they show the three-bar logo matching the header.
+
+6. **Update docs if needed**
+   - If `docs/BRAND-ASSETS.md` or `TEMPLATE-SETUP.md` references outdated assumptions, align wording with the three-bar source-of-truth workflow.
