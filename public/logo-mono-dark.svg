@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="320" viewBox="0 0 1200 320">
+  <g transform="translate(80 50) scale(0.4296875)"><rect x="76.00" y="296.00" width="223.20" height="92" rx="18" fill="#FFF7F4"/><rect x="76.00" y="186.00" width="295.20" height="92" rx="18" fill="#FFF7F4"/><rect x="104.00" y="76.00" width="360.00" height="92" rx="18" fill="#FFF7F4"/></g>
+  <text x="336" y="154" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="84" font-weight="900" letter-spacing="-3" fill="#FFF7F4">Stack</text>
+  <text x="336" y="244" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="84" font-weight="900" letter-spacing="-3" fill="#FFF7F4">Architect</text>
+</svg>
