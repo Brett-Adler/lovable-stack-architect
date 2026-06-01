@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -101,11 +102,43 @@ const FAQ = [
   { q: "Does it store my data?", a: "No backend. Your inputs live in your browser's localStorage and in the share URL you generate. Nothing leaves your device." },
 ];
 
+const FAQ_PLAIN: { q: string; a: string }[] = [
+  { q: "Is this an official Lovable product?", a: "No. It's an independent, community-built template by @brettadler on lovable.dev, inspired by Lovable's design language. Not affiliated with, endorsed by, or representing Lovable. The Lovable name and brand belong to Lovable." },
+  { q: "Where does the data come from?", a: "Curated from public vendor pricing pages, docs, and hands-on experience. Every score is editable in one file, and every cost band links to its source on the Methodology page." },
+  { q: "How is bias handled?", a: "I built this and I'm a Lovable fan, so it has a perspective. Every criterion starts at the same baseline weight to avoid structurally favoring Lovable Cloud, and the recommendation card shows the top criteria that drove the score so you can sanity-check it. Full disclosure on the Methodology page." },
+  { q: "What's actually in Lovable Cloud?", a: "Postgres database, auth, file storage, edge functions, and the Lovable AI Gateway (managed Gemini/Claude/GPT calls — no API keys to rotate). It's powered by Supabase under the hood, so if you outgrow Cloud you can detach to a self-owned Supabase project." },
+  { q: "Do the other 8 platforms work with Lovable too?", a: "Not as native integrations. Only Lovable Cloud and external Supabase are wired in. For Vercel, Netlify, AWS, GCP, Azure, Heroku, Render, and Fly.io you export your Lovable project to GitHub and deploy the backend yourself." },
+  { q: "How fresh is it?", a: `Cost bands and rubric were last reviewed ${LAST_REVIEWED}. Always verify against current vendor pricing before committing.` },
+  { q: "Can I customize it for a different decision?", a: "Yes — that's the point. The whole app is data-driven. Edit architectures.ts and you have a picker for CMSs, databases, auth providers, AI models, anything." },
+  { q: "Is it free?", a: "Yes, MIT licensed. Fork it, ship it, sell a branded version — all fine." },
+  { q: "Does it store my data?", a: "No backend. Your inputs live in your browser's localStorage and in the share URL you generate. Nothing leaves your device." },
+];
+
 const Landing = () => {
+  useEffect(() => {
+    const ld = {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      mainEntity: FAQ_PLAIN.map((f) => ({
+        "@type": "Question",
+        name: f.q,
+        acceptedAnswer: { "@type": "Answer", text: f.a },
+      })),
+    };
+    const script = document.createElement("script");
+    script.type = "application/ld+json";
+    script.dataset.seo = "faq";
+    script.textContent = JSON.stringify(ld);
+    document.head.appendChild(script);
+    return () => {
+      script.remove();
+    };
+  }, []);
+
   return (
     <div className="min-h-dvh bg-background">
       <SeoHead
-        title="Lovable Stack Architect — Pick the right backend for your Lovable app"
+        title="Lovable Stack Architect — pick your backend"
         description="An independent, community-built comparator for picking a backend for your Lovable app. Free, MIT — remix it."
         path="/"
       />
@@ -160,7 +193,7 @@ const Landing = () => {
               rel="noopener noreferrer"
               className="mx-auto mt-4 inline-flex items-center gap-1.5 rounded-full border border-border bg-card/70 px-3 py-1 text-xs text-muted-foreground backdrop-blur-sm transition-colors hover:text-foreground"
             >
-              Built with <img src="/lovable-brand.svg" alt="Lovable" className="h-3.5 w-3.5" /> <span className="font-medium">Lovable</span>
+              Built with <img src="/lovable-brand.svg" alt="" className="h-3.5 w-3.5" /> <span className="font-medium">Lovable</span>
             </a>
             <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
               <div className="rounded-full bg-gradient-primary p-[1.5px] shadow-elegant transition-transform hover:scale-[1.02]">
@@ -201,9 +234,9 @@ const Landing = () => {
               <div className="mb-6 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-blue/10 text-brand-blue transition-transform group-hover:scale-110">
                 <Trophy className="h-6 w-6" />
               </div>
-              <h3 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+              <h2 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
                 {FEATURES[0].title}
-              </h3>
+              </h2>
               <p className="mt-3 max-w-lg text-base leading-relaxed text-muted-foreground sm:text-lg">
                 {FEATURES[0].body}
               </p>
@@ -214,9 +247,9 @@ const Landing = () => {
               <div className="mb-5 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-magenta/10 text-brand-magenta transition-transform group-hover:scale-110">
                 <Gauge className="h-6 w-6" />
               </div>
-              <h3 className="text-xl font-bold tracking-tight text-foreground">
+              <h2 className="text-xl font-bold tracking-tight text-foreground">
                 {FEATURES[1].title}
-              </h3>
+              </h2>
               <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
                 {FEATURES[1].body}
               </p>
@@ -227,9 +260,9 @@ const Landing = () => {
               <div className="mb-5 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-orange/10 text-brand-orange transition-transform group-hover:scale-110">
                 <Share2 className="h-6 w-6" />
               </div>
-              <h3 className="text-xl font-bold tracking-tight text-foreground">
+              <h2 className="text-xl font-bold tracking-tight text-foreground">
                 {FEATURES[2].title}
-              </h3>
+              </h2>
               <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
                 {FEATURES[2].body}
               </p>
@@ -245,9 +278,9 @@ const Landing = () => {
                 <div className="mb-4 inline-flex w-fit items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-widest text-white/70">
                   <Database className="h-3 w-3" /> Lovable Cloud
                 </div>
-                <h3 className="text-2xl font-bold tracking-tight sm:text-3xl">
+                <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
                   What's Lovable Cloud?
-                </h3>
+                </h2>
                 <p className="mt-3 max-w-xl text-base leading-relaxed text-white/70">
                   Lovable's integrated backend: Postgres, auth, file storage, edge functions, and
                   the Lovable AI Gateway (managed Gemini/Claude/GPT — no API keys to rotate),

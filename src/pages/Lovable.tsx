@@ -87,7 +87,7 @@ export default function Lovable() {
     <div className="min-h-screen bg-background">
       <SeoHead
         title="Remix this template in Lovable — Stack Architect"
-        description="An open Lovable template for building any side-by-side decision comparator. Fork it, swap in your options and criteria, and ship a weighted recommendation tool in a day."
+        description="An open Lovable template for any side-by-side decision comparator. Fork it, swap in your options and criteria, ship a weighted recommender."
         path="/lovable"
       />
       <SiteHeader />
