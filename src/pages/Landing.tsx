@@ -159,7 +159,7 @@ const Landing = () => {
               </span>
               Community template · Inspired by Lovable · Last reviewed {LAST_REVIEWED}
             </div>
-            <h1 className="mx-auto max-w-4xl text-5xl font-extrabold leading-[0.95] tracking-[-0.04em] text-foreground sm:text-6xl md:text-7xl">
+            <h1 className="mx-auto max-w-4xl text-[2.5rem] font-extrabold leading-[0.95] tracking-[-0.04em] text-foreground sm:text-6xl md:text-7xl">
               Pick the right backend for{" "}
               <span className="text-gradient">your Lovable app</span>
             </h1>
