@@ -194,7 +194,7 @@ export const ARCHITECTURES: Architecture[] = [
       "Background jobs need an external service",
       "You still pick and operate the database",
     ],
-    costBands: { prototype: "$0", mvp: "$19–60", growth: "$99–400", scale: "$500–2.5k" },
+    costBands: { prototype: "$0", mvp: "$9–40", growth: "$20–200", scale: "$500–2.5k" },
     scaleCeiling: "Very high — bound by your chosen database.",
     sources: [{ label: "Netlify pricing", url: "https://www.netlify.com/pricing/" }],
     lastReviewed: REVIEWED,
@@ -291,7 +291,7 @@ export const ARCHITECTURES: Architecture[] = [
     bestFor: ["Indie/SMB teams wanting simple PaaS", "Background workers + cron", "Predictable pricing"],
     watchOuts: [
       "Not a Lovable integration — requires GitHub export + your own deploy pipeline",
-      "Free web services were deprecated; paid web services start at $7/mo",
+      "No free always-on web services; paid instances start at $7/mo",
       "Smaller ecosystem than hyperscalers; fewer compliance certifications",
     ],
     costBands: { prototype: "$0–7", mvp: "$15–80", growth: "$150–800", scale: "$800–4k" },
@@ -314,7 +314,7 @@ export const ARCHITECTURES: Architecture[] = [
       "No free allowance — pay-as-you-go from a few dollars/mo",
       "Postgres HA needs careful setup; smaller managed-service catalog",
     ],
-    costBands: { prototype: "$0–5", mvp: "$10–60", growth: "$100–600", scale: "$600–3k" },
+    costBands: { prototype: "$1–5", mvp: "$10–60", growth: "$100–600", scale: "$600–3k" },
     scaleCeiling: "Very high for stateless workloads; the database is the practical limit.",
     sources: [{ label: "Fly.io pricing", url: "https://fly.io/docs/about/pricing/" }],
     lastReviewed: REVIEWED,
@@ -333,7 +333,7 @@ export const RUBRIC: Record<ArchId, Record<CriterionId, number>> = {
   "lovable-cloud": {
     "time-to-launch": 5, "dx-with-lovable": 5, "cost-small": 5, "cost-large": 3,
     "scaling-ceiling": 3, "realtime": 4, "storage": 4, "ai-compute": 4,
-    "compliance": 3, "lock-in": 3, "ops-burden": 5, "migration": 4,
+    "compliance": 3, "lock-in": 3, "ops-burden": 5, "migration": 3,
   },
   "lovable-supabase": {
     "time-to-launch": 4, "dx-with-lovable": 5, "cost-small": 5, "cost-large": 4,
@@ -341,12 +341,12 @@ export const RUBRIC: Record<ArchId, Record<CriterionId, number>> = {
     "compliance": 4, "lock-in": 3, "ops-burden": 4, "migration": 4,
   },
   "lovable-vercel": {
-    "time-to-launch": 4, "dx-with-lovable": 4, "cost-small": 3, "cost-large": 3,
+    "time-to-launch": 3, "dx-with-lovable": 3, "cost-small": 3, "cost-large": 3,
     "scaling-ceiling": 5, "realtime": 3, "storage": 3, "ai-compute": 3,
     "compliance": 3, "lock-in": 3, "ops-burden": 3, "migration": 4,
   },
   "lovable-netlify": {
-    "time-to-launch": 4, "dx-with-lovable": 4, "cost-small": 3, "cost-large": 3,
+    "time-to-launch": 3, "dx-with-lovable": 3, "cost-small": 3, "cost-large": 3,
     "scaling-ceiling": 4, "realtime": 2, "storage": 3, "ai-compute": 2,
     "compliance": 3, "lock-in": 3, "ops-burden": 3, "migration": 4,
   },
