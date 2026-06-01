@@ -313,10 +313,7 @@ function Lightbox({
 }) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent
-        className="max-w-[95vw] border-none bg-transparent p-0 shadow-none sm:max-w-[95vw]"
-        hideClose
-      >
+      <DialogContent className="max-w-[95vw] border-none bg-transparent p-0 shadow-none sm:max-w-[95vw]">
         <VisuallyHidden>
           <DialogTitle>{alt}</DialogTitle>
         </VisuallyHidden>
@@ -327,12 +324,6 @@ function Lightbox({
             children
           )}
         </div>
-        <DialogClose
-          className="absolute right-4 top-4 rounded-full bg-background/80 p-2 text-foreground backdrop-blur-sm transition hover:bg-background focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-          aria-label="Close"
-        >
-          <X className="h-5 w-5" />
-        </DialogClose>
       </DialogContent>
     </Dialog>
   );
