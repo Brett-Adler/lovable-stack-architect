@@ -105,7 +105,7 @@ const Landing = () => {
   return (
     <div className="min-h-dvh bg-background">
       <SeoHead
-        title="Lovable Stack Architect — Pick the right backend for your Lovable app"
+        title="Lovable Stack Architect — pick your backend"
         description="An independent, community-built comparator for picking a backend for your Lovable app. Free, MIT — remix it."
         path="/"
       />
