@@ -115,11 +115,11 @@ const ogCardSVG = ({ w, h, headline = "Pick the right backend for your Lovable a
 };
 
 const ogBg = { r: 0xFF, g: 0xF7, b: 0xF4, alpha: 1 };
-write("og-image.png", await sharp(Buffer.from(ogCardSVG({ w: 1200, h: 630 })), { density: 192 }).flatten({ background: ogBg }).png({ compressionLevel: 9 }).toBuffer());
-write("og-image-square.png", await sharp(Buffer.from(ogCardSVG({ w: 1200, h: 1200 })), { density: 192 }).flatten({ background: ogBg }).png({ compressionLevel: 9 }).toBuffer());
-write("twitter-card.png", await sharp(Buffer.from(ogCardSVG({ w: 1200, h: 675 })), { density: 192 }).flatten({ background: ogBg }).png({ compressionLevel: 9 }).toBuffer());
-write("linkedin-share.png", await sharp(Buffer.from(ogCardSVG({ w: 1200, h: 627 })), { density: 192 }).flatten({ background: ogBg }).png({ compressionLevel: 9 }).toBuffer());
-write("facebook-share.png", await sharp(Buffer.from(ogCardSVG({ w: 1200, h: 630 })), { density: 192 }).flatten({ background: ogBg }).png({ compressionLevel: 9 }).toBuffer());
+write("og-image.png", await sharp(Buffer.from(ogCardSVG({ w: 1200, h: 630 })), { density: 192 }).resize(1200, 630).flatten({ background: ogBg }).png({ compressionLevel: 9 }).toBuffer());
+write("og-image-square.png", await sharp(Buffer.from(ogCardSVG({ w: 1200, h: 1200 })), { density: 192 }).resize(1200, 1200).flatten({ background: ogBg }).png({ compressionLevel: 9 }).toBuffer());
+write("twitter-card.png", await sharp(Buffer.from(ogCardSVG({ w: 1200, h: 675 })), { density: 192 }).resize(1200, 675).flatten({ background: ogBg }).png({ compressionLevel: 9 }).toBuffer());
+write("linkedin-share.png", await sharp(Buffer.from(ogCardSVG({ w: 1200, h: 627 })), { density: 192 }).resize(1200, 627).flatten({ background: ogBg }).png({ compressionLevel: 9 }).toBuffer());
+write("facebook-share.png", await sharp(Buffer.from(ogCardSVG({ w: 1200, h: 630 })), { density: 192 }).resize(1200, 630).flatten({ background: ogBg }).png({ compressionLevel: 9 }).toBuffer());
 
 // ---- Email header (600x200, opaque, email-safe PNG) ----
 const emailSVG = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="400" viewBox="0 0 1200 400">
@@ -142,8 +142,8 @@ const splashSVG = (dark) => {
   <text x="${W / 2}" y="${H / 2 + markSize / 2 + 60}" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="96" font-weight="900" letter-spacing="-3" fill="${ink}">Stack Architect</text>
 </svg>`;
 };
-write("splash-light.png", await sharp(Buffer.from(splashSVG(false)), { density: 144 }).flatten({ background: ogBg }).png({ compressionLevel: 9 }).toBuffer());
+write("splash-light.png", await sharp(Buffer.from(splashSVG(false)), { density: 144 }).resize(2048, 2732).flatten({ background: ogBg }).png({ compressionLevel: 9 }).toBuffer());
 const darkBg = { r: 0x0B, g: 0x0B, b: 0x1F, alpha: 1 };
-write("splash-dark.png", await sharp(Buffer.from(splashSVG(true)), { density: 144 }).flatten({ background: darkBg }).png({ compressionLevel: 9 }).toBuffer());
+write("splash-dark.png", await sharp(Buffer.from(splashSVG(true)), { density: 144 }).resize(2048, 2732).flatten({ background: darkBg }).png({ compressionLevel: 9 }).toBuffer());
 
 console.log("\nAll brand assets built.");
