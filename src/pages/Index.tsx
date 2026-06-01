@@ -85,7 +85,15 @@ const Index = () => {
     }
     return { ...s, inputs: migrateInputs(s.inputs), enabled: sanitize(s.enabled) };
   });
-  const [mobileTab, setMobileTab] = useState<"inputs" | "recommendation" | "comparison">("inputs");
+  type TabId = "inputs" | "recommendation" | "comparison";
+  const VALID_TABS: readonly TabId[] = ["inputs", "recommendation", "comparison"] as const;
+  const getInitialTab = (): TabId => {
+    if (typeof window === "undefined") return "inputs";
+    const params = new URLSearchParams(window.location.search);
+    const t = params.get("tab");
+    return (VALID_TABS as readonly string[]).includes(t ?? "") ? (t as TabId) : "inputs";
+  };
+  const [mobileTab, setMobileTab] = useState<TabId>(getInitialTab);
   const { inputs, enabled } = state;
 
   useEffect(() => {
@@ -95,6 +103,34 @@ const Index = () => {
       /* ignore */
     }
   }, [state]);
+
+  // Sync ?tab= to URL (without polluting history) and scroll the panel into view on desktop
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("tab") !== mobileTab) {
+      params.set("tab", mobileTab);
+      const newUrl = `${window.location.pathname}?${params.toString()}${window.location.hash}`;
+      window.history.replaceState(null, "", newUrl);
+    }
+  }, [mobileTab]);
+
+  // On initial mount, if a ?tab= deep link is present, scroll the corresponding panel into view on desktop
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const t = params.get("tab");
+    if (!t || !(VALID_TABS as readonly string[]).includes(t)) return;
+    const isDesktop = window.matchMedia("(min-width: 768px)").matches;
+    if (!isDesktop) return;
+    const el = document.getElementById(`panel-${t}`);
+    if (el) {
+      const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      // Defer to after layout
+      requestAnimationFrame(() =>
+        el.scrollIntoView({ behavior: prefersReduced ? "auto" : "smooth", block: "start" }),
+      );
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const { results, excluded } = useMemo(() => rankFull(inputs), [inputs]);
   const topId = results[0]?.arch.id;
