@@ -516,11 +516,11 @@ export function ReportExport(props: Props) {
           onClick={() => setHubOpen(true)}
           variant="outline"
           size="sm"
-          className="gap-1.5"
+          aria-label="Export & share"
+          className="h-9 w-9 p-0 gap-0 sm:h-9 sm:w-auto sm:gap-1.5 sm:px-3"
         >
           <Share2 className="h-4 w-4" />
           <span className="hidden sm:inline">Export &amp; share</span>
-          <span className="sm:hidden">Export</span>
         </Button>
       </div>
 

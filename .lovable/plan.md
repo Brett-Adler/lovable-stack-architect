@@ -1,14 +1,12 @@
-# Plan: Make Inputs the Default Mobile Tab
+# Plan: Icon-only Export button on mobile
 
-## What we will change
-In `src/pages/Index.tsx`, change the initial state of the `mobileTab` hook from `"recommendation"` to `"inputs"`.
+In `src/components/ReportExport.tsx` (around lines 514–525), change the Export button so on mobile it renders as a compact icon-only button (with an accessible label), and keeps the "Export & share" text on `sm:` and up.
 
-## Why
-Currently, when a user first loads the app on mobile (or any narrow viewport), they land on the "Pick" (recommendation) tab. The user wants new visitors to start on the "Inputs" tab so they see the controls first and understand how to tune the comparator before viewing results.
+## Changes
 
-## Technical detail
-Line 88 in `src/pages/Index.tsx`:
-- **Current:** `const [mobileTab, setMobileTab] = useState<...>("recommendation");`
-- **New:** `const [mobileTab, setMobileTab] = useState<...>("inputs");`
+- Drop the "Export" text span shown below `sm`. Keep only the `Share2` icon on mobile.
+- Add `aria-label="Export & share"` to the button for screen readers.
+- Make the button square on mobile (`h-9 w-9 p-0`) and revert to the normal sized padded button at `sm:` and up (`sm:h-9 sm:w-auto sm:px-3`).
+- Keep the existing `Export & share` label visible from `sm:` upward.
 
-This only affects the mobile tab switcher (hidden on `md` and up). Desktop layout is unchanged.
+This frees up header space so the "Comparator" pill no longer overlaps the Export button.
