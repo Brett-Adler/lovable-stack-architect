@@ -8,6 +8,7 @@ import Landing from "./pages/Landing.tsx";
 import NotFound from "./pages/NotFound.tsx";
 import Index from "./pages/Index.tsx";
 import Methodology from "./pages/Methodology.tsx";
+import Lovable from "./pages/Lovable.tsx";
 import { initAnalytics } from "@/lib/analytics";
 
 const queryClient = new QueryClient();
@@ -30,6 +31,7 @@ const App = () => {
           <Route path="/" element={<Landing />} />
           <Route path="/app" element={<Index />} />
           <Route path="/methodology" element={<Methodology />} />
+          <Route path="/lovable" element={<Lovable />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

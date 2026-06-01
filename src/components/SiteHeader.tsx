@@ -8,6 +8,7 @@ const NAV_ITEMS = [
   { to: "/", label: "Home", match: (p: string) => p === "/" },
   { to: "/methodology", label: "Methodology", match: (p: string) => p.startsWith("/methodology") },
   { to: "/app", label: "Comparator", match: (p: string) => p.startsWith("/app") },
+  { to: "/lovable", label: "Template", match: (p: string) => p.startsWith("/lovable") },
 ];
 
 export function SiteHeader({ children }: { children?: React.ReactNode }) {

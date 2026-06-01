@@ -14,6 +14,7 @@ Platforms covered: Lovable Cloud, external Supabase, Vercel, Netlify, AWS, Googl
 - [Home](/): Marketing landing — what the tool does, example scenarios, FAQ, and a path to remix it as a template.
 - [Tool](/app): The full comparator — inputs, ranked recommendation with rationale and runner-up trade-off, side-by-side matrix, cost estimate with sources, and architecture diagram. Share scenarios via URL; export Markdown or PDF.
 - [Methodology](/methodology): How the score is computed, the rubric and weights, cost-band sources per platform, and the tool's known biases.
+- [Template](/lovable): Gallery and remix guide — how to fork this project in Lovable and adapt it to any decision space.
 
 ## How to remix
 
