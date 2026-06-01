@@ -85,7 +85,7 @@ const Index = () => {
     }
     return { ...s, inputs: migrateInputs(s.inputs), enabled: sanitize(s.enabled) };
   });
-  const [mobileTab, setMobileTab] = useState<"inputs" | "recommendation" | "comparison">("recommendation");
+  const [mobileTab, setMobileTab] = useState<"inputs" | "recommendation" | "comparison">("inputs");
   const { inputs, enabled } = state;
 
   useEffect(() => {
