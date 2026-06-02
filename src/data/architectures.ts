@@ -20,6 +20,7 @@ export type ArchId =
   | "lovable-supabase"
   | "lovable-vercel"
   | "lovable-netlify"
+  | "lovable-cloudflare"
   | "lovable-aws"
   | "lovable-gcp"
   | "lovable-azure"
