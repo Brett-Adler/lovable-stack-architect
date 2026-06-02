@@ -553,7 +553,7 @@ function PlatformsPicker({
       <div className="flex flex-wrap gap-1.5">
         <button
           type="button"
-          onClick={() => onSetEnabled(ALL_ARCH_IDS)}
+          onClick={() => onSetEnabled(visibleIds)}
           aria-pressed={allOn}
           className={cn(
             "inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-[11px] font-medium transition-colors",
@@ -565,6 +565,7 @@ function PlatformsPicker({
           {allOn && <Check className="h-3 w-3" aria-hidden="true" />}
           All
         </button>
+
         <button
           type="button"
           onClick={() => onSetEnabled(TOP_PICKS)}
