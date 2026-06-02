@@ -132,7 +132,10 @@ const Index = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const { results, excluded } = useMemo(() => rankFull(inputs), [inputs]);
+  const { results, excluded, userExcluded } = useMemo(
+    () => rankFull(inputs, { enabled }),
+    [inputs, enabled],
+  );
   const topId = results[0]?.arch.id;
   const isNonTechnical = inputs.team.length === 0 || (inputs.team.length === 1 && inputs.team[0] === "none");
 
