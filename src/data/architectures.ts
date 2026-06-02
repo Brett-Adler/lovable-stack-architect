@@ -319,6 +319,29 @@ export const ARCHITECTURES: Architecture[] = [
     scaleCeiling: "Very high for stateless workloads; the database is the practical limit.",
     sources: [{ label: "Fly.io pricing", url: "https://fly.io/docs/about/pricing/" }],
     lastReviewed: REVIEWED,
+  {
+    id: "lovable-cloudflare",
+    category: "frontend-host",
+    name: "Self-host on Cloudflare",
+    short: "Cloudflare",
+    tagline: "Edge-first Pages + Workers + D1/R2",
+    description:
+      "Cloudflare Pages serves the frontend on a global CDN, Workers runs serverless logic at the edge, D1 (SQLite) or Hyperdrive→Postgres handles data, R2 stores files, and Workers AI runs inference close to users.",
+    nativeIntegration: false,
+    bestFor: ["Latency-sensitive global apps", "Edge AI inference", "Generous free tier"],
+    watchOuts: [
+      "Not a Lovable integration — requires GitHub export + your own deploy pipeline",
+      "D1 is SQLite — different write-throughput profile than the Postgres-centric peers",
+      "Workers runtime has CPU/time limits — long-running Node servers don't fit",
+    ],
+    costBands: { prototype: "$0", mvp: "$0–20", growth: "$25–250", scale: "$250–2k" },
+    scaleCeiling: "Very high for stateless edge workloads; D1 write throughput is the practical limit.",
+    sources: [
+      { label: "Cloudflare Workers pricing", url: "https://developers.cloudflare.com/workers/platform/pricing/" },
+      { label: "Cloudflare Pages pricing", url: "https://pages.cloudflare.com/" },
+      { label: "Cloudflare D1 pricing", url: "https://developers.cloudflare.com/d1/platform/pricing/" },
+    ],
+    lastReviewed: REVIEWED,
   },
 ];
 
