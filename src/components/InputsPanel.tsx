@@ -595,8 +595,9 @@ function PlatformsPicker({
 
       <div className="mt-2 space-y-2">
         {CATEGORIES.map((cat) => {
-          const inCat = ARCHITECTURES.filter((a) => a.category === cat.id);
-          return (
+          const inCat = visibleArchs.filter((a) => a.category === cat.id);
+          if (inCat.length === 0) return null;
+
             <div key={cat.id}>
               <div className="mb-1 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
                 {cat.label}
