@@ -596,9 +596,11 @@ function RunnersSection({ runners }: { runners: RankedResult[] }) {
 function RankedSection({
   results,
   excluded,
+  userExcluded,
 }: {
   results: RankedResult[];
   excluded: { arch: Architecture; reason: string }[];
+  userExcluded: { arch: Architecture; reason: string }[];
 }) {
   return (
     <SectionWrapper id="ranked">
@@ -622,6 +624,24 @@ function RankedSection({
             {excluded.map((e) => (
               <li key={e.arch.id} style={{ marginBottom: "3px" }}>
                 <strong>{e.arch.name}</strong> — <span style={{ color: C.muted }}>{e.reason}</span>
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
+
+      {userExcluded.length > 0 && (
+        <>
+          <H3>Removed by your platform filter</H3>
+          <p style={{ margin: "0 0 6px", fontSize: "11px", color: C.muted, fontStyle: "italic" }}>
+            You chose to leave these out of this comparison. Re-enable them in the app's "Platforms
+            to consider" picker to score them.
+          </p>
+          <ul style={{ margin: 0, paddingLeft: "20px" }}>
+            {userExcluded.map((e) => (
+              <li key={e.arch.id} style={{ marginBottom: "3px" }}>
+                <strong>{e.arch.name}</strong>{" "}
+                <span style={{ color: C.muted }}>— {e.arch.tagline}</span>
               </li>
             ))}
           </ul>
