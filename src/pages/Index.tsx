@@ -154,7 +154,7 @@ const Index = () => {
     <div className="min-h-dvh bg-background">
       <SeoHead
         title="Stack comparator — Lovable Stack Architect"
-        description="Compare 11 hosting and backend platforms side by side. Include or exclude any vendor and tune to your stage, budget, team, and workloads."
+        description="Compare 11 hosting and backend platforms side by side, plus optional hybrid stacks that split frontend hosting from the backend. Include or exclude any vendor and tune to your stage, budget, team, and workloads."
         path="/app"
       />
       <SiteHeader>
