@@ -401,14 +401,9 @@ export function ReportExport(props: Props) {
     }
   };
 
-  const openFullReport = () => {
-    const win = window.open("", "_blank", "noopener,noreferrer");
-    if (!win) {
-      toast.error("Pop-up blocked", { description: "Allow pop-ups to open the full report." });
-      return;
-    }
+  const buildReportHtml = () => {
     const body = renderToStaticMarkup(<ReportContent {...props} />);
-    win.document.write(`<!doctype html>
+    return `<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8" />
@@ -441,8 +436,21 @@ export function ReportExport(props: Props) {
 <body>
   <div class="page">${body}</div>
 </body>
-</html>`);
-    win.document.close();
+</html>`;
+  };
+
+  const openFullReport = () => {
+    const html = buildReportHtml();
+    const blob = new Blob([html], { type: "text/html" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.target = "_blank";
+    a.rel = "noopener noreferrer";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(url), 60_000);
   };
 
   const copyShareUrl = async () => {
