@@ -57,19 +57,59 @@ export function PlatformsConsidered({ enabled, onToggle, onReset, onSetEnabled, 
             </>
           )}
         </div>
-        {!isFull && (
-          <Button
-            type="button"
-            variant="ghost"
-            size="sm"
-            className="h-7 gap-1.5 text-xs"
-            onClick={onReset}
-            aria-label="Reset to compare all platforms"
-          >
-            <RotateCcw className="h-3 w-3" aria-hidden="true" />
-            Reset
-          </Button>
-        )}
+        <div className="flex items-center gap-1">
+          {onSetEnabled && (
+            <>
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                className="h-7 gap-1.5 text-xs"
+                onClick={() => onSetEnabled(TOP_PICKS)}
+                aria-label="Limit comparison to top picks"
+              >
+                <Star className="h-3 w-3 fill-primary text-primary" aria-hidden="true" />
+                Top picks
+              </Button>
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                className="h-7 gap-1.5 text-xs"
+                onClick={() => onSetEnabled(catalog.map((a) => a.id))}
+                aria-label="Include all platforms"
+                disabled={isFull}
+              >
+                All
+              </Button>
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                className="h-7 gap-1.5 text-xs text-muted-foreground"
+                onClick={() => onSetEnabled([])}
+                aria-label="Clear all selected platforms"
+                disabled={isEmpty}
+              >
+                Clear
+              </Button>
+            </>
+          )}
+          {!isFull && (
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              className="h-7 gap-1.5 text-xs"
+              onClick={onReset}
+              aria-label="Reset to compare all platforms"
+            >
+              <RotateCcw className="h-3 w-3" aria-hidden="true" />
+              Reset
+            </Button>
+          )}
+        </div>
+
       </div>
 
       {activeArchs.length > 0 && (
