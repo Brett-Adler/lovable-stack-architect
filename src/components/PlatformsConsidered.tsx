@@ -1,8 +1,8 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { ARCHITECTURES, type ArchId } from "@/data/architectures";
 import { BrandMark } from "@/components/BrandMark";
 import { Button } from "@/components/ui/button";
-import { Plus, RotateCcw, Star, X } from "lucide-react";
+import { ChevronDown, Plus, RotateCcw, Star, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const TOP_PICKS: ArchId[] = ["lovable-cloud", "lovable-supabase", "lovable-vercel", "lovable-aws"];
