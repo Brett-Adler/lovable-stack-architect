@@ -33,11 +33,13 @@ export function CostEstimate({
   inputs,
   enabled,
   topId,
+  expandable = true,
 }: {
   archId: ArchId;
   inputs: Inputs;
   enabled?: ArchId[];
   topId?: ArchId;
+  expandable?: boolean;
 }) {
   const arch = ARCH_BY_ID[archId];
   const stage = stageFromMau(inputs.mau);
