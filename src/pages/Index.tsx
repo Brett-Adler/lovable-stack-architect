@@ -143,24 +143,22 @@ const Index = () => {
   // Sync ?tab= to URL (without polluting history) and scroll the panel into view on desktop
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    if (params.get("tab") !== mobileTab) {
-      params.set("tab", mobileTab);
+    if (params.get("tab") !== tab) {
+      params.set("tab", tab);
       const newUrl = `${window.location.pathname}?${params.toString()}${window.location.hash}`;
       window.history.replaceState(null, "", newUrl);
     }
-  }, [mobileTab]);
+  }, [tab]);
 
-  // On initial mount, if a ?tab= deep link is present, scroll the corresponding panel into view on desktop
+  // On initial mount, if a ?tab= deep link is present, scroll the corresponding panel into view
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const t = params.get("tab");
-    if (!t || !(VALID_TABS as readonly string[]).includes(t)) return;
-    const isDesktop = window.matchMedia("(min-width: 768px)").matches;
-    if (!isDesktop) return;
-    const el = document.getElementById(`panel-${t}`);
+    if (!t) return;
+    const target = t === "inputs" || t === "comparison" ? "setup" : t;
+    const el = document.getElementById(`panel-${target}`);
     if (el) {
       const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      // Defer to after layout
       requestAnimationFrame(() =>
         el.scrollIntoView({ behavior: prefersReduced ? "auto" : "smooth", block: "start" }),
       );
