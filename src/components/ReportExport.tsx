@@ -72,7 +72,7 @@ function applyNonTechFilter(results: RankedResult[], inputs: Inputs) {
 }
 
 // ---------- Markdown ----------
-function buildMarkdown({ inputs, results: rawResults, excluded = [] }: Props): string {
+function buildMarkdown({ inputs, results: rawResults, excluded = [], userExcluded = [] }: Props): string {
   const results = applyNonTechFilter(rawResults, inputs);
   const top = results[0];
   const stage = stageFromMau(inputs.mau);
