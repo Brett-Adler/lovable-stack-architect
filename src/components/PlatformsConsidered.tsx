@@ -19,6 +19,7 @@ interface Props {
 
 
 export function PlatformsConsidered({ enabled, onToggle, onReset, onSetEnabled, allowSplit = false, className }: Props) {
+  const [showExcluded, setShowExcluded] = useState(false);
   const catalog = useMemo(
     () => ARCHITECTURES.filter((a) => allowSplit || !a.hybrid),
     [allowSplit],
