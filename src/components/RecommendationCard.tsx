@@ -68,24 +68,6 @@ export function RecommendationCard({
       <div aria-live="polite" aria-atomic="true" className="sr-only">
         Recommended: {top.arch.name} — score {Math.round(top.score)} of 100. {top.arch.tagline}
       </div>
-      {isNonTechnical && (
-        <div className="flex items-start gap-2 rounded-xl border border-border bg-muted/30 px-3 py-2 text-xs text-muted-foreground">
-          <Users className="mt-0.5 h-3.5 w-3.5 shrink-0 text-primary" />
-          <span>
-            Non-technical team detected — runners-up are limited to native Lovable integrations
-            so you don't have to manage GitHub exports or your own infra.
-          </span>
-        </div>
-      )}
-      {excluded.length > 0 && (
-        <div className="flex items-start gap-2 rounded-xl border border-warning/40 bg-warning/5 px-3 py-2 text-xs text-foreground/90">
-          <ShieldAlert className="mt-0.5 h-3.5 w-3.5 shrink-0 text-warning" />
-          <span>
-            <span className="font-medium">{excluded.length}</span> option{excluded.length === 1 ? "" : "s"} hidden by your compliance requirement
-            ({excluded.map((e) => e.arch.short).join(", ")}). Adjust compliance to compare them.
-          </span>
-        </div>
-      )}
       <div className="rounded-2xl border border-primary/30 bg-gradient-primary p-[1px] shadow-elegant">
         <div className="rounded-[calc(theme(borderRadius.2xl)-1px)] bg-card p-5">
           <div className="flex items-start justify-between gap-3">
@@ -105,7 +87,31 @@ export function RecommendationCard({
             <ScoreBadge score={top.score} primary />
           </div>
 
+          {(isNonTechnical || excluded.length > 0) && (
+            <div className="mt-4 space-y-2">
+              {isNonTechnical && (
+                <div className="flex items-start gap-2 rounded-xl border border-border bg-muted/30 px-3 py-2 text-xs text-muted-foreground">
+                  <Users className="mt-0.5 h-3.5 w-3.5 shrink-0 text-primary" />
+                  <span>
+                    Non-technical team detected — runners-up are limited to native Lovable integrations
+                    so you don't have to manage GitHub exports or your own infra.
+                  </span>
+                </div>
+              )}
+              {excluded.length > 0 && (
+                <div className="flex items-start gap-2 rounded-xl border border-warning/40 bg-warning/5 px-3 py-2 text-xs text-foreground/90">
+                  <ShieldAlert className="mt-0.5 h-3.5 w-3.5 shrink-0 text-warning" />
+                  <span>
+                    <span className="font-medium">{excluded.length}</span> option{excluded.length === 1 ? "" : "s"} hidden by your compliance requirement
+                    ({excluded.map((e) => e.arch.short).join(", ")}). Adjust compliance to compare them.
+                  </span>
+                </div>
+              )}
+            </div>
+          )}
+
           <p className="mt-4 text-sm text-foreground/90">{top.arch.description}</p>
+
 
           <div className="mt-4 space-y-1.5">
             {top.rationale.map((r, i) => (
