@@ -5,19 +5,54 @@ import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SeoHead } from "@/components/SeoHead";
 import { ScreenshotPlaceholder } from "@/components/ScreenshotPlaceholder";
-import { GITHUB_URL, LOVABLE_REMIX_URL } from "@/lib/constants";
+import { GITHUB_URL, LOVABLE_LISTING_URL, LOVABLE_REMIX_URL, SITE_URL } from "@/lib/constants";
 import posterAsset from "@/assets/lovable/remix-poster.png.asset.json";
 import comparatorAsset from "@/assets/lovable/app-comparator.png.asset.json";
 import matrixAsset from "@/assets/lovable/app-matrix.png.asset.json";
 import methodologyAsset from "@/assets/lovable/methodology.png.asset.json";
 
-const STEPS = [
+const TAGLINE =
+  "A weighted decision comparator for picking the right Lovable stack — inputs in, recommendation out, with a transparent rubric you can see and edit.";
+
+const HIGHLIGHTS = [
+  "Weighted 1–5 rubric scoring with a live, explained recommendation",
+  "Side-by-side comparison matrix across every option you keep in play",
+  "Auto-generated architecture diagram for the top pick",
+  "Shareable scenario URLs and one-click Markdown / PDF export",
+  "Preset scenarios so users land on something meaningful",
+  "Full methodology page — nothing about the scoring is hidden",
+];
+
+const GALLERY = [
+  {
+    src: posterAsset.url,
+    caption: "Pick your Lovable stack",
+    alt: "Stack Architect — weighted scoring across 11 architectures with a recommended pick",
+  },
+  {
+    src: comparatorAsset.url,
+    caption: "Inputs, recommendation, and architecture in one view",
+    alt: "Stack Architect comparator with inputs, recommendation and architecture diagram",
+  },
+  {
+    src: matrixAsset.url,
+    caption: "Side-by-side matrix of every option",
+    alt: "Full comparison matrix scoring every option across all criteria",
+  },
+  {
+    src: methodologyAsset.url,
+    caption: "Methodology, in the open",
+    alt: "Methodology page explaining the 12 criteria",
+  },
+];
+
+const REMIX_STEPS = [
   {
     n: "01",
     icon: GitFork,
-    title: "Fork the template in Lovable",
+    title: "Open in Lovable or clone from GitHub",
     body:
-      "Open the project in Lovable and use Remix (or clone the GitHub repo) to get your own editable copy. No external accounts required to get going.",
+      "Use Remix on the Lovable listing — or clone the GitHub repo — to get your own editable copy. No external accounts required.",
     file: "—",
   },
   {
@@ -46,102 +81,68 @@ const STEPS = [
   },
 ];
 
-const FEATURES = [
-  "Weighted 1–5 rubric scoring with live recommendation",
-  "Side-by-side comparison matrix across all options",
-  "Auto-generated architecture diagram per top pick",
-  "Shareable scenario URLs and one-click Markdown / PDF export",
-  "Preset scenarios so users land on something meaningful",
-  "Built-in SEO head, sitemap, llms.txt, and OG image",
-  "Privacy-friendly Plausible hook, ready to enable",
-  "Full brand system: tokens, favicons, social rasters, all regenerable",
-];
-
-const GALLERY = [
-  {
-    src: posterAsset.url,
-    caption: "Pick your Lovable stack",
-    alt: "Stack Architect — weighted scoring across 11 architectures with a recommended pick",
-  },
-  {
-    src: comparatorAsset.url,
-    caption: "The comparator at a glance",
-    alt: "Stack Architect comparator with inputs, recommendation and architecture diagram",
-  },
-  {
-    src: matrixAsset.url,
-    caption: "Side-by-side matrix",
-    alt: "Full comparison matrix scoring every option across all criteria",
-  },
-  {
-    src: methodologyAsset.url,
-    caption: "Methodology, in the open",
-    alt: "Methodology page explaining the 12 criteria",
-  },
-];
-
 export default function Lovable() {
-  const remixHref = LOVABLE_REMIX_URL ?? "https://lovable.dev";
+  const remixHref = LOVABLE_REMIX_URL ?? LOVABLE_LISTING_URL;
 
   return (
     <div className="min-h-screen bg-background">
       <SeoHead
-        title="Remix this template in Lovable — Stack Architect"
-        description="An open Lovable template for any side-by-side decision comparator. Fork it, swap in your options and criteria, ship a weighted recommender."
+        title="Stack Architect — the Lovable listing"
+        description="Stack Architect on Lovable: a weighted decision comparator for picking the right Lovable stack. See the screenshots, try it live, or remix the template."
         path="/lovable"
       />
       <SiteHeader />
 
       <main id="main-content">
-        {/* Hero */}
+        {/* Hero — listing-style */}
         <section className="relative overflow-hidden border-b border-border/60">
           <div className="absolute inset-0 -z-10 bg-gradient-soft opacity-60" aria-hidden="true" />
           <div className="mx-auto max-w-5xl px-6 py-20 text-center sm:py-28">
             <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-border/60 bg-card/70 px-3 py-1 text-xs font-medium text-muted-foreground backdrop-blur">
               <Sparkles className="h-3.5 w-3.5 text-primary" aria-hidden="true" />
-              Open template
+              On the Lovable gallery
             </div>
             <h1 className="text-4xl font-black tracking-tight text-foreground sm:text-6xl">
-              Remix this in <span className="inline-block bg-gradient-primary bg-clip-text text-transparent">Lovable</span>
+              <span className="inline-block bg-gradient-primary bg-clip-text text-transparent">Stack Architect</span>
             </h1>
             <p className="mx-auto mt-5 max-w-2xl text-balance text-base text-muted-foreground sm:text-lg">
-              Stack Architect is a weighted decision comparator built on a generic template.
-              Point it at a different problem — CMSes, databases, AI models, anything with options
-              and trade-offs — and ship your own version in an afternoon.
+              {TAGLINE}
             </p>
             <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
               <Button asChild size="lg" className="gap-2">
-                <a href={remixHref} target="_blank" rel="noopener noreferrer">
-                  <ExternalLink className="h-4 w-4" />
-                  Open in Lovable
-                </a>
-              </Button>
-              {GITHUB_URL && (
-                <Button asChild size="lg" variant="outline" className="gap-2">
-                  <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer">
-                    View on GitHub
-                  </a>
-                </Button>
-              )}
-              <Button asChild size="lg" variant="ghost" className="gap-2">
                 <Link to="/app">
-                  See the live tool
+                  Try it live
                   <ArrowRight className="h-4 w-4" />
                 </Link>
               </Button>
+              <Button asChild size="lg" variant="outline" className="gap-2">
+                <a href={LOVABLE_LISTING_URL} target="_blank" rel="noopener noreferrer">
+                  <ExternalLink className="h-4 w-4" />
+                  View on Lovable
+                </a>
+              </Button>
+              <Button asChild size="lg" variant="ghost" className="gap-2">
+                <a href="#remix">
+                  Remix the template
+                  <ArrowRight className="h-4 w-4" />
+                </a>
+              </Button>
             </div>
+            <p className="mt-6 text-xs text-muted-foreground">
+              Live at <a href={SITE_URL} className="underline-offset-2 hover:underline">{SITE_URL.replace(/^https?:\/\//, "")}</a>
+            </p>
           </div>
         </section>
 
-        {/* Gallery */}
+        {/* Gallery — front and center */}
         <section className="border-b border-border/60 py-16 sm:py-24">
           <div className="mx-auto max-w-6xl px-6">
             <div className="mx-auto max-w-2xl text-center">
               <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-                What you get out of the box
+                What it looks like
               </h2>
               <p className="mt-3 text-muted-foreground">
-                Click any image to see it full size.
+                Four screens that cover the whole flow — inputs, comparison, recommendation, and the methodology behind the scores.
               </p>
             </div>
             <div className="mt-12 grid gap-12 sm:gap-16">
@@ -158,19 +159,80 @@ export default function Lovable() {
           </div>
         </section>
 
-        {/* How to remix */}
+        {/* What it is / highlights */}
         <section className="border-b border-border/60 py-16 sm:py-24">
           <div className="mx-auto max-w-5xl px-6">
             <div className="mx-auto max-w-2xl text-center">
               <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-                How to remix it
+                Built for one job: pick a stack with confidence
               </h2>
               <p className="mt-3 text-muted-foreground">
-                The whole comparator is data-driven. Most projects only touch two files.
+                Stack Architect turns a fuzzy “which stack should I use?” into a weighted, explainable answer
+                — with a matrix, a diagram, and an exportable report behind it.
               </p>
             </div>
+            <ul className="mt-10 grid gap-3 sm:grid-cols-2">
+              {HIGHLIGHTS.map((f) => (
+                <li
+                  key={f}
+                  className="flex items-start gap-3 rounded-xl border border-border/60 bg-card/60 p-4 text-sm text-foreground"
+                >
+                  <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" aria-hidden="true" />
+                  <span>{f}</span>
+                </li>
+              ))}
+            </ul>
+            <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
+              <Button asChild size="lg" className="gap-2">
+                <Link to="/app">
+                  Open the live tool
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
+              </Button>
+              <Button asChild size="lg" variant="outline" className="gap-2">
+                <Link to="/methodology">
+                  Read the methodology
+                </Link>
+              </Button>
+            </div>
+          </div>
+        </section>
+
+        {/* Remix — secondary, but complete */}
+        <section id="remix" className="border-b border-border/60 py-16 sm:py-24">
+          <div className="mx-auto max-w-5xl px-6">
+            <div className="mx-auto max-w-2xl text-center">
+              <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-border/60 bg-card/70 px-3 py-1 text-xs font-medium text-muted-foreground backdrop-blur">
+                <GitFork className="h-3.5 w-3.5 text-primary" aria-hidden="true" />
+                Also an open template
+              </div>
+              <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+                Want to remix it?
+              </h2>
+              <p className="mt-3 text-muted-foreground">
+                The whole comparator is data-driven. Point it at any decision space —
+                CMSes, databases, AI models, anything with 5–15 alternatives — and ship your own
+                weighted recommender in an afternoon. Most projects only touch two files.
+              </p>
+              <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
+                <Button asChild size="lg" className="gap-2">
+                  <a href={remixHref} target="_blank" rel="noopener noreferrer">
+                    <ExternalLink className="h-4 w-4" />
+                    Remix in Lovable
+                  </a>
+                </Button>
+                {GITHUB_URL && (
+                  <Button asChild size="lg" variant="outline" className="gap-2">
+                    <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer">
+                      View on GitHub
+                    </a>
+                  </Button>
+                )}
+              </div>
+            </div>
+
             <ol className="mt-12 grid gap-6 sm:grid-cols-2">
-              {STEPS.map((s) => (
+              {REMIX_STEPS.map((s) => (
                 <li
                   key={s.n}
                   className="rounded-2xl border border-border/60 bg-card/60 p-6 shadow-card backdrop-blur"
@@ -192,52 +254,33 @@ export default function Lovable() {
           </div>
         </section>
 
-        {/* Features list */}
-        <section className="border-b border-border/60 py-16 sm:py-24">
-          <div className="mx-auto max-w-5xl px-6">
-            <div className="mx-auto max-w-2xl text-center">
-              <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-                Batteries included
-              </h2>
-              <p className="mt-3 text-muted-foreground">
-                Everything below comes wired up — you focus on the decision space, not the plumbing.
-              </p>
-            </div>
-            <ul className="mt-10 grid gap-3 sm:grid-cols-2">
-              {FEATURES.map((f) => (
-                <li
-                  key={f}
-                  className="flex items-start gap-3 rounded-xl border border-border/60 bg-card/60 p-4 text-sm text-foreground"
-                >
-                  <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" aria-hidden="true" />
-                  <span>{f}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </section>
-
         {/* Final CTA */}
         <section className="py-20 sm:py-28">
           <div className="mx-auto max-w-3xl px-6 text-center">
             <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-              Make it yours
+              Try it, share it, or make it yours
             </h2>
             <p className="mt-4 text-muted-foreground">
-              Fork the template, swap in your options, and ship a weighted recommendation tool by
-              the end of the day.
+              Use Stack Architect to pick your next Lovable stack — or fork the template and
+              ship a weighted recommender for your own decision space.
             </p>
             <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
               <Button asChild size="lg" className="gap-2">
-                <a href={remixHref} target="_blank" rel="noopener noreferrer">
+                <Link to="/app">
+                  Try it live
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
+              </Button>
+              <Button asChild size="lg" variant="outline" className="gap-2">
+                <a href={LOVABLE_LISTING_URL} target="_blank" rel="noopener noreferrer">
                   <ExternalLink className="h-4 w-4" />
-                  Open in Lovable
+                  View on Lovable
                 </a>
               </Button>
               {GITHUB_URL && (
-                <Button asChild size="lg" variant="outline" className="gap-2">
+                <Button asChild size="lg" variant="ghost" className="gap-2">
                   <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer">
-                    View on GitHub
+                    GitHub
                   </a>
                 </Button>
               )}
