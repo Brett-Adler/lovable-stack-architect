@@ -7,7 +7,7 @@ import { PlatformsConsidered } from "@/components/PlatformsConsidered";
 import { CostEstimate } from "@/components/CostEstimate";
 import { ArchitectureDiagram } from "@/components/ArchitectureDiagram";
 import { ReportExport } from "@/components/ReportExport";
-import { SlidersHorizontal, Sparkle, Columns3, Sparkles } from "lucide-react";
+import { SlidersHorizontal, Sparkle, Columns3, Sparkles, ShieldAlert } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
@@ -260,8 +260,17 @@ const Index = () => {
           allowSplit={inputs.allowSplit ?? false}
         />
 
-
+        {excluded.length > 0 && (
+          <div role="status" className="mt-2 flex items-start gap-2 rounded-xl border border-warning/40 bg-warning/5 px-3 py-2 text-xs text-foreground/90">
+            <ShieldAlert className="mt-0.5 h-3.5 w-3.5 shrink-0 text-warning" aria-hidden="true" />
+            <span>
+              <span className="font-medium">{excluded.length}</span> option{excluded.length === 1 ? "" : "s"} hidden by your compliance requirement
+              ({excluded.map((e) => e.arch.short).join(", ")}). Adjust compliance to compare them.
+            </span>
+          </div>
+        )}
       </div>
+
 
       <main id="main-content" className="mx-auto grid w-full max-w-[1800px] items-start gap-4 px-3 py-4 sm:gap-6 sm:px-6 sm:py-6 md:grid-cols-[240px_minmax(0,1fr)] lg:grid-cols-[260px_minmax(0,1fr)_320px] xl:grid-cols-[300px_minmax(0,1fr)_360px] 2xl:gap-8 2xl:px-10 2xl:grid-cols-[320px_minmax(0,1fr)_400px]">
 
@@ -292,8 +301,8 @@ const Index = () => {
             mobileTab === "comparison" ? "block" : "hidden",
           )}
         >
-          {topId && <CostEstimate archId={topId} inputs={inputs} enabled={enabled} topId={topId} />}
           <ComparisonMatrix view="controls" enabled={enabled} topId={topId} onToggle={toggleArch} onSetEnabled={setEnabled} />
+
         </section>
 
 
@@ -317,6 +326,9 @@ const Index = () => {
             onExclude={toggleArch}
             onResetEnabled={() => setEnabled(DEFAULT_ENABLED)}
           />
+
+          {topId && <CostEstimate archId={topId} inputs={inputs} enabled={enabled} topId={topId} />}
+
 
 
           <p className="text-[11px] leading-relaxed text-muted-foreground">
