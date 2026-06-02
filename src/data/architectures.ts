@@ -26,7 +26,13 @@ export type ArchId =
   | "lovable-azure"
   | "lovable-heroku"
   | "lovable-render"
-  | "lovable-fly";
+  | "lovable-fly"
+  // Hybrid / split stacks — opt-in via the "Allow splitting frontend hosting" toggle.
+  | "hybrid-cloud-cloudflare"
+  | "hybrid-supabase-cloudflare"
+  | "hybrid-supabase-vercel"
+  | "hybrid-supabase-netlify";
+
 
 export type ArchCategory = "managed-bff" | "frontend-host" | "hyperscaler" | "paas";
 
