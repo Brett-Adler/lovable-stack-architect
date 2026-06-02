@@ -293,12 +293,11 @@ const Index = () => {
           role="tabpanel"
           aria-labelledby="tab-setup"
           hidden={tab !== "setup"}
-          className={cn(
-            tab === "setup" ? "block" : "hidden",
-            "grid items-start gap-8 sm:gap-10",
-            "lg:grid-cols-[minmax(0,460px)_minmax(0,1fr)] lg:gap-10",
-            "xl:grid-cols-[minmax(0,500px)_minmax(0,1fr)] xl:gap-12",
-          )}
+          className={
+            tab === "setup"
+              ? "grid items-start gap-8 sm:gap-10 lg:grid-cols-[minmax(0,460px)_minmax(0,1fr)] lg:gap-10 xl:grid-cols-[minmax(0,500px)_minmax(0,1fr)] xl:gap-12"
+              : "hidden"
+          }
         >
           <StepShell
             number={1}
