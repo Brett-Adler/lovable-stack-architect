@@ -1070,6 +1070,7 @@ export function ReportExport(props: Props) {
 
   const runners = filteredResults.slice(1, 3);
   const excluded = props.excluded ?? [];
+  const userExcluded = props.userExcluded ?? [];
 
   return (
     <>
