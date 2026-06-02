@@ -293,12 +293,11 @@ const Index = () => {
           role="tabpanel"
           aria-labelledby="tab-setup"
           hidden={tab !== "setup"}
-          className={cn(
-            tab === "setup" ? "block" : "hidden",
-            "grid items-start gap-8 sm:gap-10",
-            "lg:grid-cols-[minmax(0,460px)_minmax(0,1fr)] lg:gap-10",
-            "xl:grid-cols-[minmax(0,500px)_minmax(0,1fr)] xl:gap-12",
-          )}
+          className={
+            tab === "setup"
+              ? "grid items-start gap-8 sm:gap-10 lg:grid-cols-[minmax(0,460px)_minmax(0,1fr)] lg:gap-10 xl:grid-cols-[minmax(0,500px)_minmax(0,1fr)] xl:gap-12"
+              : "hidden"
+          }
         >
           <StepShell
             number={1}
@@ -354,7 +353,7 @@ const Index = () => {
           role="tabpanel"
           aria-labelledby="tab-recommendation"
           hidden={tab !== "recommendation"}
-          className={tab === "recommendation" ? "block" : "hidden"}
+          className={tab === "recommendation" ? undefined : "hidden"}
         >
           <StepShell
             number={3}
@@ -396,7 +395,7 @@ const Index = () => {
         className={cn(
           "mx-auto w-full max-w-[1800px] px-3 pb-6 sm:px-6 2xl:px-10",
           "mt-4 border-t border-border pt-8 sm:mt-8 sm:pt-10",
-          tab === "setup" ? "block" : "hidden",
+          tab !== "setup" && "hidden",
         )}
       >
         <header className="mb-8 text-center sm:mb-10">
