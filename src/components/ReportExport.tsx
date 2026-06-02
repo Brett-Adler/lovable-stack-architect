@@ -1178,7 +1178,7 @@ export function ReportExport(props: Props) {
                 excluded={excluded}
               />
               {runners.length > 0 && <RunnersSection runners={runners} />}
-              <RankedSection results={filteredResults} excluded={excluded} />
+              <RankedSection results={filteredResults} excluded={excluded} userExcluded={userExcluded} />
               <MatrixSection results={filteredResults} topId={top.arch.id} />
               <InputsAppendixSection inputs={props.inputs} />
               <MethodologySection results={filteredResults} />
