@@ -521,14 +521,19 @@ function PlatformsPicker({
   enabled,
   onSetEnabled,
   onToggleEnabled,
+  allowSplit,
 }: {
   enabled: ArchId[];
   onSetEnabled: (ids: ArchId[]) => void;
   onToggleEnabled: (id: ArchId) => void;
+  allowSplit: boolean;
 }) {
-  const allOn = enabled.length === ALL_ARCH_IDS.length;
+  const visibleArchs = ARCHITECTURES.filter((a) => allowSplit || !a.hybrid);
+  const visibleIds = visibleArchs.map((a) => a.id);
+  const visibleEnabled = enabled.filter((id) => visibleIds.includes(id));
+  const allOn = visibleEnabled.length === visibleIds.length && visibleIds.length > 0;
   const topOn =
-    enabled.length === TOP_PICKS.length && TOP_PICKS.every((id) => enabled.includes(id));
+    visibleEnabled.length === TOP_PICKS.length && TOP_PICKS.every((id) => visibleEnabled.includes(id));
 
   return (
     <div className="space-y-2">
@@ -537,9 +542,10 @@ function PlatformsPicker({
           <Label className="text-xs">Platforms to consider</Label>
         </div>
         <Badge variant="secondary" className="font-mono tabular-nums text-[10px]">
-          {enabled.length}/{ALL_ARCH_IDS.length}
+          {visibleEnabled.length}/{visibleIds.length}
         </Badge>
       </div>
+
       <p className="text-[11px] text-muted-foreground">
         Drop vendors you don't want to work with, or narrow to a shortlist. Removed platforms are
         skipped in the ranking and report.
