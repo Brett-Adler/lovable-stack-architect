@@ -272,6 +272,29 @@ export function InputsPanel({ inputs, onChange, enabled, onSetEnabled, onToggleE
         </p>
       </div>
 
+      <div className="space-y-1.5 rounded-xl border border-dashed border-border bg-muted/20 p-3">
+        <div className="flex items-center justify-between gap-3">
+          <div className="flex min-w-0 items-center gap-2">
+            <Split className="h-3.5 w-3.5 shrink-0 text-muted-foreground" aria-hidden="true" />
+            <Label htmlFor="allow-split" className="cursor-pointer text-xs font-medium">
+              Allow splitting frontend hosting
+            </Label>
+          </div>
+          <Switch
+            id="allow-split"
+            checked={inputs.allowSplit ?? false}
+            onCheckedChange={(checked) => update("allowSplit", checked)}
+            aria-label="Allow splitting frontend hosting"
+          />
+        </div>
+        <p className="text-[11px] text-muted-foreground">
+          Default is one platform for everything. Turn this on to also compare hybrid stacks like
+          Supabase + Cloudflare Pages or Lovable Cloud + Cloudflare Pages.
+        </p>
+      </div>
+
+
+
       <div className="space-y-2">
         <div className="flex items-baseline justify-between gap-2">
           <Label className="text-xs" htmlFor="mau-input">Expected monthly active users</Label>
