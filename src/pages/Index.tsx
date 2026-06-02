@@ -276,10 +276,8 @@ const Index = () => {
           <InputsPanel
             inputs={inputs}
             onChange={setInputs}
-            enabled={enabled}
-            onSetEnabled={setEnabled}
-            onToggleEnabled={toggleArch}
           />
+
         </div>
 
         <section
