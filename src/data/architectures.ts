@@ -319,6 +319,7 @@ export const ARCHITECTURES: Architecture[] = [
     scaleCeiling: "Very high for stateless workloads; the database is the practical limit.",
     sources: [{ label: "Fly.io pricing", url: "https://fly.io/docs/about/pricing/" }],
     lastReviewed: REVIEWED,
+  },
   {
     id: "lovable-cloudflare",
     category: "frontend-host",
