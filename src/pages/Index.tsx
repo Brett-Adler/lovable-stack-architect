@@ -301,8 +301,8 @@ const Index = () => {
             mobileTab === "comparison" ? "block" : "hidden",
           )}
         >
-          {topId && <CostEstimate archId={topId} inputs={inputs} enabled={enabled} topId={topId} />}
           <ComparisonMatrix view="controls" enabled={enabled} topId={topId} onToggle={toggleArch} onSetEnabled={setEnabled} />
+
         </section>
 
 
