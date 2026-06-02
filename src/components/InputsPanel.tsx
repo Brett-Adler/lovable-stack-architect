@@ -16,7 +16,7 @@ import {
 import { cn } from "@/lib/utils";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { ChevronDown, HelpCircle } from "lucide-react";
+import { ChevronDown, HelpCircle, Minus, Plus } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 
