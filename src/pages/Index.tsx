@@ -327,6 +327,9 @@ const Index = () => {
             onResetEnabled={() => setEnabled(DEFAULT_ENABLED)}
           />
 
+          {topId && <CostEstimate archId={topId} inputs={inputs} enabled={enabled} topId={topId} />}
+
+
 
           <p className="text-[11px] leading-relaxed text-muted-foreground">
             All options shown assume Lovable handles design, frontend dev, testing, and deployment.
