@@ -551,7 +551,32 @@ export const RUBRIC: Record<ArchId, Record<CriterionId, number>> = {
     "scaling-ceiling": 5, "realtime": 4, "storage": 4, "ai-compute": 4,
     "compliance": 3, "lock-in": 3, "ops-burden": 3, "migration": 3,
   },
+  // Hybrids: blend of backend + frontend halves. time-to-launch and
+  // ops-burden take the worse of the two (extra wiring); scaling-ceiling and
+  // cost-large take the better; dx-with-lovable is the average rounded down
+  // (you're stepping outside the integrated path).
+  "hybrid-cloud-cloudflare": {
+    "time-to-launch": 3, "dx-with-lovable": 3, "cost-small": 5, "cost-large": 4,
+    "scaling-ceiling": 4, "realtime": 4, "storage": 4, "ai-compute": 4,
+    "compliance": 3, "lock-in": 3, "ops-burden": 3, "migration": 3,
+  },
+  "hybrid-supabase-cloudflare": {
+    "time-to-launch": 3, "dx-with-lovable": 3, "cost-small": 5, "cost-large": 4,
+    "scaling-ceiling": 5, "realtime": 5, "storage": 4, "ai-compute": 4,
+    "compliance": 4, "lock-in": 3, "ops-burden": 3, "migration": 4,
+  },
+  "hybrid-supabase-vercel": {
+    "time-to-launch": 3, "dx-with-lovable": 3, "cost-small": 3, "cost-large": 3,
+    "scaling-ceiling": 5, "realtime": 5, "storage": 4, "ai-compute": 3,
+    "compliance": 4, "lock-in": 3, "ops-burden": 3, "migration": 4,
+  },
+  "hybrid-supabase-netlify": {
+    "time-to-launch": 3, "dx-with-lovable": 3, "cost-small": 3, "cost-large": 3,
+    "scaling-ceiling": 4, "realtime": 4, "storage": 4, "ai-compute": 3,
+    "compliance": 4, "lock-in": 3, "ops-burden": 3, "migration": 4,
+  },
 };
+
 
 export const ARCH_BY_ID: Record<ArchId, Architecture> = Object.fromEntries(
   ARCHITECTURES.map((a) => [a.id, a]),
