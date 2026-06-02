@@ -164,3 +164,141 @@ export function buildMermaid(archId: ArchId, inputs: Inputs): string {
 
   return lines.join("\n");
 }
+
+/**
+ * Build a plain-text breakdown of the stack's components — used by the Tech Stack
+ * card to show a "what's actually in this stack" summary alongside the diagram.
+ */
+export interface StackSummaryRow {
+  label: string;
+  value: string;
+}
+
+export function summarizeStack(archId: ArchId, inputs: Inputs): StackSummaryRow[] {
+  const wantsRealtime = inputs.workloads.includes("realtime");
+  const wantsFiles = inputs.workloads.includes("files");
+  const wantsAI = inputs.workloads.includes("ai") || inputs.workloads.includes("heavy-compute");
+  const wantsJobs = inputs.workloads.includes("background-jobs");
+  const arch = ARCH_BY_ID[archId];
+
+  // Hybrid (split) stacks — describe frontend host + backend services separately.
+  if (arch?.composition) {
+    const front = ARCH_BY_ID[arch.composition.frontend];
+    const backendId = arch.composition.backend;
+    const frontLabel = FRONTEND_HOST_LABEL[arch.composition.frontend] ?? front.short;
+    const rows: StackSummaryRow[] = [{ label: "Frontend hosting", value: frontLabel }];
+    rows.push(...backendRows(backendId, wantsRealtime, wantsFiles, wantsAI, wantsJobs));
+    return rows;
+  }
+
+  return backendRows(archId, wantsRealtime, wantsFiles, wantsAI, wantsJobs);
+}
+
+function backendRows(
+  archId: ArchId,
+  wantsRealtime: boolean,
+  wantsFiles: boolean,
+  wantsAI: boolean,
+  wantsJobs: boolean,
+): StackSummaryRow[] {
+  const r: StackSummaryRow[] = [];
+  const push = (label: string, value: string) => r.push({ label, value });
+  switch (archId) {
+    case "lovable-cloud":
+      push("Hosting & API", "Lovable Cloud Edge Functions");
+      push("Database", "Cloud Postgres");
+      push("Auth", "Cloud Auth");
+      if (wantsFiles) push("Storage", "Cloud Storage");
+      if (wantsRealtime) push("Realtime", "Postgres realtime subscriptions");
+      if (wantsAI) push("AI", "Lovable AI Gateway");
+      break;
+    case "lovable-supabase":
+      push("Hosting & API", "Supabase Edge Functions");
+      push("Database", "Supabase Postgres");
+      push("Auth", "Supabase Auth");
+      if (wantsFiles) push("Storage", "Supabase Storage");
+      if (wantsRealtime) push("Realtime", "Supabase realtime");
+      if (wantsAI) push("AI", "OpenAI / Lovable AI");
+      break;
+    case "lovable-vercel":
+      push("Hosting", "Vercel CDN + Edge");
+      push("API", "Edge / Serverless Functions");
+      push("Database", "Managed Postgres (Neon / RDS)");
+      push("Auth", "Auth Provider (Clerk / Auth0)");
+      if (wantsFiles) push("Storage", "Object Storage (S3 / R2)");
+      if (wantsAI) push("AI", "AI APIs");
+      if (wantsJobs) push("Jobs", "Queue (Upstash / Inngest)");
+      break;
+    case "lovable-netlify":
+      push("Hosting", "Netlify CDN");
+      push("API", "Netlify Edge / Functions");
+      push("Database", "Managed Postgres (Neon / Supabase)");
+      push("Auth", "Auth Provider (Clerk / Auth0)");
+      if (wantsFiles) push("Storage", "Object Storage (S3 / R2)");
+      if (wantsAI) push("AI", "AI APIs");
+      if (wantsJobs) push("Jobs", "Queue (Inngest / Upstash)");
+      break;
+    case "lovable-aws":
+      push("Hosting & API", "CloudFront + API Gateway");
+      push("Compute", "ECS Fargate / Lambda");
+      push("Database", "Amazon RDS Postgres");
+      push("Auth", "Amazon Cognito");
+      if (wantsFiles) push("Storage", "Amazon S3");
+      if (wantsJobs) push("Jobs", "Amazon SQS");
+      if (wantsAI) push("AI", "Bedrock / SageMaker");
+      break;
+    case "lovable-gcp":
+      push("Hosting", "Cloud Load Balancing");
+      push("Compute", "Cloud Run");
+      push("Database", "Cloud SQL / AlloyDB Postgres");
+      push("Auth", "Identity Platform");
+      if (wantsFiles) push("Storage", "Cloud Storage");
+      if (wantsJobs) push("Jobs", "Pub/Sub");
+      if (wantsAI) push("AI", "Vertex AI");
+      break;
+    case "lovable-azure":
+      push("Hosting", "Azure Front Door");
+      push("Compute", "Container Apps / App Service");
+      push("Database", "Azure Database for Postgres");
+      push("Auth", "Microsoft Entra ID");
+      if (wantsFiles) push("Storage", "Azure Blob Storage");
+      if (wantsJobs) push("Jobs", "Azure Service Bus");
+      if (wantsAI) push("AI", "Azure OpenAI");
+      break;
+    case "lovable-heroku":
+      push("Hosting", "Heroku Router");
+      push("Compute", "Web Dynos");
+      push("Database", "Heroku Postgres");
+      if (wantsRealtime) push("Cache / Realtime", "Heroku Redis");
+      if (wantsFiles) push("Storage", "AWS S3 add-on");
+      if (wantsJobs) push("Jobs", "Worker Dynos");
+      if (wantsAI) push("AI", "OpenAI / Anthropic");
+      break;
+    case "lovable-render":
+      push("Hosting & API", "Render Web Service");
+      push("Database", "Render Postgres");
+      if (wantsFiles) push("Storage", "Cloudflare R2 / S3");
+      if (wantsJobs) push("Jobs", "Background Workers + Cron");
+      if (wantsAI) push("AI", "OpenAI / Anthropic");
+      break;
+    case "lovable-fly":
+      push("Hosting", "Fly Edge Anycast");
+      push("Compute", "Fly Machines (containers)");
+      push("Database", "Fly Postgres");
+      if (wantsFiles) push("Storage", "Tigris / S3");
+      if (wantsJobs) push("Jobs", "Background Machines");
+      if (wantsAI) push("AI", "Replicate / OpenAI");
+      break;
+    case "lovable-cloudflare":
+      push("Hosting", "Cloudflare Pages CDN");
+      push("Compute", "Workers (edge runtime)");
+      push("Database", "D1 SQLite / Hyperdrive Postgres");
+      if (wantsRealtime) push("Realtime", "Durable Objects");
+      if (wantsFiles) push("Storage", "R2 Object Storage");
+      if (wantsAI) push("AI", "Workers AI");
+      if (wantsJobs) push("Jobs", "Cloudflare Queues");
+      break;
+  }
+  return r;
+}
+
