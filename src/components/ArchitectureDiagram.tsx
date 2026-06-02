@@ -3,6 +3,7 @@ import mermaid from "mermaid";
 import { buildMermaid } from "@/lib/diagram";
 import { ARCH_BY_ID, type ArchId } from "@/data/architectures";
 import type { Inputs } from "@/lib/scoring";
+import { FullscreenCardDialog } from "@/components/FullscreenCardDialog";
 
 let initialized = false;
 
@@ -62,8 +63,6 @@ export function ArchitectureDiagram({ archId, inputs }: { archId: ArchId; inputs
         if (!cancelled) setSvg("");
       })
       .finally(() => {
-        // Mermaid appends a temporary measurement node (#d{id}) to <body> and
-        // leaves an error SVG behind on failure. Sweep them up.
         document.querySelectorAll(`#d${id}, #${id}`).forEach((n) => n.remove());
       });
     return () => {
@@ -71,23 +70,40 @@ export function ArchitectureDiagram({ archId, inputs }: { archId: ArchId; inputs
     };
   }, [archId, inputs]);
 
+  const Diagram = ({ expanded = false }: { expanded?: boolean }) => (
+    <div
+      ref={expanded ? undefined : ref}
+      role="img"
+      aria-label={`Tech stack diagram for ${arch.name}: ${arch.tagline}`}
+      className={
+        expanded
+          ? "flex min-h-[60vh] justify-center overflow-auto [&_svg]:h-auto [&_svg]:max-h-[78vh] [&_svg]:max-w-full"
+          : "mt-3 flex max-h-[360px] justify-center overflow-auto [&_svg]:h-auto [&_svg]:max-h-[340px] [&_svg]:max-w-full"
+      }
+      dangerouslySetInnerHTML={{ __html: svg }}
+    />
+  );
+
   return (
-    <div className="mx-auto w-full max-w-3xl overflow-hidden rounded-2xl border border-border bg-card p-5 shadow-card">
-      <div className="flex items-baseline justify-between gap-3">
+    <div className="w-full overflow-hidden rounded-2xl border border-border bg-card p-5 shadow-card">
+      <div className="flex items-center justify-between gap-3">
         <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
-          Architecture diagram
+          Tech stack
         </h3>
-        <span className="text-xs text-muted-foreground">
-          Top pick: <span className="font-medium text-foreground">{arch.short}</span>
-        </span>
+        <div className="flex items-center gap-2">
+          <span className="text-xs text-muted-foreground">
+            Top pick: <span className="font-medium text-foreground">{arch.short}</span>
+          </span>
+          <FullscreenCardDialog
+            title={`Tech stack — ${arch.name}`}
+            ariaLabel="Expand tech stack diagram"
+          >
+            <Diagram expanded />
+            <p className="mt-4 text-xs text-muted-foreground">{arch.description}</p>
+          </FullscreenCardDialog>
+        </div>
       </div>
-      <div
-        ref={ref}
-        role="img"
-        aria-label={`Architecture diagram for ${arch.name}: ${arch.tagline}`}
-        className="mt-3 flex max-h-[420px] justify-center overflow-auto [&_svg]:max-h-[400px] [&_svg]:max-w-full [&_svg]:h-auto"
-        dangerouslySetInnerHTML={{ __html: svg }}
-      />
+      <Diagram />
       <p className="sr-only">
         Visual diagram. Equivalent description: {arch.description}
       </p>
