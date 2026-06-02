@@ -436,8 +436,21 @@ export function ReportExport(props: Props) {
 <body>
   <div class="page">${body}</div>
 </body>
-</html>`);
-    win.document.close();
+</html>`;
+  };
+
+  const openFullReport = () => {
+    const html = buildReportHtml();
+    const blob = new Blob([html], { type: "text/html" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.target = "_blank";
+    a.rel = "noopener noreferrer";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(url), 60_000);
   };
 
   const copyShareUrl = async () => {
