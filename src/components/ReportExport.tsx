@@ -1264,6 +1264,15 @@ export function ReportExport(props: Props) {
           >
             <div ref={pdfRootRef}>
               <HeaderSection inputs={props.inputs} />
+              {/* Step 1 — Project inputs */}
+              <InputsAppendixSection inputs={props.inputs} />
+              {/* Step 2 — Platforms considered */}
+              <PlatformsConsideredSection
+                results={filteredResults}
+                excluded={excluded}
+                userExcluded={userExcluded}
+              />
+              {/* Step 3 — Recommendation */}
               <TopPickSection
                 top={top}
                 runner={filteredResults[1]}
@@ -1271,10 +1280,11 @@ export function ReportExport(props: Props) {
                 excluded={excluded}
               />
               {runners.length > 0 && <RunnersSection runners={runners} />}
+              {/* Appendix — supporting evidence */}
               <RankedSection results={filteredResults} excluded={excluded} userExcluded={userExcluded} />
               <MatrixSection results={filteredResults} topId={top.arch.id} />
-              <InputsAppendixSection inputs={props.inputs} />
               <MethodologySection results={filteredResults} />
+
             </div>
           </div>,
           document.body,
