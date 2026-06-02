@@ -34,6 +34,39 @@ const HIGHLIGHTS = [
   "Full methodology page — nothing about the scoring is hidden",
 ];
 
+const FEATURES = [
+  {
+    icon: CheckCircle,
+    title: "Weighted scoring",
+    desc: "Enter your project; get a ranked, explainable pick — not a gut call.",
+  },
+  {
+    icon: BarChart3,
+    title: "Side-by-side matrix",
+    desc: "Compare every option across the same criteria in one view.",
+  },
+  {
+    icon: Layers,
+    title: "Architecture diagram",
+    desc: "Auto-generated top-pick diagram you can screenshot or export.",
+  },
+  {
+    icon: Share2,
+    title: "Shareable + exportable",
+    desc: "Copy a link or export a PDF report with one click.",
+  },
+  {
+    icon: Pencil,
+    title: "Editable rubric",
+    desc: "Open criteria, open weights, open scoring — nothing is hidden.",
+  },
+  {
+    icon: Rocket,
+    title: "Remix-ready",
+    desc: "Swap in any decision space and ship your own comparator in an afternoon.",
+  },
+];
+
 const GALLERY = [
   {
     src: posterAsset.url,
