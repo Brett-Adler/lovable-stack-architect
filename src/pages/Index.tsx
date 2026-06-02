@@ -153,11 +153,11 @@ const Index = () => {
     <div className="min-h-dvh bg-background">
       <SeoHead
         title="Stack comparator — Lovable Stack Architect"
-        description="Compare 10 hosting and backend platforms side by side. Tune to your stage, budget, team, and workloads."
+        description="Compare 11 hosting and backend platforms side by side. Include or exclude any vendor and tune to your stage, budget, team, and workloads."
         path="/app"
       />
       <SiteHeader>
-        <ReportExport inputs={inputs} results={results} excluded={excluded} shareUrl={shareUrl} />
+        <ReportExport inputs={inputs} results={results} excluded={excluded} userExcluded={userExcluded} shareUrl={shareUrl} />
       </SiteHeader>
       <h1 className="sr-only">Lovable Stack Architect — Pick the right backend stack for your Lovable app</h1>
 
