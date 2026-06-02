@@ -17,12 +17,7 @@ import { DEFAULT_INPUTS, type Inputs, rankFull } from "@/lib/scoring";
 
 
 const STORAGE_KEY = "stack-architect:v2";
-const DEFAULT_ENABLED: ArchId[] = [
-  "lovable-cloud",
-  "lovable-supabase",
-  "lovable-vercel",
-  "lovable-aws",
-];
+const DEFAULT_ENABLED: ArchId[] = ARCHITECTURES.map((a) => a.id);
 const VALID_IDS = new Set<ArchId>(ARCHITECTURES.map((a) => a.id));
 function sanitize(ids: ArchId[] | undefined): ArchId[] {
   const filtered = (ids ?? []).filter((id) => VALID_IDS.has(id));
@@ -132,7 +127,10 @@ const Index = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const { results, excluded } = useMemo(() => rankFull(inputs), [inputs]);
+  const { results, excluded, userExcluded } = useMemo(
+    () => rankFull(inputs, { enabled }),
+    [inputs, enabled],
+  );
   const topId = results[0]?.arch.id;
   const isNonTechnical = inputs.team.length === 0 || (inputs.team.length === 1 && inputs.team[0] === "none");
 
@@ -155,11 +153,11 @@ const Index = () => {
     <div className="min-h-dvh bg-background">
       <SeoHead
         title="Stack comparator — Lovable Stack Architect"
-        description="Compare 10 hosting and backend platforms side by side. Tune to your stage, budget, team, and workloads."
+        description="Compare 11 hosting and backend platforms side by side. Include or exclude any vendor and tune to your stage, budget, team, and workloads."
         path="/app"
       />
       <SiteHeader>
-        <ReportExport inputs={inputs} results={results} excluded={excluded} shareUrl={shareUrl} />
+        <ReportExport inputs={inputs} results={results} excluded={excluded} userExcluded={userExcluded} shareUrl={shareUrl} />
       </SiteHeader>
       <h1 className="sr-only">Lovable Stack Architect — Pick the right backend stack for your Lovable app</h1>
 
@@ -264,7 +262,13 @@ const Index = () => {
             mobileTab === "inputs" ? "block" : "hidden",
           )}
         >
-          <InputsPanel inputs={inputs} onChange={setInputs} />
+          <InputsPanel
+            inputs={inputs}
+            onChange={setInputs}
+            enabled={enabled}
+            onSetEnabled={setEnabled}
+            onToggleEnabled={toggleArch}
+          />
         </div>
 
         <section
@@ -297,7 +301,10 @@ const Index = () => {
             results={results}
             inputs={inputs}
             excluded={excluded}
+            userExcluded={userExcluded}
             isNonTechnical={isNonTechnical}
+            onExclude={toggleArch}
+            onResetEnabled={() => setEnabled(DEFAULT_ENABLED)}
           />
 
           <p className="text-[11px] leading-relaxed text-muted-foreground">

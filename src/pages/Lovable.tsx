@@ -61,7 +61,7 @@ const GALLERY = [
   {
     src: posterAsset.url,
     caption: "Pick your Lovable stack",
-    alt: "Stack Architect — weighted scoring across 10 architectures with a recommended pick",
+    alt: "Stack Architect — weighted scoring across 11 architectures with a recommended pick",
   },
   {
     src: comparatorAsset.url,

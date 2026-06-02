@@ -104,6 +104,15 @@ export function buildMermaid(archId: ArchId, inputs: Inputs): string {
       if (wantsJobs) lines.push(`  APP --> ${N("WK", "Background Machines")}`);
       if (wantsAI) lines.push(`  APP --> ${N("AI", "Replicate / OpenAI")}`);
       break;
+    case "lovable-cloudflare":
+      lines.push(`  FE --> ${N("PG", "Cloudflare Pages CDN")}`);
+      lines.push(`  PG --> ${N("WK", "Workers (edge runtime)")}`);
+      lines.push(`  WK --> ${DB("DB", "D1 SQLite / Hyperdrive Postgres")}`);
+      if (wantsRealtime) lines.push(`  WK --> ${N("DO", "Durable Objects")}`);
+      if (wantsFiles) lines.push(`  WK --> ${N("R2", "R2 Object Storage")}`);
+      if (wantsAI) lines.push(`  WK --> ${N("AI", "Workers AI")}`);
+      if (wantsJobs) lines.push(`  WK --> ${N("Q", "Cloudflare Queues")}`);
+      break;
   }
 
   return lines.join("\n");

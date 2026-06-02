@@ -166,16 +166,23 @@ export interface RankOutput {
   results: RankedResult[];
   /** Architectures excluded because of a hard compliance requirement (HIPAA / SOC 2 / residency). */
   excluded: { arch: Architecture; reason: string }[];
+  /** Architectures the user removed from their comparison via the platform picker. */
+  userExcluded: { arch: Architecture; reason: string }[];
 }
 
 /** Compliance levels that act as hard filters — anything scoring < 4 on `compliance` is removed. */
 const STRICT_COMPLIANCE: Compliance[] = ["hipaa", "soc2", "residency"];
 
+export interface RankOptions {
+  /** When provided & non-empty, only score architectures in this list. */
+  enabled?: ArchId[];
+}
+
 export function rank(inputs: Inputs): RankedResult[] {
   return rankFull(inputs).results;
 }
 
-export function rankFull(inputs: Inputs): RankOutput {
+export function rankFull(inputs: Inputs, options: RankOptions = {}): RankOutput {
   const weights = deriveWeights(inputs);
   const totalWeight = (Object.values(weights) as number[]).reduce((a, b) => a + b, 0) || 1;
   const strict = inputs.compliance.filter((c) => STRICT_COMPLIANCE.includes(c));
@@ -184,8 +191,15 @@ export function rankFull(inputs: Inputs): RankOutput {
     .join(" / ");
 
   const excluded: { arch: Architecture; reason: string }[] = [];
+  const userExcluded: { arch: Architecture; reason: string }[] = [];
+  const enabledSet =
+    options.enabled && options.enabled.length > 0 ? new Set<ArchId>(options.enabled) : null;
 
   const scored = ARCHITECTURES.flatMap((arch) => {
+    if (enabledSet && !enabledSet.has(arch.id)) {
+      userExcluded.push({ arch, reason: "Removed by your platform filter." });
+      return [];
+    }
     if (strict.length && RUBRIC[arch.id]["compliance"] < 4) {
       excluded.push({
         arch,
@@ -208,7 +222,7 @@ export function rankFull(inputs: Inputs): RankOutput {
     return [{ arch, score, rationale: buildRationale(arch.id, inputs), topContributors }];
   });
 
-  return { results: scored.sort((a, b) => b.score - a.score), excluded };
+  return { results: scored.sort((a, b) => b.score - a.score), excluded, userExcluded };
 }
 
 /**
@@ -327,6 +341,17 @@ function buildRationale(id: ArchId, inputs: Inputs): string[] {
     rs.push("Not a Lovable integration — requires GitHub export.");
     if (inputs.workloads.includes("realtime")) rs.push("Anycast edge helps realtime workloads.");
     if (strictCompliance) rs.push("Smaller compliance catalog than the hyperscalers.");
+  }
+  if (id === "lovable-cloudflare") {
+    rs.push("Edge-first: Pages + Workers run close to every user globally.");
+    rs.push("Not a Lovable integration — requires GitHub export.");
+    if (inputs.budget.includes("low"))
+      rs.push("Generous free tier; paid Workers starts at $5/mo plus usage.");
+    if (heavyAI) rs.push("Workers AI runs inference at the edge with no key juggling.");
+    if (inputs.workloads.includes("realtime"))
+      rs.push("Durable Objects give you stateful realtime primitives at the edge.");
+    if (inputs.mau >= 100_000 && inputs.workloads.includes("crud"))
+      rs.push("D1 is SQLite — heavy writes at scale may push you to Hyperdrive→Postgres.");
   }
 
   if (rs.length === 0) {

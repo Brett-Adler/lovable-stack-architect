@@ -34,6 +34,7 @@ interface Props {
   inputs: Inputs;
   results: RankedResult[];
   excluded?: { arch: Architecture; reason: string }[];
+  userExcluded?: { arch: Architecture; reason: string }[];
   shareUrl?: string;
 }
 
@@ -71,7 +72,7 @@ function applyNonTechFilter(results: RankedResult[], inputs: Inputs) {
 }
 
 // ---------- Markdown ----------
-function buildMarkdown({ inputs, results: rawResults, excluded = [] }: Props): string {
+function buildMarkdown({ inputs, results: rawResults, excluded = [], userExcluded = [] }: Props): string {
   const results = applyNonTechFilter(rawResults, inputs);
   const top = results[0];
   const stage = stageFromMau(inputs.mau);
@@ -163,6 +164,15 @@ function buildMarkdown({ inputs, results: rawResults, excluded = [] }: Props): s
   if (excluded.length) {
     lines.push(`## Excluded by hard requirements`);
     excluded.forEach((e) => lines.push(`- **${e.arch.name}** — ${e.reason}`));
+    lines.push("");
+  }
+
+  if (userExcluded.length) {
+    lines.push(`## Removed by your platform filter`);
+    lines.push(
+      `_You chose to leave these out of this comparison. Re-enable them in the app's "Platforms to consider" picker to score them._`,
+    );
+    userExcluded.forEach((e) => lines.push(`- **${e.arch.name}** — ${e.arch.tagline}`));
     lines.push("");
   }
 
@@ -329,7 +339,7 @@ function HeaderSection({ inputs }: { inputs: Inputs }) {
       <BrandBar subtitle={`Generated ${new Date().toLocaleString()}`} />
       <H1>Architecture Recommendation</H1>
       <p style={{ margin: "0 0 4px", color: C.muted, fontSize: "12px" }}>
-        A weighted comparison of {10} hosting & backend options for your Lovable app, tuned to the
+        A weighted comparison of {11} hosting & backend options for your Lovable app, tuned to the
         inputs below. Rubric last reviewed {LAST_REVIEWED}.
       </p>
       <p style={{ margin: 0, color: C.muted, fontSize: "11px" }}>
@@ -586,9 +596,11 @@ function RunnersSection({ runners }: { runners: RankedResult[] }) {
 function RankedSection({
   results,
   excluded,
+  userExcluded,
 }: {
   results: RankedResult[];
   excluded: { arch: Architecture; reason: string }[];
+  userExcluded: { arch: Architecture; reason: string }[];
 }) {
   return (
     <SectionWrapper id="ranked">
@@ -612,6 +624,24 @@ function RankedSection({
             {excluded.map((e) => (
               <li key={e.arch.id} style={{ marginBottom: "3px" }}>
                 <strong>{e.arch.name}</strong> — <span style={{ color: C.muted }}>{e.reason}</span>
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
+
+      {userExcluded.length > 0 && (
+        <>
+          <H3>Removed by your platform filter</H3>
+          <p style={{ margin: "0 0 6px", fontSize: "11px", color: C.muted, fontStyle: "italic" }}>
+            You chose to leave these out of this comparison. Re-enable them in the app's "Platforms
+            to consider" picker to score them.
+          </p>
+          <ul style={{ margin: 0, paddingLeft: "20px" }}>
+            {userExcluded.map((e) => (
+              <li key={e.arch.id} style={{ marginBottom: "3px" }}>
+                <strong>{e.arch.name}</strong>{" "}
+                <span style={{ color: C.muted }}>— {e.arch.tagline}</span>
               </li>
             ))}
           </ul>
@@ -1040,6 +1070,7 @@ export function ReportExport(props: Props) {
 
   const runners = filteredResults.slice(1, 3);
   const excluded = props.excluded ?? [];
+  const userExcluded = props.userExcluded ?? [];
 
   return (
     <>
@@ -1147,7 +1178,7 @@ export function ReportExport(props: Props) {
                 excluded={excluded}
               />
               {runners.length > 0 && <RunnersSection runners={runners} />}
-              <RankedSection results={filteredResults} excluded={excluded} />
+              <RankedSection results={filteredResults} excluded={excluded} userExcluded={userExcluded} />
               <MatrixSection results={filteredResults} topId={top.arch.id} />
               <InputsAppendixSection inputs={props.inputs} />
               <MethodologySection results={filteredResults} />

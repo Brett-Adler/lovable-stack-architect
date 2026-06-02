@@ -1,24 +1,56 @@
 import type { Inputs, RankedResult } from "@/lib/scoring";
 import { tradeoffVs } from "@/lib/scoring";
-import type { Architecture } from "@/data/architectures";
+import type { ArchId, Architecture } from "@/data/architectures";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Link } from "react-router-dom";
-import { CheckCircle2, Info, ShieldAlert, Users } from "lucide-react";
+import { CheckCircle2, Info, ShieldAlert, Users, X, Sparkles } from "lucide-react";
 import { BrandMark } from "@/components/BrandMark";
 
 interface Props {
   results: RankedResult[];
   inputs: Inputs;
   excluded?: { arch: Architecture; reason: string }[];
+  userExcluded?: { arch: Architecture; reason: string }[];
   isNonTechnical?: boolean;
+  onExclude?: (id: ArchId) => void;
+  onResetEnabled?: () => void;
 }
 
-export function RecommendationCard({ results, inputs, excluded = [], isNonTechnical = false }: Props) {
+export function RecommendationCard({
+  results,
+  inputs,
+  excluded = [],
+  userExcluded = [],
+  isNonTechnical = false,
+  onExclude,
+  onResetEnabled,
+}: Props) {
   if (!results.length) {
+    const filteredOut = userExcluded.length > 0;
     return (
-      <div className="rounded-2xl border border-dashed border-border bg-card p-6 text-sm text-muted-foreground">
-        No architecture meets your hard requirements. Loosen the compliance filter to see options.
+      <div className="rounded-2xl border border-dashed border-border bg-card p-6 text-sm">
+        <div className="flex items-start gap-3">
+          <Sparkles className="mt-0.5 h-5 w-5 shrink-0 text-primary" aria-hidden="true" />
+          <div className="space-y-2">
+            <p className="font-medium text-foreground">
+              {filteredOut
+                ? "You've filtered out every platform."
+                : "No architecture meets your hard requirements."}
+            </p>
+            <p className="text-muted-foreground">
+              {filteredOut
+                ? "Re-enable at least one option in the \u201CPlatforms to consider\u201D picker (or click below to bring them all back) to see a recommendation."
+                : "Loosen the compliance filter to see options."}
+            </p>
+            {filteredOut && onResetEnabled && (
+              <Button type="button" size="sm" variant="outline" onClick={onResetEnabled}>
+                Re-enable all platforms
+              </Button>
+            )}
+          </div>
+        </div>
       </div>
     );
   }
@@ -51,6 +83,16 @@ export function RecommendationCard({ results, inputs, excluded = [], isNonTechni
           <span>
             <span className="font-medium">{excluded.length}</span> option{excluded.length === 1 ? "" : "s"} hidden by your compliance requirement
             ({excluded.map((e) => e.arch.short).join(", ")}). Adjust compliance to compare them.
+          </span>
+        </div>
+      )}
+      {userExcluded.length > 0 && (
+        <div className="flex items-start gap-2 rounded-xl border border-border bg-muted/30 px-3 py-2 text-xs text-muted-foreground">
+          <X className="mt-0.5 h-3.5 w-3.5 shrink-0 text-foreground/60" />
+          <span>
+            <span className="font-medium text-foreground">{userExcluded.length}</span>{" "}
+            platform{userExcluded.length === 1 ? "" : "s"} removed by your filter (
+            {userExcluded.map((e) => e.arch.short).join(", ")}).
           </span>
         </div>
       )}
@@ -135,14 +177,29 @@ export function RecommendationCard({ results, inputs, excluded = [], isNonTechni
       {runners.map((r, i) => (
         <div key={r.arch.id} className="rounded-2xl border border-border bg-card p-4 shadow-card">
           <div className="flex items-start justify-between gap-3">
-            <div>
+            <div className="min-w-0">
               <div className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
                 Runner-up #{i + 1}
               </div>
               <h3 className="mt-0.5 flex items-center gap-1.5 text-base font-semibold text-foreground"><BrandMark archId={r.arch.id} size="md" />{r.arch.name}</h3>
               <p className="text-xs text-muted-foreground">{r.arch.tagline}</p>
             </div>
-            <ScoreBadge score={r.score} />
+            <div className="flex items-center gap-1.5">
+              <ScoreBadge score={r.score} />
+              {onExclude && (
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  className="h-7 w-7 p-0 text-muted-foreground hover:text-foreground"
+                  aria-label={`Hide ${r.arch.name} from comparison`}
+                  title={`Hide ${r.arch.name} from comparison`}
+                  onClick={() => onExclude(r.arch.id)}
+                >
+                  <X className="h-3.5 w-3.5" aria-hidden="true" />
+                </Button>
+              )}
+            </div>
           </div>
           <ul className="mt-3 space-y-1 text-sm">
             {r.rationale.slice(0, 2).map((x, j) => (
