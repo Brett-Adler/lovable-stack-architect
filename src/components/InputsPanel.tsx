@@ -200,13 +200,13 @@ export function InputsPanel({ inputs, onChange, enabled, onSetEnabled, onToggleE
   );
 
   return (
-    <aside className="rounded-2xl border border-border bg-card p-4 shadow-card sm:p-5">
+    <aside className="rounded-2xl border border-border bg-card p-5 shadow-card">
       <Collapsible open={open} onOpenChange={setOpen} className="md:!block">
-        <div className="flex items-center justify-between gap-2">
-          <h2 id="inputs-heading" className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+        <div className="flex items-start justify-between gap-2">
+          <h2 id="inputs-heading" className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
             Project inputs
           </h2>
-          <div className="flex items-center gap-1">
+          <div className="-mt-1 flex items-center gap-1">
             <Button
               variant="ghost"
               size="sm"
@@ -227,7 +227,7 @@ export function InputsPanel({ inputs, onChange, enabled, onSetEnabled, onToggleE
               <Button
                 variant="ghost"
                 size="sm"
-                className="h-9 w-9 p-0 md:hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                className="h-7 w-7 p-0 md:hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                 aria-label={open ? "Collapse project inputs" : "Expand project inputs"}
                 aria-expanded={open}
                 aria-controls="inputs-content"
@@ -271,13 +271,18 @@ export function InputsPanel({ inputs, onChange, enabled, onSetEnabled, onToggleE
       </div>
 
       <div className="space-y-2">
-        <Label className="text-xs" htmlFor="mau-input">Expected monthly active users</Label>
-        <div className="flex items-center gap-1.5">
+        <div className="flex items-baseline justify-between gap-2">
+          <Label className="text-xs" htmlFor="mau-input">Expected monthly active users</Label>
+          <span className="text-[11px] font-mono tabular-nums text-muted-foreground">
+            {fmtMau(inputs.mau)}
+          </span>
+        </div>
+        <div className="flex items-stretch gap-1.5">
           <Button
             type="button"
             variant="outline"
             size="sm"
-            className="h-9 w-9 shrink-0 p-0"
+            className="h-10 w-10 shrink-0 p-0 sm:h-9 sm:w-9"
             aria-label="Decrease MAU"
             disabled={inputs.mau <= MAU_STEPS[0]}
             onClick={() => {
@@ -300,14 +305,14 @@ export function InputsPanel({ inputs, onChange, enabled, onSetEnabled, onToggleE
               if (!Number.isFinite(n) || n < 0) return;
               update("mau", Math.min(n, MAU_STEPS[MAU_STEPS.length - 1]));
             }}
-            className="h-9 flex-1 text-center font-mono tabular-nums"
+            className="h-10 min-w-0 flex-1 text-center font-mono tabular-nums sm:h-9"
             aria-label="Expected monthly active users"
           />
           <Button
             type="button"
             variant="outline"
             size="sm"
-            className="h-9 w-9 shrink-0 p-0"
+            className="h-10 w-10 shrink-0 p-0 sm:h-9 sm:w-9"
             aria-label="Increase MAU"
             disabled={inputs.mau >= MAU_STEPS[MAU_STEPS.length - 1]}
             onClick={() => {
@@ -318,9 +323,6 @@ export function InputsPanel({ inputs, onChange, enabled, onSetEnabled, onToggleE
           >
             <Plus className="h-4 w-4" aria-hidden="true" />
           </Button>
-          <span className="w-10 shrink-0 text-right text-xs font-mono tabular-nums text-muted-foreground">
-            {fmtMau(inputs.mau)}
-          </span>
         </div>
         <Slider
           aria-label="Expected monthly active users slider"
