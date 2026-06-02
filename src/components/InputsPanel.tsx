@@ -597,8 +597,9 @@ function PlatformsPicker({
         {CATEGORIES.map((cat) => {
           const inCat = visibleArchs.filter((a) => a.category === cat.id);
           if (inCat.length === 0) return null;
-
+          return (
             <div key={cat.id}>
+
               <div className="mb-1 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
                 {cat.label}
               </div>
