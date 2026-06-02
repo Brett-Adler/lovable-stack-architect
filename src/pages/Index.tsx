@@ -295,7 +295,10 @@ const Index = () => {
             results={results}
             inputs={inputs}
             excluded={excluded}
+            userExcluded={userExcluded}
             isNonTechnical={isNonTechnical}
+            onExclude={toggleArch}
+            onResetEnabled={() => setEnabled(DEFAULT_ENABLED)}
           />
 
           <p className="text-[11px] leading-relaxed text-muted-foreground">
