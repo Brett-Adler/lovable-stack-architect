@@ -857,6 +857,64 @@ function InputsAppendixSection({ inputs }: { inputs: Inputs }) {
   );
 }
 
+function PlatformsConsideredSection({
+  results,
+  excluded,
+  userExcluded,
+}: {
+  results: RankedResult[];
+  excluded: { arch: Architecture; reason: string }[];
+  userExcluded: { arch: Architecture; reason: string }[];
+}) {
+  return (
+    <SectionWrapper id="platforms">
+      <H2 step={2}>Platforms considered</H2>
+      <p style={{ margin: "0 0 10px", fontSize: "12px", color: C.muted }}>
+        These are the platforms scored against your inputs. Anything excluded was either hidden by a
+        hard compliance requirement or removed from the comparison by you.
+      </p>
+
+      <H3>Compared ({results.length})</H3>
+      <ul style={{ margin: 0, paddingLeft: "20px" }}>
+        {results.map((r) => (
+          <li key={r.arch.id} style={{ marginBottom: "3px" }}>
+            <strong>{r.arch.name}</strong>{" "}
+            <span style={{ color: C.muted }}>— {r.arch.tagline}</span>
+          </li>
+        ))}
+      </ul>
+
+      {excluded.length > 0 && (
+        <>
+          <H3>Hidden by compliance ({excluded.length})</H3>
+          <ul style={{ margin: 0, paddingLeft: "20px" }}>
+            {excluded.map((e) => (
+              <li key={e.arch.id} style={{ marginBottom: "3px" }}>
+                <strong>{e.arch.name}</strong>{" "}
+                <span style={{ color: C.muted }}>— {e.reason}</span>
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
+
+      {userExcluded.length > 0 && (
+        <>
+          <H3>Removed by your filter ({userExcluded.length})</H3>
+          <ul style={{ margin: 0, paddingLeft: "20px" }}>
+            {userExcluded.map((e) => (
+              <li key={e.arch.id} style={{ marginBottom: "3px" }}>
+                <strong>{e.arch.name}</strong>{" "}
+                <span style={{ color: C.muted }}>— {e.arch.tagline}</span>
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
+    </SectionWrapper>
+  );
+}
+
 function MethodologySection({ results }: { results: RankedResult[] }) {
   const allSources = Array.from(
     new Map(
