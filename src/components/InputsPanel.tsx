@@ -377,7 +377,10 @@ export function InputsPanel({ inputs, onChange }: Props) {
       </div>
 
       <div className="space-y-2">
-        <Label className="text-xs">Workloads</Label>
+        <div className="flex items-center gap-1.5">
+          <Label className="text-xs">Workloads</Label>
+          <FieldHelp title="Workloads" items={HELP.workloads} />
+        </div>
         <div className="flex flex-wrap gap-1.5">
           {WORKLOADS.map((w) => (
             <Chip
