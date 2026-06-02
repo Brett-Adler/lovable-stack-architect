@@ -1,6 +1,7 @@
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { Input } from "@/components/ui/input";
+import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -16,11 +17,12 @@ import {
 import { cn } from "@/lib/utils";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { ChevronDown, HelpCircle, Minus, Plus, Check, X, Star } from "lucide-react";
+import { ChevronDown, HelpCircle, Minus, Plus, Check, X, Star, Split } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { ARCHITECTURES, CATEGORIES, type ArchId } from "@/data/architectures";
 import { BrandMark } from "@/components/BrandMark";
+
 
 type HelpItem = { label: string; description: string };
 
