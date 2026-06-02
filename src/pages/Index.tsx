@@ -376,10 +376,9 @@ const Index = () => {
             hidden={mobileTab !== "recommendation"}
             className="lg:col-span-full 2xl:col-span-1"
           >
-            {/* Side-by-side recommendation + cost only when Step 3 has the full page width
-                (i.e. md stacked or lg 2-col where step 3 spans full width). At 2xl the column
-                is narrow, so everything stacks. */}
-            <div className="grid gap-4 sm:gap-6 md:grid-cols-[minmax(0,1fr)_360px] xl:grid-cols-[minmax(0,1fr)_400px] 2xl:grid-cols-1">
+            {/* Side-by-side: recommendation on the left, cost + tech stack stacked on the right.
+                Collapses to a single column when Step 3 is constrained (2xl 3-col layout) or narrow. */}
+            <div className="grid gap-4 sm:gap-6 md:grid-cols-[minmax(0,1fr)_360px] xl:grid-cols-[minmax(0,1fr)_420px] 2xl:grid-cols-1">
               <div className="min-w-0 space-y-4 sm:space-y-6">
                 <RecommendationCard
                   results={results}
@@ -391,16 +390,11 @@ const Index = () => {
                   onResetEnabled={() => setEnabled(DEFAULT_ENABLED)}
                 />
               </div>
-              <aside aria-label="Cost & scaling for top pick" className="min-w-0 space-y-4 sm:space-y-6">
+              <aside aria-label="Cost & scaling and tech stack for top pick" className="min-w-0 space-y-4 sm:space-y-6">
                 {topId && <CostEstimate archId={topId} inputs={inputs} enabled={enabled} topId={topId} />}
+                {topId && <ArchitectureDiagram archId={topId} inputs={inputs} />}
               </aside>
             </div>
-
-            {topId && (
-              <div className="mt-4 sm:mt-6">
-                <ArchitectureDiagram archId={topId} inputs={inputs} />
-              </div>
-            )}
 
             <p className="mt-4 text-[11px] leading-relaxed text-muted-foreground">
               All options shown assume Lovable handles design, frontend dev, testing, and deployment.
