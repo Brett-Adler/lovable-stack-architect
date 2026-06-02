@@ -204,7 +204,7 @@ const Methodology = () => {
               </span>
               Methodology · Last reviewed {LAST_REVIEWED}
             </div>
-            <h1 className="mx-auto max-w-4xl text-5xl font-extrabold leading-[0.95] tracking-[-0.04em] text-foreground sm:text-6xl md:text-7xl">
+            <h1 className="mx-auto max-w-4xl text-[2.5rem] font-extrabold leading-[0.95] tracking-[-0.04em] text-foreground sm:text-6xl md:text-7xl">
               How the recommendation is <span className="text-gradient">built</span>
             </h1>
             <p className="mx-auto mt-6 max-w-2xl text-base text-muted-foreground sm:text-lg">
