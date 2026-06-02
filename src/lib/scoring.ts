@@ -342,6 +342,17 @@ function buildRationale(id: ArchId, inputs: Inputs): string[] {
     if (inputs.workloads.includes("realtime")) rs.push("Anycast edge helps realtime workloads.");
     if (strictCompliance) rs.push("Smaller compliance catalog than the hyperscalers.");
   }
+  if (id === "lovable-cloudflare") {
+    rs.push("Edge-first: Pages + Workers run close to every user globally.");
+    rs.push("Not a Lovable integration — requires GitHub export.");
+    if (inputs.budget.includes("low"))
+      rs.push("Generous free tier; paid Workers starts at $5/mo plus usage.");
+    if (heavyAI) rs.push("Workers AI runs inference at the edge with no key juggling.");
+    if (inputs.workloads.includes("realtime"))
+      rs.push("Durable Objects give you stateful realtime primitives at the edge.");
+    if (inputs.mau >= 100_000 && inputs.workloads.includes("crud"))
+      rs.push("D1 is SQLite — heavy writes at scale may push you to Hyperdrive→Postgres.");
+  }
 
   if (rs.length === 0) {
     rs.push(
