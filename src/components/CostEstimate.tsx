@@ -62,12 +62,22 @@ export function CostEstimate({
 
   return (
     <div className="rounded-2xl border border-border bg-card p-5 shadow-card">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between gap-2">
         <h3 className="flex items-center gap-1.5 text-sm font-semibold uppercase tracking-wider text-muted-foreground">
           <BrandMark archId={archId} size="md" />
           Cost & scaling
         </h3>
-        <span className="text-xs text-muted-foreground">at {stageLabel} scale</span>
+        <div className="flex items-center gap-2">
+          <span className="text-xs text-muted-foreground">at {stageLabel} scale</span>
+          {expandable && (
+            <FullscreenCardDialog
+              title={`Cost & scaling — ${arch.name}`}
+              ariaLabel="Expand cost & scaling"
+            >
+              <CostEstimate archId={archId} inputs={inputs} enabled={enabled} topId={topId} expandable={false} />
+            </FullscreenCardDialog>
+          )}
+        </div>
       </div>
 
       <div className="mt-3 flex items-baseline gap-2">
