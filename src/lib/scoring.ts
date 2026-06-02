@@ -31,6 +31,9 @@ export interface Inputs {
   workloads: Workload[];
   lockInTolerance: LockInTolerance[];
   ttmPriority: number; // 1-5, how important is time-to-market
+  // When false (default), hybrid/split stacks are filtered out of the
+  // catalog before scoring. The user opts into split mode in InputsPanel.
+  allowSplit?: boolean;
 }
 
 export const DEFAULT_INPUTS: Inputs = {
@@ -42,7 +45,9 @@ export const DEFAULT_INPUTS: Inputs = {
   workloads: ["crud"],
   lockInTolerance: ["medium"],
   ttmPriority: 5,
+  allowSplit: false,
 };
+
 
 // Derive criterion weights (0–3) from inputs.
 //
@@ -195,11 +200,18 @@ export function rankFull(inputs: Inputs, options: RankOptions = {}): RankOutput 
   const enabledSet =
     options.enabled && options.enabled.length > 0 ? new Set<ArchId>(options.enabled) : null;
 
+  const allowSplit = inputs.allowSplit ?? false;
+
   const scored = ARCHITECTURES.flatMap((arch) => {
+    // Hybrid (split-services) entries are hidden unless the user opts in.
+    if (arch.hybrid && !allowSplit) {
+      return [];
+    }
     if (enabledSet && !enabledSet.has(arch.id)) {
       userExcluded.push({ arch, reason: "Removed by your platform filter." });
       return [];
     }
+
     if (strict.length && RUBRIC[arch.id]["compliance"] < 4) {
       excluded.push({
         arch,
@@ -353,6 +365,23 @@ function buildRationale(id: ArchId, inputs: Inputs): string[] {
     if (inputs.mau >= 100_000 && inputs.workloads.includes("crud"))
       rs.push("D1 is SQLite — heavy writes at scale may push you to Hyperdrive→Postgres.");
   }
+
+  // Hybrid (split-services) entries: derive rationale from the two halves.
+  if (arch.composition) {
+    const back = ARCH_BY_ID[arch.composition.backend];
+    const front = ARCH_BY_ID[arch.composition.frontend];
+    rs.push(`Split stack: ${back.short} for the backend, ${front.short} for the frontend.`);
+    if (earlyStage)
+      rs.push("Two vendors to wire up — slower first deploy than a single integrated platform.");
+    if (inputs.workloads.includes("realtime"))
+      rs.push(`Realtime traffic still goes directly to ${back.short}.`);
+    if (inputs.budget.includes("low"))
+      rs.push(`${front.short} has a generous free frontend tier; the backend bill comes from ${back.short}.`);
+    if (inputs.lockInTolerance.includes("low"))
+      rs.push("Splitting frontend hosting from the backend makes either half easier to swap later.");
+  }
+
+
 
   if (rs.length === 0) {
     rs.push(

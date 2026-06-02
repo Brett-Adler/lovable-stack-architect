@@ -1,6 +1,7 @@
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { Input } from "@/components/ui/input";
+import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -16,11 +17,12 @@ import {
 import { cn } from "@/lib/utils";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { ChevronDown, HelpCircle, Minus, Plus, Check, X, Star } from "lucide-react";
+import { ChevronDown, HelpCircle, Minus, Plus, Check, X, Star, Split } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { ARCHITECTURES, CATEGORIES, type ArchId } from "@/data/architectures";
 import { BrandMark } from "@/components/BrandMark";
+
 
 type HelpItem = { label: string; description: string };
 
@@ -270,6 +272,29 @@ export function InputsPanel({ inputs, onChange, enabled, onSetEnabled, onToggleE
         </p>
       </div>
 
+      <div className="space-y-1.5 rounded-xl border border-dashed border-border bg-muted/20 p-3">
+        <div className="flex items-center justify-between gap-3">
+          <div className="flex min-w-0 items-center gap-2">
+            <Split className="h-3.5 w-3.5 shrink-0 text-muted-foreground" aria-hidden="true" />
+            <Label htmlFor="allow-split" className="cursor-pointer text-xs font-medium">
+              Allow splitting frontend hosting
+            </Label>
+          </div>
+          <Switch
+            id="allow-split"
+            checked={inputs.allowSplit ?? false}
+            onCheckedChange={(checked) => update("allowSplit", checked)}
+            aria-label="Allow splitting frontend hosting"
+          />
+        </div>
+        <p className="text-[11px] text-muted-foreground">
+          Default is one platform for everything. Turn this on to also compare hybrid stacks like
+          Supabase + Cloudflare Pages or Lovable Cloud + Cloudflare Pages.
+        </p>
+      </div>
+
+
+
       <div className="space-y-2">
         <div className="flex items-baseline justify-between gap-2">
           <Label className="text-xs" htmlFor="mau-input">Expected monthly active users</Label>
@@ -481,8 +506,10 @@ export function InputsPanel({ inputs, onChange, enabled, onSetEnabled, onToggleE
           enabled={enabled}
           onSetEnabled={onSetEnabled}
           onToggleEnabled={onToggleEnabled}
+          allowSplit={inputs.allowSplit ?? false}
         />
       )}
+
           </div>
         </CollapsibleContent>
       </Collapsible>
@@ -494,14 +521,19 @@ function PlatformsPicker({
   enabled,
   onSetEnabled,
   onToggleEnabled,
+  allowSplit,
 }: {
   enabled: ArchId[];
   onSetEnabled: (ids: ArchId[]) => void;
   onToggleEnabled: (id: ArchId) => void;
+  allowSplit: boolean;
 }) {
-  const allOn = enabled.length === ALL_ARCH_IDS.length;
+  const visibleArchs = ARCHITECTURES.filter((a) => allowSplit || !a.hybrid);
+  const visibleIds = visibleArchs.map((a) => a.id);
+  const visibleEnabled = enabled.filter((id) => visibleIds.includes(id));
+  const allOn = visibleEnabled.length === visibleIds.length && visibleIds.length > 0;
   const topOn =
-    enabled.length === TOP_PICKS.length && TOP_PICKS.every((id) => enabled.includes(id));
+    visibleEnabled.length === TOP_PICKS.length && TOP_PICKS.every((id) => visibleEnabled.includes(id));
 
   return (
     <div className="space-y-2">
@@ -510,9 +542,10 @@ function PlatformsPicker({
           <Label className="text-xs">Platforms to consider</Label>
         </div>
         <Badge variant="secondary" className="font-mono tabular-nums text-[10px]">
-          {enabled.length}/{ALL_ARCH_IDS.length}
+          {visibleEnabled.length}/{visibleIds.length}
         </Badge>
       </div>
+
       <p className="text-[11px] text-muted-foreground">
         Drop vendors you don't want to work with, or narrow to a shortlist. Removed platforms are
         skipped in the ranking and report.
@@ -520,7 +553,7 @@ function PlatformsPicker({
       <div className="flex flex-wrap gap-1.5">
         <button
           type="button"
-          onClick={() => onSetEnabled(ALL_ARCH_IDS)}
+          onClick={() => onSetEnabled(visibleIds)}
           aria-pressed={allOn}
           className={cn(
             "inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-[11px] font-medium transition-colors",
@@ -532,6 +565,7 @@ function PlatformsPicker({
           {allOn && <Check className="h-3 w-3" aria-hidden="true" />}
           All
         </button>
+
         <button
           type="button"
           onClick={() => onSetEnabled(TOP_PICKS)}
@@ -561,9 +595,11 @@ function PlatformsPicker({
 
       <div className="mt-2 space-y-2">
         {CATEGORIES.map((cat) => {
-          const inCat = ARCHITECTURES.filter((a) => a.category === cat.id);
+          const inCat = visibleArchs.filter((a) => a.category === cat.id);
+          if (inCat.length === 0) return null;
           return (
             <div key={cat.id}>
+
               <div className="mb-1 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
                 {cat.label}
               </div>

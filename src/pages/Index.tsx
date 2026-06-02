@@ -154,7 +154,7 @@ const Index = () => {
     <div className="min-h-dvh bg-background">
       <SeoHead
         title="Stack comparator — Lovable Stack Architect"
-        description="Compare 11 hosting and backend platforms side by side. Include or exclude any vendor and tune to your stage, budget, team, and workloads."
+        description="Compare 11 hosting and backend platforms side by side, plus optional hybrid stacks that split frontend hosting from the backend. Include or exclude any vendor and tune to your stage, budget, team, and workloads."
         path="/app"
       />
       <SiteHeader>
@@ -256,7 +256,9 @@ const Index = () => {
           enabled={enabled}
           onToggle={toggleArch}
           onReset={() => setEnabled(DEFAULT_ENABLED)}
+          allowSplit={inputs.allowSplit ?? false}
         />
+
       </div>
 
       <main id="main-content" className="mx-auto grid w-full max-w-[1800px] gap-4 px-3 py-4 sm:gap-6 sm:px-6 sm:py-6 md:grid-cols-[240px_minmax(0,1fr)] lg:grid-cols-[260px_minmax(0,1fr)_320px] xl:grid-cols-[300px_minmax(0,1fr)_360px] 2xl:gap-8 2xl:px-10 2xl:grid-cols-[320px_minmax(0,1fr)_400px]">

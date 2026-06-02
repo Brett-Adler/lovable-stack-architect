@@ -95,6 +95,12 @@ export function RecommendationCard({
               </div>
               <h2 className="mt-1 flex items-center gap-2 text-xl font-bold text-foreground"><BrandMark archId={top.arch.id} size="lg" />{top.arch.name}</h2>
               <p className="mt-1 text-sm text-muted-foreground">{top.arch.tagline}</p>
+              {top.arch.composition && (
+                <p className="mt-0.5 text-[11px] uppercase tracking-wider text-muted-foreground/80">
+                  Hybrid stack — split frontend hosting
+                </p>
+              )}
+
             </div>
             <ScoreBadge score={top.score} primary />
           </div>

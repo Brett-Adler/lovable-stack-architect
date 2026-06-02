@@ -9,20 +9,27 @@ interface Props {
   enabled: ArchId[];
   onToggle: (id: ArchId) => void;
   onReset: () => void;
+  /** When false, hybrid (split-services) entries are hidden from the picker. */
+  allowSplit?: boolean;
   className?: string;
 }
 
-export function PlatformsConsidered({ enabled, onToggle, onReset, className }: Props) {
-  const total = ARCHITECTURES.length;
+export function PlatformsConsidered({ enabled, onToggle, onReset, allowSplit = false, className }: Props) {
+  const catalog = useMemo(
+    () => ARCHITECTURES.filter((a) => allowSplit || !a.hybrid),
+    [allowSplit],
+  );
+  const total = catalog.length;
   const enabledSet = useMemo(() => new Set(enabled), [enabled]);
   const activeArchs = useMemo(
-    () => ARCHITECTURES.filter((a) => enabledSet.has(a.id)),
-    [enabledSet],
+    () => catalog.filter((a) => enabledSet.has(a.id)),
+    [catalog, enabledSet],
   );
   const excludedArchs = useMemo(
-    () => ARCHITECTURES.filter((a) => !enabledSet.has(a.id)),
-    [enabledSet],
+    () => catalog.filter((a) => !enabledSet.has(a.id)),
+    [catalog, enabledSet],
   );
+
 
   const isEmpty = activeArchs.length === 0;
   const isFull = excludedArchs.length === 0;

@@ -1,4 +1,4 @@
-import type { ArchId } from "@/data/architectures";
+import { ARCH_BY_ID, type ArchId } from "@/data/architectures";
 import type { Inputs } from "@/lib/scoring";
 
 // Mermaid v11 is strict about special chars (parentheses, slashes, plus signs,
@@ -7,11 +7,57 @@ import type { Inputs } from "@/lib/scoring";
 const N = (id: string, label: string) => `${id}["${label}"]`;
 const DB = (id: string, label: string) => `${id}[("${label}")]`;
 
+const FRONTEND_HOST_LABEL: Partial<Record<ArchId, string>> = {
+  "lovable-cloudflare": "Cloudflare Pages CDN",
+  "lovable-vercel": "Vercel CDN + Edge",
+  "lovable-netlify": "Netlify CDN + Edge",
+};
+
+const BACKEND_SERVICES: Partial<Record<ArchId, (wantsRealtime: boolean, wantsFiles: boolean, wantsAI: boolean) => string[]>> = {
+  "lovable-cloud": (wantsRealtime, wantsFiles, wantsAI) => {
+    const out: string[] = [
+      `  HOST --> ${N("API", "Lovable Cloud Edge Functions")}`,
+      `  HOST --> ${N("AUTH", "Cloud Auth")}`,
+      `  API --> ${DB("DB", "Cloud Postgres")}`,
+    ];
+    if (wantsFiles) out.push(`  API --> ${N("ST", "Cloud Storage")}`);
+    if (wantsRealtime) out.push("  HOST -.realtime.-> DB");
+    if (wantsAI) out.push(`  API --> ${N("AI", "Lovable AI Gateway")}`);
+    return out;
+  },
+  "lovable-supabase": (wantsRealtime, wantsFiles, wantsAI) => {
+    const out: string[] = [
+      `  HOST --> ${N("SAPI", "Supabase Edge Functions")}`,
+      `  HOST --> ${N("SAUTH", "Supabase Auth")}`,
+      `  SAPI --> ${DB("SDB", "Supabase Postgres")}`,
+    ];
+    if (wantsFiles) out.push(`  SAPI --> ${N("SST", "Supabase Storage")}`);
+    if (wantsRealtime) out.push("  HOST -.realtime.-> SDB");
+    if (wantsAI) out.push(`  SAPI --> ${N("AI", "OpenAI / Lovable AI")}`);
+    return out;
+  },
+};
+
 export function buildMermaid(archId: ArchId, inputs: Inputs): string {
   const wantsRealtime = inputs.workloads.includes("realtime");
   const wantsFiles = inputs.workloads.includes("files");
   const wantsAI = inputs.workloads.includes("ai") || inputs.workloads.includes("heavy-compute");
   const wantsJobs = inputs.workloads.includes("background-jobs");
+
+  // Hybrid (split-services) stacks: frontend host → backend services.
+  const arch = ARCH_BY_ID[archId];
+  if (arch?.composition) {
+    const frontLabel = FRONTEND_HOST_LABEL[arch.composition.frontend] ?? ARCH_BY_ID[arch.composition.frontend].short;
+    const backendBuilder = BACKEND_SERVICES[arch.composition.backend];
+    const hybridLines: string[] = [
+      "graph TD",
+      `  ${N("U", "Users")} --> ${N("HOST", `${frontLabel} (hosts frontend)`)}`,
+    ];
+    if (backendBuilder) {
+      hybridLines.push(...backendBuilder(wantsRealtime, wantsFiles, wantsAI));
+    }
+    return hybridLines.join("\n");
+  }
 
   const lines: string[] = [
     "graph TD",
@@ -19,6 +65,7 @@ export function buildMermaid(archId: ArchId, inputs: Inputs): string {
   ];
 
   switch (archId) {
+
     case "lovable-cloud":
       lines.push(`  FE --> ${N("API", "Lovable Cloud Edge Functions")}`);
       lines.push(`  FE --> ${N("AUTH", "Cloud Auth")}`);
