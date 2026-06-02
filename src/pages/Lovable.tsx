@@ -218,6 +218,41 @@ export default function Lovable() {
           </div>
         </section>
 
+        {/* About — mirrors the Lovable store listing copy */}
+        <section className="border-b border-border/60 py-16 sm:py-24">
+          <div className="mx-auto max-w-3xl px-6">
+            <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">About</h2>
+            <div className="mt-8 space-y-8 text-base leading-relaxed text-muted-foreground">
+              <div>
+                <h3 className="text-lg font-semibold text-foreground">Problem</h3>
+                <p className="mt-2">
+                  Choosing the right backend for a Lovable app can be confusing and full of tradeoffs.
+                  Builders must balance cost, scalability, compliance, realtime support, AI workloads, and
+                  time-to-launch without clear guidance on which stack best fits their project.
+                </p>
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold text-foreground">Solution</h3>
+                <p className="mt-2">
+                  Lovable Stack Architect helps builders compare backend and hosting options side by side
+                  based on their app’s needs. By adjusting inputs like stage, budget, team strengths,
+                  workloads, and compliance, users receive live recommendations, cost bands, tradeoffs, and
+                  rationale across platforms like Lovable Cloud, Supabase, Vercel, AWS, and more. Built with{" "}
+                  <strong className="font-semibold text-foreground">Lovable</strong>, the app is fully
+                  remixable for teams who want to create their own architecture advisor or decision tool.
+                </p>
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold text-foreground">Who It’s For</h3>
+                <p className="mt-2">
+                  Lovable Stack Architect is for founders, indie hackers, agencies, startups, and builders
+                  choosing the best backend path for their Lovable app.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* What it is / highlights */}
         <section className="border-b border-border/60 py-16 sm:py-24">
           <div className="mx-auto max-w-5xl px-6">
