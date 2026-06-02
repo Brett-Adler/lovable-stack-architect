@@ -280,7 +280,10 @@ export function InputsPanel({ inputs, onChange }: Props) {
       </div>
 
       <div className="space-y-2">
-        <Label className="text-xs">Team strengths</Label>
+        <div className="flex items-center gap-1.5">
+          <Label className="text-xs">Team strengths</Label>
+          <FieldHelp title="Team strengths" items={HELP.team} />
+        </div>
         <div className="flex flex-wrap gap-1.5">
           {TEAMS.map((t) => (
             <Chip
