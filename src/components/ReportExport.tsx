@@ -199,7 +199,9 @@ function buildMarkdown({ inputs, results: rawResults, excluded = [], userExclude
   lines.push(`- Workloads: ${fmtList(mapLabels(inputs.workloads, WORKLOAD_LABEL))}`);
   lines.push(`- Lock-in tolerance: ${fmtList(mapLabels(inputs.lockInTolerance, LOCKIN_LABEL))}`);
   lines.push(`- Time-to-market priority: ${inputs.ttmPriority}/5`);
+  lines.push(`- Hybrid stacks: ${inputs.allowSplit ? "Included (split frontend hosting)" : "Not included"}`);
   lines.push("");
+
 
   // Methodology
   lines.push(`## Methodology`);
