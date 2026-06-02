@@ -10,12 +10,26 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Download, FileDown, Loader2, Share2, Link2, Check, Copy } from "lucide-react";
-import { CRITERIA, RUBRIC, type Architecture } from "@/data/architectures";
+import { CRITERIA, RUBRIC, CATEGORIES, type Architecture } from "@/data/architectures";
 import type { Inputs, RankedResult } from "@/lib/scoring";
-import { stageFromMau } from "@/lib/scoring";
+import { stageFromMau, tradeoffVs } from "@/lib/scoring";
 import { toast } from "sonner";
 import { LAST_REVIEWED, SITE_URL, AUTHOR_HANDLE } from "@/lib/constants";
 import { track } from "@/lib/analytics";
+import {
+  STAGE_LABEL,
+  TEAM_LABEL,
+  COMPLIANCE_LABEL,
+  WORKLOAD_LABEL,
+  BUDGET_LABEL,
+  LOCKIN_LABEL,
+  STAGE_DESCRIPTION,
+  TEAM_DESCRIPTION,
+  COMPLIANCE_DESCRIPTION,
+  WORKLOAD_DESCRIPTION,
+  BUDGET_LABEL as _BL,
+  LOCKIN_DESCRIPTION,
+} from "@/lib/inputLabels";
 
 interface Props {
   inputs: Inputs;
@@ -24,20 +38,42 @@ interface Props {
   shareUrl?: string;
 }
 
-
-const STAGE_LABEL: Record<string, string> = {
-  prototype: "Prototype",
-  mvp: "MVP",
-  growth: "Growth",
-  scale: "Scale",
+// ---------- Inline color palette (so html2canvas doesn't drop CSS-var classes) ----------
+const C = {
+  text: "#0a0a0a",
+  muted: "#6b7280",
+  mutedBg: "#f9fafb",
+  border: "#e5e7eb",
+  primary: "#2563eb",
+  primarySoft: "#eff6ff",
+  warn: "#92400e",
+  warnBg: "#fef3c7",
+  warnBorder: "#fcd34d",
+  accentBar: "linear-gradient(90deg, #2563eb, #db2777, #f97316)",
 };
+
+const PAGE_WIDTH_PX = 820; // A4 portrait @ ~96dpi target render width
 
 function fmtList(xs: string[]): string {
   return xs.length ? xs.join(", ") : "—";
 }
 
+function mapLabels<K extends string>(xs: K[], dict: Record<K, string>): string[] {
+  return xs.map((k) => dict[k] ?? k);
+}
+
+function applyNonTechFilter(results: RankedResult[], inputs: Inputs) {
+  const isNonTech =
+    inputs.team.length === 0 || (inputs.team.length === 1 && inputs.team[0] === "none");
+  if (!isNonTech || results.length === 0) return results;
+  const top = results[0];
+  const rest = results.slice(1).filter((r) => r.arch.nativeIntegration);
+  return [top, ...rest];
+}
+
 // ---------- Markdown ----------
-function buildMarkdown({ inputs, results, excluded = [] }: Props): string {
+function buildMarkdown({ inputs, results: rawResults, excluded = [] }: Props): string {
+  const results = applyNonTechFilter(rawResults, inputs);
   const top = results[0];
   const stage = stageFromMau(inputs.mau);
   const lines: string[] = [];
@@ -45,16 +81,23 @@ function buildMarkdown({ inputs, results, excluded = [] }: Props): string {
   lines.push(`# Stack Architect — Architecture Recommendation`);
   lines.push("");
   lines.push(`> Generated ${new Date().toLocaleString()} · Rubric last reviewed ${LAST_REVIEWED}`);
-  lines.push(`> Source: ${SITE_URL} · Maintained by [${AUTHOR_HANDLE}](https://lovable.dev/${AUTHOR_HANDLE}) on lovable.dev · Community template, not affiliated with Lovable`);
+  lines.push(
+    `> Source: ${SITE_URL} · Maintained by [${AUTHOR_HANDLE}](https://lovable.dev/${AUTHOR_HANDLE}) on lovable.dev · Community template, not affiliated with Lovable`,
+  );
   lines.push("");
 
   if (!top) {
-    lines.push("_No architecture met your hard requirements. Loosen the compliance filter to see options._");
+    lines.push(
+      "_No architecture met your hard requirements. Loosen the compliance filter to see options._",
+    );
     return lines.join("\n");
   }
 
+  const category = CATEGORIES.find((c) => c.id === top.arch.category);
+
   // Top pick
   lines.push(`## Top pick: ${top.arch.name}`);
+  if (category) lines.push(`_Category: ${category.label} — ${category.description}_`);
   lines.push(`_${top.arch.tagline}_  — score **${Math.round(top.score)}/100**`);
   lines.push("");
   lines.push(top.arch.description);
@@ -64,11 +107,21 @@ function buildMarkdown({ inputs, results, excluded = [] }: Props): string {
   lines.push("");
   if (top.topContributors.length) {
     lines.push(`**Top scoring criteria**`);
-    top.topContributors.forEach((c) =>
-      lines.push(`- ${c.criterion.label}: ${c.rubricScore}/5`),
-    );
+    top.topContributors.forEach((c) => lines.push(`- ${c.criterion.label}: ${c.rubricScore}/5`));
     lines.push("");
   }
+
+  const runner = results[1];
+  if (runner) {
+    const t = tradeoffVs(top, runner, inputs);
+    if (t) {
+      lines.push(
+        `**Trade-off vs ${runner.arch.short}:** you gain ${t.topWins.label.toLowerCase()} and give up some ${t.runnerWins.label.toLowerCase()}.`,
+      );
+      lines.push("");
+    }
+  }
+
   lines.push(`**Best for**`);
   top.arch.bestFor.forEach((b) => lines.push(`- ${b}`));
   lines.push("");
@@ -76,8 +129,12 @@ function buildMarkdown({ inputs, results, excluded = [] }: Props): string {
   top.arch.watchOuts.forEach((b) => lines.push(`- ${b}`));
   lines.push("");
   lines.push(`### Cost & scaling`);
-  lines.push(`- Estimated monthly cost at **${STAGE_LABEL[stage]}** stage: ${top.arch.costBands[stage]}`);
-  lines.push(`- Full bands — Prototype ${top.arch.costBands.prototype} · MVP ${top.arch.costBands.mvp} · Growth ${top.arch.costBands.growth} · Scale ${top.arch.costBands.scale}`);
+  lines.push(
+    `- Estimated monthly cost at **${STAGE_LABEL[stage]}** stage (${inputs.mau.toLocaleString()} MAU): ${top.arch.costBands[stage]}`,
+  );
+  lines.push(
+    `- Full bands — Prototype ${top.arch.costBands.prototype} · MVP ${top.arch.costBands.mvp} · Growth ${top.arch.costBands.growth} · Scale ${top.arch.costBands.scale}`,
+  );
   lines.push(`- Scaling ceiling: ${top.arch.scaleCeiling}`);
   lines.push(`- Cost data last reviewed: ${top.arch.lastReviewed}`);
   if (top.arch.sources.length) {
@@ -85,7 +142,7 @@ function buildMarkdown({ inputs, results, excluded = [] }: Props): string {
   }
   lines.push("");
 
-  // Runners-up with rationale
+  // Runners-up
   const runners = results.slice(1, 3);
   if (runners.length) {
     lines.push(`## Runners-up`);
@@ -104,7 +161,6 @@ function buildMarkdown({ inputs, results, excluded = [] }: Props): string {
   });
   lines.push("");
 
-  // Excluded
   if (excluded.length) {
     lines.push(`## Excluded by hard requirements`);
     excluded.forEach((e) => lines.push(`- **${e.arch.name}** — ${e.reason}`));
@@ -124,16 +180,26 @@ function buildMarkdown({ inputs, results, excluded = [] }: Props): string {
   });
   lines.push("");
 
-  // Inputs
+  // Inputs (with labels)
   lines.push(`## Project inputs`);
-  lines.push(`- Stage: ${fmtList(inputs.stage)}`);
+  lines.push(`- Stage: ${fmtList(mapLabels(inputs.stage, STAGE_LABEL))}`);
   lines.push(`- Expected MAU: ${inputs.mau.toLocaleString()}`);
-  lines.push(`- Team strengths: ${fmtList(inputs.team)}`);
-  lines.push(`- Budget: ${fmtList(inputs.budget)}`);
-  lines.push(`- Compliance: ${fmtList(inputs.compliance)}`);
-  lines.push(`- Workloads: ${fmtList(inputs.workloads)}`);
-  lines.push(`- Lock-in tolerance: ${fmtList(inputs.lockInTolerance)}`);
+  lines.push(`- Team strengths: ${fmtList(mapLabels(inputs.team, TEAM_LABEL))}`);
+  lines.push(`- Budget: ${fmtList(mapLabels(inputs.budget, BUDGET_LABEL))}`);
+  lines.push(`- Compliance: ${fmtList(mapLabels(inputs.compliance, COMPLIANCE_LABEL))}`);
+  lines.push(`- Workloads: ${fmtList(mapLabels(inputs.workloads, WORKLOAD_LABEL))}`);
+  lines.push(`- Lock-in tolerance: ${fmtList(mapLabels(inputs.lockInTolerance, LOCKIN_LABEL))}`);
   lines.push(`- Time-to-market priority: ${inputs.ttmPriority}/5`);
+  lines.push("");
+
+  // Methodology
+  lines.push(`## Methodology`);
+  lines.push(
+    `Every criterion starts at a baseline weight of 1.0, then your inputs nudge the weights up or down (e.g. "low budget" pushes cost-at-small-scale higher). Each architecture is scored 0–5 per criterion using a fixed rubric, multiplied by the derived weight, and normalized to a 0–100 score. Strict compliance options (HIPAA, SOC 2, data residency) act as hard filters and remove options below a coverage threshold.`,
+  );
+  lines.push("");
+  lines.push(`### Criteria glossary`);
+  CRITERIA.forEach((c) => lines.push(`- **${c.label}** — ${c.hint}`));
   lines.push("");
 
   lines.push(`---`);
@@ -144,199 +210,676 @@ function buildMarkdown({ inputs, results, excluded = [] }: Props): string {
   return lines.join("\n");
 }
 
-// ---------- Report content (used in preview dialog + print root) ----------
-function ReportContent({ inputs, results, excluded = [] }: Props) {
-  const top = results[0];
-  const stage = stageFromMau(inputs.mau);
+// ---------- PDF section renderer ----------
+// Each PdfSection is rendered to its own canvas → its own PDF page(s),
+// so section breaks always land cleanly.
+type SectionKey =
+  | "header"
+  | "top-pick"
+  | "runners"
+  | "ranked"
+  | "matrix"
+  | "inputs"
+  | "methodology";
 
-  if (!top) {
-    return (
-      <div className="font-sans text-sm text-foreground">
-        No architecture met your hard requirements. Loosen the compliance filter to see options.
-      </div>
-    );
-  }
-
+function SectionWrapper({
+  id,
+  children,
+}: {
+  id: SectionKey;
+  children: React.ReactNode;
+}) {
   return (
-    <article className="font-sans text-[13px] leading-relaxed text-foreground">
-      <header className="mb-6 border-b border-border pb-4">
-        <h1 className="text-2xl font-bold">Stack Architect — Architecture Recommendation</h1>
-        <p className="mt-1 text-xs text-muted-foreground">
-          Generated {new Date().toLocaleString()} · Rubric last reviewed {LAST_REVIEWED}
-        </p>
-        <p className="text-xs text-muted-foreground">
-          Source: {SITE_URL} · Maintained by <a href={`https://lovable.dev/${AUTHOR_HANDLE}`} target="_blank" rel="noopener noreferrer" className="underline">{AUTHOR_HANDLE} on lovable.dev</a> · Community template, not affiliated with Lovable
-        </p>
-      </header>
-
-      <section className="mb-6">
-        <div className="flex items-baseline justify-between gap-2">
-          <h2 className="text-xl font-bold">Top pick: {top.arch.name}</h2>
-          <span className="font-mono text-sm">{Math.round(top.score)}/100</span>
-        </div>
-        <p className="italic text-muted-foreground">{top.arch.tagline}</p>
-        <p className="mt-2">{top.arch.description}</p>
-
-        <h3 className="mt-4 text-sm font-semibold uppercase tracking-wider text-muted-foreground">
-          Why this fits your inputs
-        </h3>
-        <ul className="mt-1 list-disc pl-5">
-          {top.rationale.map((r, i) => <li key={i}>{r}</li>)}
-        </ul>
-
-        {top.topContributors.length > 0 && (
-          <>
-            <h3 className="mt-4 text-sm font-semibold uppercase tracking-wider text-muted-foreground">
-              Top scoring criteria
-            </h3>
-            <ul className="mt-1 list-disc pl-5">
-              {top.topContributors.map((c) => (
-                <li key={c.criterion.id}>
-                  {c.criterion.label} — <span className="font-mono">{c.rubricScore}/5</span>
-                </li>
-              ))}
-            </ul>
-          </>
-        )}
-
-        <div className="mt-4 grid grid-cols-2 gap-4">
-          <div>
-            <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">Best for</h3>
-            <ul className="mt-1 list-disc pl-5">
-              {top.arch.bestFor.map((b) => <li key={b}>{b}</li>)}
-            </ul>
-          </div>
-          <div>
-            <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">Watch-outs</h3>
-            <ul className="mt-1 list-disc pl-5">
-              {top.arch.watchOuts.map((b) => <li key={b}>{b}</li>)}
-            </ul>
-          </div>
-        </div>
-
-        <div className="mt-4 rounded-lg border border-border bg-muted/30 p-3">
-          <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">Cost & scaling</h3>
-          <p className="mt-1">
-            <strong>{top.arch.costBands[stage]}</strong> / month estimated at {STAGE_LABEL[stage]} scale.
-          </p>
-          <p className="mt-1 text-xs text-muted-foreground">
-            Prototype {top.arch.costBands.prototype} · MVP {top.arch.costBands.mvp} ·{" "}
-            Growth {top.arch.costBands.growth} · Scale {top.arch.costBands.scale}
-          </p>
-          <p className="mt-1 text-xs"><strong>Ceiling:</strong> {top.arch.scaleCeiling}</p>
-          <p className="mt-1 text-xs text-muted-foreground">Last reviewed {top.arch.lastReviewed}</p>
-          {top.arch.sources.length > 0 && (
-            <p className="mt-1 text-xs">
-              Sources:{" "}
-              {top.arch.sources.map((s, i) => (
-                <span key={s.url}>
-                  {i > 0 && ", "}
-                  <a href={s.url} className="text-primary underline">{s.label}</a>
-                </span>
-              ))}
-            </p>
-          )}
-        </div>
-      </section>
-
-      {results.slice(1, 3).length > 0 && (
-        <section className="mb-6 print-break-before">
-          <h2 className="text-lg font-bold">Runners-up</h2>
-          {results.slice(1, 3).map((r, i) => (
-            <div key={r.arch.id} className="mt-3 rounded-lg border border-border p-3">
-              <div className="flex items-baseline justify-between gap-2">
-                <h3 className="font-semibold">#{i + 1} — {r.arch.name}</h3>
-                <span className="font-mono text-xs">{Math.round(r.score)}/100</span>
-              </div>
-              <p className="text-xs italic text-muted-foreground">{r.arch.tagline}</p>
-              <ul className="mt-1 list-disc pl-5 text-xs">
-                {r.rationale.slice(0, 3).map((x, j) => <li key={j}>{x}</li>)}
-              </ul>
-            </div>
-          ))}
-        </section>
-      )}
-
-      <section className="mb-6">
-        <h2 className="text-lg font-bold">All ranked options</h2>
-        <ol className="mt-2 list-decimal pl-5">
-          {results.map((r) => (
-            <li key={r.arch.id}>
-              <strong>{r.arch.name}</strong> — {Math.round(r.score)}/100 — <span className="text-muted-foreground">{r.arch.tagline}</span>
-            </li>
-          ))}
-        </ol>
-      </section>
-
-      {excluded.length > 0 && (
-        <section className="mb-6">
-          <h2 className="text-lg font-bold">Excluded by hard requirements</h2>
-          <ul className="mt-2 list-disc pl-5">
-            {excluded.map((e) => (
-              <li key={e.arch.id}>
-                <strong>{e.arch.name}</strong> — {e.reason}
-              </li>
-            ))}
-          </ul>
-        </section>
-      )}
-
-      <section className="mb-6 print-break-before">
-        <h2 className="text-lg font-bold">Comparison matrix</h2>
-        <table className="mt-2 w-full border-collapse text-xs">
-          <thead>
-            <tr>
-              <th className="border border-border bg-muted/30 px-2 py-1 text-left">Criterion</th>
-              {results.map((r) => (
-                <th key={r.arch.id} className="border border-border bg-muted/30 px-2 py-1 text-center">{r.arch.short}</th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {CRITERIA.map((c) => (
-              <tr key={c.id}>
-                <td className="border border-border px-2 py-1">{c.label}</td>
-                {results.map((r) => (
-                  <td key={r.arch.id} className="border border-border px-2 py-1 text-center font-mono">
-                    {RUBRIC[r.arch.id][c.id]}/5
-                  </td>
-                ))}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </section>
-
-      <section className="mb-6">
-        <h2 className="text-lg font-bold">Project inputs</h2>
-        <ul className="mt-2 grid grid-cols-2 gap-x-4 gap-y-1 text-xs">
-          <li><strong>Stage:</strong> {fmtList(inputs.stage)}</li>
-          <li><strong>Expected MAU:</strong> {inputs.mau.toLocaleString()}</li>
-          <li><strong>Team strengths:</strong> {fmtList(inputs.team)}</li>
-          <li><strong>Budget:</strong> {fmtList(inputs.budget)}</li>
-          <li><strong>Compliance:</strong> {fmtList(inputs.compliance)}</li>
-          <li><strong>Workloads:</strong> {fmtList(inputs.workloads)}</li>
-          <li><strong>Lock-in tolerance:</strong> {fmtList(inputs.lockInTolerance)}</li>
-          <li><strong>Time-to-market priority:</strong> {inputs.ttmPriority}/5</li>
-        </ul>
-      </section>
-
-      <footer className="mt-8 border-t border-border pt-3 text-[11px] text-muted-foreground">
-        Cost bands are curated estimates from vendor pricing pages, not live quotes. Verify before committing.
-        Rubric and bands last reviewed {LAST_REVIEWED}.
-      </footer>
-    </article>
+    <div
+      data-pdf-section={id}
+      style={{
+        width: `${PAGE_WIDTH_PX}px`,
+        background: "#ffffff",
+        color: C.text,
+        fontFamily:
+          "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif",
+        fontSize: "13px",
+        lineHeight: 1.55,
+        padding: "32px 36px",
+        boxSizing: "border-box",
+      }}
+    >
+      {children}
+    </div>
   );
 }
 
+function H1({ children }: { children: React.ReactNode }) {
+  return (
+    <h1 style={{ fontSize: "22px", fontWeight: 800, margin: "0 0 6px", color: C.text }}>
+      {children}
+    </h1>
+  );
+}
+function H2({ children }: { children: React.ReactNode }) {
+  return (
+    <h2
+      style={{
+        fontSize: "18px",
+        fontWeight: 700,
+        margin: "0 0 10px",
+        color: C.text,
+        borderBottom: `2px solid ${C.border}`,
+        paddingBottom: "6px",
+      }}
+    >
+      {children}
+    </h2>
+  );
+}
+function H3({ children }: { children: React.ReactNode }) {
+  return (
+    <h3
+      style={{
+        fontSize: "11px",
+        fontWeight: 700,
+        margin: "16px 0 6px",
+        color: C.muted,
+        textTransform: "uppercase",
+        letterSpacing: "0.06em",
+      }}
+    >
+      {children}
+    </h3>
+  );
+}
 
+function BrandBar({ subtitle }: { subtitle: string }) {
+  return (
+    <div style={{ marginBottom: "16px" }}>
+      <div style={{ height: "4px", borderRadius: "2px", background: C.accentBar }} />
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "baseline",
+          marginTop: "8px",
+          fontSize: "11px",
+          color: C.muted,
+        }}
+      >
+        <span style={{ fontWeight: 700, color: C.text, letterSpacing: "-0.01em" }}>
+          Lovable Stack Architect
+        </span>
+        <span>{subtitle}</span>
+      </div>
+    </div>
+  );
+}
+
+function Bullets({ items }: { items: string[] }) {
+  return (
+    <ul style={{ margin: "6px 0 0", paddingLeft: "18px" }}>
+      {items.map((x, i) => (
+        <li key={i} style={{ marginBottom: "3px" }}>
+          {x}
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+function HeaderSection({ inputs }: { inputs: Inputs }) {
+  return (
+    <SectionWrapper id="header">
+      <BrandBar subtitle={`Generated ${new Date().toLocaleString()}`} />
+      <H1>Architecture Recommendation</H1>
+      <p style={{ margin: "0 0 4px", color: C.muted, fontSize: "12px" }}>
+        A weighted comparison of {10} hosting & backend options for your Lovable app, tuned to the
+        inputs below. Rubric last reviewed {LAST_REVIEWED}.
+      </p>
+      <p style={{ margin: 0, color: C.muted, fontSize: "11px" }}>
+        Source: {SITE_URL} · Maintained by @{AUTHOR_HANDLE} on lovable.dev · Community template, not
+        affiliated with Lovable.
+      </p>
+
+      <div
+        style={{
+          marginTop: "18px",
+          border: `1px solid ${C.border}`,
+          borderRadius: "10px",
+          padding: "12px 14px",
+          background: C.mutedBg,
+          fontSize: "12px",
+        }}
+      >
+        <div style={{ fontWeight: 700, marginBottom: "6px", color: C.text }}>Inputs at a glance</div>
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "1fr 1fr",
+            rowGap: "4px",
+            columnGap: "16px",
+          }}
+        >
+          <div>
+            <strong>Stage:</strong> {fmtList(mapLabels(inputs.stage, STAGE_LABEL))}
+          </div>
+          <div>
+            <strong>Expected MAU:</strong> {inputs.mau.toLocaleString()}
+          </div>
+          <div>
+            <strong>Team:</strong> {fmtList(mapLabels(inputs.team, TEAM_LABEL))}
+          </div>
+          <div>
+            <strong>Budget:</strong> {fmtList(mapLabels(inputs.budget, BUDGET_LABEL))}
+          </div>
+          <div>
+            <strong>Compliance:</strong> {fmtList(mapLabels(inputs.compliance, COMPLIANCE_LABEL))}
+          </div>
+          <div>
+            <strong>Workloads:</strong> {fmtList(mapLabels(inputs.workloads, WORKLOAD_LABEL))}
+          </div>
+          <div>
+            <strong>Lock-in tolerance:</strong>{" "}
+            {fmtList(mapLabels(inputs.lockInTolerance, LOCKIN_LABEL))}
+          </div>
+          <div>
+            <strong>Time-to-market priority:</strong> {inputs.ttmPriority}/5
+          </div>
+        </div>
+      </div>
+    </SectionWrapper>
+  );
+}
+
+function TopPickSection({
+  top,
+  runner,
+  inputs,
+  excluded,
+}: {
+  top: RankedResult;
+  runner?: RankedResult;
+  inputs: Inputs;
+  excluded: { arch: Architecture; reason: string }[];
+}) {
+  const stage = stageFromMau(inputs.mau);
+  const category = CATEGORIES.find((c) => c.id === top.arch.category);
+  const trade = runner ? tradeoffVs(top, runner, inputs) : null;
+
+  return (
+    <SectionWrapper id="top-pick">
+      <H2>Top pick</H2>
+
+      {excluded.length > 0 && (
+        <div
+          style={{
+            border: `1px solid ${C.warnBorder}`,
+            background: C.warnBg,
+            color: C.warn,
+            padding: "8px 12px",
+            borderRadius: "8px",
+            fontSize: "11px",
+            marginBottom: "12px",
+          }}
+        >
+          <strong>{excluded.length}</strong> option{excluded.length === 1 ? "" : "s"} hidden by your
+          compliance requirement ({excluded.map((e) => e.arch.short).join(", ")}). Loosen the
+          compliance filter in the app to compare them.
+        </div>
+      )}
+
+      <div
+        style={{
+          border: `1px solid ${C.primary}`,
+          borderRadius: "12px",
+          padding: "16px 18px",
+          background: C.primarySoft,
+        }}
+      >
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
+          <div>
+            <div style={{ fontSize: "10px", fontWeight: 700, color: C.primary, letterSpacing: "0.08em", textTransform: "uppercase" }}>
+              Recommended {category ? `· ${category.label}` : ""}
+            </div>
+            <div style={{ fontSize: "20px", fontWeight: 800, marginTop: "2px" }}>
+              {top.arch.name}
+            </div>
+            <div style={{ fontSize: "12px", fontStyle: "italic", color: C.muted, marginTop: "2px" }}>
+              {top.arch.tagline}
+            </div>
+          </div>
+          <div
+            style={{
+              fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace",
+              fontSize: "16px",
+              fontWeight: 700,
+              color: C.primary,
+            }}
+          >
+            {Math.round(top.score)}<span style={{ opacity: 0.6, fontSize: "12px" }}>/100</span>
+          </div>
+        </div>
+
+        <p style={{ marginTop: "12px", marginBottom: 0 }}>{top.arch.description}</p>
+      </div>
+
+      <H3>Why this fits your inputs</H3>
+      <Bullets items={top.rationale} />
+
+      {top.topContributors.length > 0 && (
+        <>
+          <H3>Top scoring criteria</H3>
+          <Bullets
+            items={top.topContributors.map(
+              (c) => `${c.criterion.label} — ${c.rubricScore}/5`,
+            )}
+          />
+        </>
+      )}
+
+      {trade && runner && (
+        <p
+          style={{
+            marginTop: "12px",
+            padding: "8px 12px",
+            border: `1px dashed ${C.border}`,
+            borderRadius: "8px",
+            fontSize: "12px",
+            color: C.muted,
+          }}
+        >
+          <strong style={{ color: C.text }}>Trade-off vs {runner.arch.short}:</strong> you gain{" "}
+          <strong style={{ color: C.text }}>{trade.topWins.label.toLowerCase()}</strong> and give up
+          some <strong style={{ color: C.text }}>{trade.runnerWins.label.toLowerCase()}</strong>.
+        </p>
+      )}
+
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginTop: "16px" }}>
+        <div>
+          <H3>Best for</H3>
+          <Bullets items={top.arch.bestFor} />
+        </div>
+        <div>
+          <H3>Watch-outs</H3>
+          <Bullets items={top.arch.watchOuts} />
+        </div>
+      </div>
+
+      <div
+        style={{
+          marginTop: "18px",
+          border: `1px solid ${C.border}`,
+          borderRadius: "10px",
+          padding: "12px 14px",
+          background: C.mutedBg,
+        }}
+      >
+        <H3>Cost &amp; scaling</H3>
+        <p style={{ margin: "4px 0" }}>
+          <strong>{top.arch.costBands[stage]}</strong> / month estimated at {STAGE_LABEL[stage]}{" "}
+          scale ({inputs.mau.toLocaleString()} MAU).
+        </p>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "6px", marginTop: "8px" }}>
+          {(["prototype", "mvp", "growth", "scale"] as const).map((s) => {
+            const active = s === stage;
+            return (
+              <div
+                key={s}
+                style={{
+                  border: `1px solid ${active ? C.primary : C.border}`,
+                  background: active ? C.primarySoft : "#ffffff",
+                  borderRadius: "6px",
+                  padding: "6px 8px",
+                  fontSize: "10px",
+                }}
+              >
+                <div style={{ fontWeight: 600, textTransform: "capitalize" }}>{STAGE_LABEL[s]}</div>
+                <div style={{ fontFamily: "ui-monospace, monospace", color: active ? C.primary : C.text }}>
+                  {top.arch.costBands[s]}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+        <p style={{ margin: "10px 0 0", fontSize: "11px" }}>
+          <strong>Ceiling:</strong> {top.arch.scaleCeiling}
+        </p>
+        <p style={{ margin: "4px 0 0", fontSize: "10px", color: C.muted }}>
+          Last reviewed {top.arch.lastReviewed}
+          {top.arch.sources.length > 0 && (
+            <> · Sources: {top.arch.sources.map((s) => s.label).join(", ")}</>
+          )}
+        </p>
+      </div>
+    </SectionWrapper>
+  );
+}
+
+function RunnersSection({ runners }: { runners: RankedResult[] }) {
+  return (
+    <SectionWrapper id="runners">
+      <H2>Runners-up</H2>
+      {runners.map((r, i) => (
+        <div
+          key={r.arch.id}
+          style={{
+            border: `1px solid ${C.border}`,
+            borderRadius: "10px",
+            padding: "12px 14px",
+            marginBottom: "10px",
+          }}
+        >
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
+            <div style={{ fontWeight: 700, fontSize: "14px" }}>
+              #{i + 1} — {r.arch.name}
+            </div>
+            <div style={{ fontFamily: "ui-monospace, monospace", fontSize: "12px", color: C.muted }}>
+              {Math.round(r.score)}/100
+            </div>
+          </div>
+          <div style={{ fontSize: "11px", fontStyle: "italic", color: C.muted, marginBottom: "6px" }}>
+            {r.arch.tagline}
+          </div>
+          <Bullets items={r.rationale.slice(0, 3)} />
+        </div>
+      ))}
+    </SectionWrapper>
+  );
+}
+
+function RankedSection({
+  results,
+  excluded,
+}: {
+  results: RankedResult[];
+  excluded: { arch: Architecture; reason: string }[];
+}) {
+  return (
+    <SectionWrapper id="ranked">
+      <H2>All ranked options</H2>
+      <ol style={{ margin: 0, paddingLeft: "22px" }}>
+        {results.map((r) => (
+          <li key={r.arch.id} style={{ marginBottom: "4px" }}>
+            <strong>{r.arch.name}</strong>{" "}
+            <span style={{ fontFamily: "ui-monospace, monospace", color: C.muted }}>
+              — {Math.round(r.score)}/100
+            </span>{" "}
+            <span style={{ color: C.muted }}>— {r.arch.tagline}</span>
+          </li>
+        ))}
+      </ol>
+
+      {excluded.length > 0 && (
+        <>
+          <H3>Excluded by hard requirements</H3>
+          <ul style={{ margin: 0, paddingLeft: "20px" }}>
+            {excluded.map((e) => (
+              <li key={e.arch.id} style={{ marginBottom: "3px" }}>
+                <strong>{e.arch.name}</strong> — <span style={{ color: C.muted }}>{e.reason}</span>
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
+    </SectionWrapper>
+  );
+}
+
+function MatrixSection({
+  results,
+  topId,
+}: {
+  results: RankedResult[];
+  topId: string;
+}) {
+  return (
+    <SectionWrapper id="matrix">
+      <H2>Comparison matrix</H2>
+      <p style={{ margin: "0 0 10px", fontSize: "11px", color: C.muted }}>
+        Rubric scores (0–5) per criterion. Top pick column highlighted.
+      </p>
+      <table
+        style={{
+          width: "100%",
+          borderCollapse: "collapse",
+          fontSize: "10px",
+          tableLayout: "fixed",
+        }}
+      >
+        <thead>
+          <tr>
+            <th
+              style={{
+                border: `1px solid ${C.border}`,
+                background: C.mutedBg,
+                padding: "6px 6px",
+                textAlign: "left",
+                width: "160px",
+              }}
+            >
+              Criterion
+            </th>
+            {results.map((r) => (
+              <th
+                key={r.arch.id}
+                style={{
+                  border: `1px solid ${C.border}`,
+                  background: r.arch.id === topId ? C.primarySoft : C.mutedBg,
+                  color: r.arch.id === topId ? C.primary : C.text,
+                  padding: "6px 4px",
+                  textAlign: "center",
+                  fontWeight: 700,
+                }}
+              >
+                {r.arch.short}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {CRITERIA.map((c, idx) => (
+            <tr key={c.id} style={{ background: idx % 2 ? C.mutedBg : "#ffffff" }}>
+              <td style={{ border: `1px solid ${C.border}`, padding: "5px 6px" }}>{c.label}</td>
+              {results.map((r) => {
+                const isTop = r.arch.id === topId;
+                return (
+                  <td
+                    key={r.arch.id}
+                    style={{
+                      border: `1px solid ${C.border}`,
+                      padding: "5px 4px",
+                      textAlign: "center",
+                      fontFamily: "ui-monospace, monospace",
+                      background: isTop ? C.primarySoft : undefined,
+                      color: isTop ? C.primary : C.text,
+                      fontWeight: isTop ? 700 : 400,
+                    }}
+                  >
+                    {RUBRIC[r.arch.id][c.id]}/5
+                  </td>
+                );
+              })}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </SectionWrapper>
+  );
+}
+
+function InputsAppendixSection({ inputs }: { inputs: Inputs }) {
+  const rows: { label: string; chosen: string; description: string }[] = [
+    {
+      label: "Stage",
+      chosen: fmtList(mapLabels(inputs.stage, STAGE_LABEL)),
+      description: inputs.stage
+        .map((s) => `${STAGE_LABEL[s]}: ${STAGE_DESCRIPTION[s]}`)
+        .join(" · "),
+    },
+    {
+      label: "Expected MAU",
+      chosen: inputs.mau.toLocaleString(),
+      description:
+        "Monthly active users — used to pick the cost band and to weight scaling-ceiling and large-scale cost.",
+    },
+    {
+      label: "Team strengths",
+      chosen: fmtList(mapLabels(inputs.team, TEAM_LABEL)),
+      description: inputs.team.map((t) => `${TEAM_LABEL[t]}: ${TEAM_DESCRIPTION[t]}`).join(" · "),
+    },
+    {
+      label: "Budget",
+      chosen: fmtList(mapLabels(inputs.budget, BUDGET_LABEL)),
+      description:
+        "Monthly all-in spend. Low pushes cost-at-small-scale higher; high relaxes it.",
+    },
+    {
+      label: "Compliance",
+      chosen: fmtList(mapLabels(inputs.compliance, COMPLIANCE_LABEL)),
+      description: inputs.compliance
+        .map((c) => `${COMPLIANCE_LABEL[c]}: ${COMPLIANCE_DESCRIPTION[c]}`)
+        .join(" · "),
+    },
+    {
+      label: "Workloads",
+      chosen: fmtList(mapLabels(inputs.workloads, WORKLOAD_LABEL)),
+      description: inputs.workloads
+        .map((w) => `${WORKLOAD_LABEL[w]}: ${WORKLOAD_DESCRIPTION[w]}`)
+        .join(" · "),
+    },
+    {
+      label: "Lock-in tolerance",
+      chosen: fmtList(mapLabels(inputs.lockInTolerance, LOCKIN_LABEL)),
+      description: inputs.lockInTolerance
+        .map((l) => `${LOCKIN_LABEL[l]}: ${LOCKIN_DESCRIPTION[l]}`)
+        .join(" · "),
+    },
+    {
+      label: "Time-to-market priority",
+      chosen: `${inputs.ttmPriority}/5`,
+      description: "Higher values boost the weight of the 'Time to launch' criterion.",
+    },
+  ];
+
+  return (
+    <SectionWrapper id="inputs">
+      <H2>Project inputs (detailed)</H2>
+      <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "11px" }}>
+        <thead>
+          <tr style={{ background: C.mutedBg }}>
+            <th style={{ border: `1px solid ${C.border}`, padding: "6px 8px", textAlign: "left", width: "150px" }}>
+              Input
+            </th>
+            <th style={{ border: `1px solid ${C.border}`, padding: "6px 8px", textAlign: "left", width: "180px" }}>
+              Your selection
+            </th>
+            <th style={{ border: `1px solid ${C.border}`, padding: "6px 8px", textAlign: "left" }}>
+              What it means
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((r, i) => (
+            <tr key={r.label} style={{ background: i % 2 ? C.mutedBg : "#ffffff" }}>
+              <td style={{ border: `1px solid ${C.border}`, padding: "6px 8px", fontWeight: 600 }}>
+                {r.label}
+              </td>
+              <td style={{ border: `1px solid ${C.border}`, padding: "6px 8px" }}>{r.chosen}</td>
+              <td style={{ border: `1px solid ${C.border}`, padding: "6px 8px", color: C.muted }}>
+                {r.description}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </SectionWrapper>
+  );
+}
+
+function MethodologySection({ results }: { results: RankedResult[] }) {
+  const allSources = Array.from(
+    new Map(
+      results.flatMap((r) => r.arch.sources.map((s) => [s.url, { ...s, arch: r.arch.short }])),
+    ).values(),
+  );
+
+  return (
+    <SectionWrapper id="methodology">
+      <H2>Methodology &amp; glossary</H2>
+
+      <H3>How scoring works</H3>
+      <ol style={{ margin: "4px 0 0", paddingLeft: "22px" }}>
+        <li>Every criterion starts at a baseline weight of 1.0 (or 0.5 for narrower ones).</li>
+        <li>
+          Your inputs nudge weights up or down — e.g. low budget pushes "Cost at small scale" higher,
+          choosing "Realtime" workload boosts the realtime weight.
+        </li>
+        <li>
+          Each architecture has a fixed rubric score 0–5 per criterion. Weighted scores are summed
+          and normalized to <strong>0–100</strong>.
+        </li>
+        <li>
+          Strict compliance (HIPAA, SOC 2, data residency) acts as a <strong>hard filter</strong> —
+          options scoring below 4/5 on Compliance are removed entirely.
+        </li>
+      </ol>
+
+      <H3>Criteria glossary</H3>
+      <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "10.5px" }}>
+        <thead>
+          <tr style={{ background: C.mutedBg }}>
+            <th style={{ border: `1px solid ${C.border}`, padding: "5px 8px", textAlign: "left", width: "170px" }}>
+              Criterion
+            </th>
+            <th style={{ border: `1px solid ${C.border}`, padding: "5px 8px", textAlign: "left" }}>
+              What it measures
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {CRITERIA.map((c, i) => (
+            <tr key={c.id} style={{ background: i % 2 ? C.mutedBg : "#ffffff" }}>
+              <td style={{ border: `1px solid ${C.border}`, padding: "5px 8px", fontWeight: 600 }}>
+                {c.label}
+              </td>
+              <td style={{ border: `1px solid ${C.border}`, padding: "5px 8px", color: C.muted }}>
+                {c.hint}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+
+      {allSources.length > 0 && (
+        <>
+          <H3>Sources</H3>
+          <ul style={{ margin: 0, paddingLeft: "20px", fontSize: "10.5px" }}>
+            {allSources.map((s) => (
+              <li key={s.url} style={{ marginBottom: "3px", color: C.muted }}>
+                <strong style={{ color: C.text }}>{s.arch}:</strong> {s.label} — {s.url}
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
+
+      <p style={{ marginTop: "16px", fontSize: "10.5px", color: C.muted, borderTop: `1px solid ${C.border}`, paddingTop: "8px" }}>
+        Cost bands are curated estimates from vendor pricing pages, not live quotes. Always verify
+        before committing. Rubric and bands last reviewed {LAST_REVIEWED}. Maintained by @
+        {AUTHOR_HANDLE} on lovable.dev — community template, not affiliated with Lovable.
+      </p>
+    </SectionWrapper>
+  );
+}
+
+// ---------- Main component ----------
 export function ReportExport(props: Props) {
   const [pdfBusy, setPdfBusy] = useState(false);
   const [hubOpen, setHubOpen] = useState(false);
   const [shareOpen, setShareOpen] = useState(false);
   const [copied, setCopied] = useState(false);
-  const pdfSourceRef = useRef<HTMLDivElement | null>(null);
+  const pdfRootRef = useRef<HTMLDivElement | null>(null);
   const shareInputRef = useRef<HTMLInputElement | null>(null);
+
+  const filteredResults = applyNonTechFilter(props.results, props.inputs);
+  const top = filteredResults[0];
 
   useEffect(() => {
     if (!copied) return;
@@ -350,63 +893,104 @@ export function ReportExport(props: Props) {
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `stack-architect-${props.results[0]?.arch.short.toLowerCase() ?? "report"}.md`;
+    a.download = `stack-architect-${top?.arch.short.toLowerCase() ?? "report"}.md`;
     a.click();
     URL.revokeObjectURL(url);
   };
 
   const downloadPdf = async () => {
-    if (!pdfSourceRef.current || pdfBusy) return;
+    if (!pdfRootRef.current || pdfBusy) return;
     setPdfBusy(true);
     try {
       const [{ default: jsPDF }, { default: html2canvas }] = await Promise.all([
         import("jspdf"),
         import("html2canvas"),
       ]);
-      const node = pdfSourceRef.current;
-      const canvas = await html2canvas(node, {
-        scale: 2,
-        backgroundColor: "#ffffff",
-        useCORS: true,
-        logging: false,
-      });
-      const pdf = new jsPDF({ unit: "pt", format: "a4", orientation: "portrait" });
-      const pageWidth = pdf.internal.pageSize.getWidth();
-      const pageHeight = pdf.internal.pageSize.getHeight();
-      const imgWidth = pageWidth;
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
-
-      const imgData = canvas.toDataURL("image/jpeg", 0.92);
-      let heightLeft = imgHeight;
-      let position = 0;
-      pdf.addImage(imgData, "JPEG", 0, position, imgWidth, imgHeight);
-      heightLeft -= pageHeight;
-      while (heightLeft > 0) {
-        position = heightLeft - imgHeight;
-        pdf.addPage();
-        pdf.addImage(imgData, "JPEG", 0, position, imgWidth, imgHeight);
-        heightLeft -= pageHeight;
-      }
-      pdf.save(
-        `stack-architect-${props.results[0]?.arch.short.toLowerCase() ?? "report"}.pdf`,
+      const root = pdfRootRef.current;
+      const sections = Array.from(
+        root.querySelectorAll<HTMLDivElement>("[data-pdf-section]"),
       );
+      if (!sections.length) throw new Error("No sections to render");
+
+      const pdf = new jsPDF({ unit: "pt", format: "a4", orientation: "portrait" });
+      const pageW = pdf.internal.pageSize.getWidth();
+      const pageH = pdf.internal.pageSize.getHeight();
+      const margin = 24;
+      const contentW = pageW - margin * 2;
+      const contentH = pageH - margin * 2;
+
+      let firstPage = true;
+      for (const section of sections) {
+        const canvas = await html2canvas(section, {
+          scale: 2,
+          backgroundColor: "#ffffff",
+          useCORS: true,
+          logging: false,
+        });
+        const imgWFull = contentW;
+        const imgHFull = (canvas.height * imgWFull) / canvas.width;
+        const imgData = canvas.toDataURL("image/jpeg", 0.92);
+
+        if (imgHFull <= contentH) {
+          if (!firstPage) pdf.addPage();
+          firstPage = false;
+          pdf.addImage(imgData, "JPEG", margin, margin, imgWFull, imgHFull);
+        } else {
+          // Section taller than one page — slice into multiple pages.
+          const sliceCanvasH = Math.floor((canvas.width * contentH) / contentW);
+          let y = 0;
+          while (y < canvas.height) {
+            const sH = Math.min(sliceCanvasH, canvas.height - y);
+            const slice = document.createElement("canvas");
+            slice.width = canvas.width;
+            slice.height = sH;
+            const ctx = slice.getContext("2d");
+            if (!ctx) break;
+            ctx.fillStyle = "#ffffff";
+            ctx.fillRect(0, 0, slice.width, slice.height);
+            ctx.drawImage(canvas, 0, y, canvas.width, sH, 0, 0, canvas.width, sH);
+            const sliceData = slice.toDataURL("image/jpeg", 0.92);
+            const sliceImgH = (sH * imgWFull) / canvas.width;
+            if (!firstPage) pdf.addPage();
+            firstPage = false;
+            pdf.addImage(sliceData, "JPEG", margin, margin, imgWFull, sliceImgH);
+            y += sH;
+          }
+        }
+      }
+
+      // Page-number footer on every page.
+      const pageCount = pdf.getNumberOfPages();
+      pdf.setFontSize(8);
+      pdf.setTextColor(140, 140, 140);
+      for (let i = 1; i <= pageCount; i++) {
+        pdf.setPage(i);
+        pdf.text(
+          `Lovable Stack Architect · ${SITE_URL.replace(/^https?:\/\//, "")}`,
+          margin,
+          pageH - 10,
+        );
+        pdf.text(`Page ${i} / ${pageCount}`, pageW - margin, pageH - 10, { align: "right" });
+      }
+
+      pdf.save(`stack-architect-${top?.arch.short.toLowerCase() ?? "report"}.pdf`);
+      track("Download PDF", { top: top?.arch.id ?? "none", pages: pageCount });
     } catch (err) {
       console.error(err);
       toast.error("Couldn't generate PDF", {
-        description: "Try opening the full report and using your browser's Save as PDF.",
+        description: "Try the Markdown export, or refresh and try again.",
       });
     } finally {
       setPdfBusy(false);
     }
   };
 
-
   const copyShareUrl = async () => {
     const url = props.shareUrl ?? window.location.href;
     try {
       await navigator.clipboard.writeText(url);
       setCopied(true);
-      track("Share link", { top: props.results[0]?.arch.id ?? "none" });
+      track("Share link", { top: top?.arch.id ?? "none" });
     } catch {
       shareInputRef.current?.select();
       toast.message("Copy not allowed", { description: "Select the URL and copy manually." });
@@ -436,7 +1020,7 @@ export function ReportExport(props: Props) {
     {
       id: "pdf",
       label: "Download PDF",
-      description: "Full multi-page report, saved to your device.",
+      description: "Full multi-page report with methodology, saved to your device.",
       icon: FileDown,
       busy: pdfBusy,
       onClick: () => {
@@ -454,6 +1038,9 @@ export function ReportExport(props: Props) {
       },
     },
   ];
+
+  const runners = filteredResults.slice(1, 3);
+  const excluded = props.excluded ?? [];
 
   return (
     <>
@@ -535,19 +1122,10 @@ export function ReportExport(props: Props) {
         </DialogContent>
       </Dialog>
 
-      {/* Always-mounted, screen-hidden, print-visible report. */}
+      {/* Offscreen render source for html2canvas PDF export. Each section becomes
+          its own PDF page (or pages) so breaks are clean. */}
       {typeof document !== "undefined" &&
-        createPortal(
-          <div id="print-root" aria-hidden="true" className="hidden print:block">
-            <div style={{ width: "100%", padding: "0", color: "#0a0a0a" }}>
-              <ReportContent {...props} />
-            </div>
-          </div>,
-          document.body,
-        )}
-
-      {/* Offscreen render source for html2canvas PDF export. White bg, fixed width. */}
-      {typeof document !== "undefined" &&
+        top &&
         createPortal(
           <div
             aria-hidden="true"
@@ -556,22 +1134,30 @@ export function ReportExport(props: Props) {
               position: "fixed",
               left: "-10000px",
               top: 0,
-              width: "800px",
+              width: `${PAGE_WIDTH_PX}px`,
               background: "#ffffff",
-              color: "#0a0a0a",
               pointerEvents: "none",
             }}
           >
-            <div ref={pdfSourceRef} style={{ padding: "32px", background: "#ffffff" }}>
-              <ReportContent {...props} />
+            <div ref={pdfRootRef}>
+              <HeaderSection inputs={props.inputs} />
+              <TopPickSection
+                top={top}
+                runner={filteredResults[1]}
+                inputs={props.inputs}
+                excluded={excluded}
+              />
+              {runners.length > 0 && <RunnersSection runners={runners} />}
+              <RankedSection results={filteredResults} excluded={excluded} />
+              <MatrixSection results={filteredResults} topId={top.arch.id} />
+              <InputsAppendixSection inputs={props.inputs} />
+              <MethodologySection results={filteredResults} />
             </div>
           </div>,
           document.body,
         )}
-
     </>
   );
 }
-
 
 export { buildMarkdown };
