@@ -1,11 +1,35 @@
 import { useEffect, useRef, useState } from "react";
 import mermaid from "mermaid";
-import { buildMermaid } from "@/lib/diagram";
+import { buildMermaid, summarizeStack, type StackSummaryRow } from "@/lib/diagram";
 import { ARCH_BY_ID, type ArchId } from "@/data/architectures";
 import type { Inputs } from "@/lib/scoring";
 import { FullscreenCardDialog } from "@/components/FullscreenCardDialog";
+import { List } from "lucide-react";
 
 let initialized = false;
+
+function StackSummary({ rows, compact = false }: { rows: StackSummaryRow[]; compact?: boolean }) {
+  if (rows.length === 0) return null;
+  return (
+    <dl
+      className={
+        compact
+          ? "mt-3 grid gap-x-4 gap-y-1.5 text-xs sm:grid-cols-2"
+          : "mt-4 grid gap-x-6 gap-y-2 text-sm sm:grid-cols-2"
+      }
+    >
+      {rows.map((r) => (
+        <div key={r.label} className="flex items-baseline justify-between gap-3 border-b border-border/40 py-1">
+          <dt className="shrink-0 font-medium uppercase tracking-wider text-muted-foreground text-[10px]">
+            {r.label}
+          </dt>
+          <dd className="text-right text-foreground/90">{r.value}</dd>
+        </div>
+      ))}
+    </dl>
+  );
+}
+
 
 export function ArchitectureDiagram({ archId, inputs }: { archId: ArchId; inputs: Inputs }) {
   const ref = useRef<HTMLDivElement>(null);
