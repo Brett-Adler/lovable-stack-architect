@@ -405,6 +405,11 @@ export const RUBRIC: Record<ArchId, Record<CriterionId, number>> = {
     "scaling-ceiling": 4, "realtime": 4, "storage": 3, "ai-compute": 3,
     "compliance": 3, "lock-in": 4, "ops-burden": 3, "migration": 4,
   },
+  "lovable-cloudflare": {
+    "time-to-launch": 3, "dx-with-lovable": 3, "cost-small": 5, "cost-large": 4,
+    "scaling-ceiling": 5, "realtime": 4, "storage": 4, "ai-compute": 4,
+    "compliance": 3, "lock-in": 3, "ops-burden": 3, "migration": 3,
+  },
 };
 
 export const ARCH_BY_ID: Record<ArchId, Architecture> = Object.fromEntries(
