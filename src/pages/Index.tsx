@@ -3,6 +3,7 @@ import LZString from "lz-string";
 import { InputsPanel } from "@/components/InputsPanel";
 import { ComparisonMatrix } from "@/components/ComparisonMatrix";
 import { RecommendationCard } from "@/components/RecommendationCard";
+import { PlatformsConsidered } from "@/components/PlatformsConsidered";
 import { CostEstimate } from "@/components/CostEstimate";
 import { ArchitectureDiagram } from "@/components/ArchitectureDiagram";
 import { ReportExport } from "@/components/ReportExport";
