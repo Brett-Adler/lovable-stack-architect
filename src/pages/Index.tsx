@@ -7,7 +7,7 @@ import { PlatformsConsidered } from "@/components/PlatformsConsidered";
 import { CostEstimate } from "@/components/CostEstimate";
 import { ArchitectureDiagram } from "@/components/ArchitectureDiagram";
 import { ReportExport } from "@/components/ReportExport";
-import { SlidersHorizontal, Sparkle, Columns3, ShieldAlert } from "lucide-react";
+import { SlidersHorizontal, Sparkle, ShieldAlert } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
@@ -78,28 +78,18 @@ function StepShell({
   title,
   subtitle,
   id,
-  labelledBy,
-  hidden,
   className,
   children,
 }: {
   number: 1 | 2 | 3;
   title: string;
   subtitle: string;
-  id: string;
-  labelledBy: string;
-  hidden?: boolean;
+  id?: string;
   className?: string;
   children: React.ReactNode;
 }) {
   return (
-    <section
-      id={id}
-      role="tabpanel"
-      aria-labelledby={labelledBy}
-      hidden={hidden}
-      className={cn("min-w-0", hidden ? "hidden md:!block" : "block", className)}
-    >
+    <section id={id} className={cn("min-w-0", className)}>
       <header className="mb-4 sm:mb-5">
         <div className="flex items-center gap-3">
           <span
@@ -108,10 +98,7 @@ function StepShell({
           >
             {number}
           </span>
-          <h2
-            id={labelledBy}
-            className="text-lg font-bold tracking-[-0.01em] text-foreground sm:text-xl"
-          >
+          <h2 className="text-lg font-bold tracking-[-0.01em] text-foreground sm:text-xl">
             <span className="sr-only">Step {number}: </span>
             {title}
           </h2>
@@ -132,15 +119,17 @@ const Index = () => {
     }
     return { ...s, inputs: migrateInputs(s.inputs), enabled: sanitize(s.enabled) };
   });
-  type TabId = "inputs" | "comparison" | "recommendation";
-  const VALID_TABS: readonly TabId[] = ["inputs", "comparison", "recommendation"] as const;
+  type TabId = "setup" | "recommendation";
+  const VALID_TABS: readonly TabId[] = ["setup", "recommendation"] as const;
   const getInitialTab = (): TabId => {
-    if (typeof window === "undefined") return "inputs";
+    if (typeof window === "undefined") return "setup";
     const params = new URLSearchParams(window.location.search);
     const t = params.get("tab");
-    return (VALID_TABS as readonly string[]).includes(t ?? "") ? (t as TabId) : "inputs";
+    // Migrate legacy values
+    if (t === "inputs" || t === "comparison") return "setup";
+    return (VALID_TABS as readonly string[]).includes(t ?? "") ? (t as TabId) : "setup";
   };
-  const [mobileTab, setMobileTab] = useState<TabId>(getInitialTab);
+  const [tab, setTab] = useState<TabId>(getInitialTab);
   const { inputs, enabled } = state;
 
   useEffect(() => {
@@ -154,24 +143,22 @@ const Index = () => {
   // Sync ?tab= to URL (without polluting history) and scroll the panel into view on desktop
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    if (params.get("tab") !== mobileTab) {
-      params.set("tab", mobileTab);
+    if (params.get("tab") !== tab) {
+      params.set("tab", tab);
       const newUrl = `${window.location.pathname}?${params.toString()}${window.location.hash}`;
       window.history.replaceState(null, "", newUrl);
     }
-  }, [mobileTab]);
+  }, [tab]);
 
-  // On initial mount, if a ?tab= deep link is present, scroll the corresponding panel into view on desktop
+  // On initial mount, if a ?tab= deep link is present, scroll the corresponding panel into view
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const t = params.get("tab");
-    if (!t || !(VALID_TABS as readonly string[]).includes(t)) return;
-    const isDesktop = window.matchMedia("(min-width: 768px)").matches;
-    if (!isDesktop) return;
-    const el = document.getElementById(`panel-${t}`);
+    if (!t) return;
+    const target = t === "inputs" || t === "comparison" ? "setup" : t;
+    const el = document.getElementById(`panel-${target}`);
     if (el) {
       const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      // Defer to after layout
       requestAnimationFrame(() =>
         el.scrollIntoView({ behavior: prefersReduced ? "auto" : "smooth", block: "start" }),
       );
@@ -231,39 +218,38 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Mobile step pill nav — mirrors the three step sections */}
+      {/* Step pill nav — two tabs across all breakpoints */}
       <nav
-        className="no-print sticky top-12 z-30 mx-auto w-full max-w-[1800px] px-3 pt-4 sm:top-14 sm:px-6 md:hidden"
+        className="no-print sticky top-12 z-30 mx-auto w-full max-w-[1800px] px-3 pt-4 sm:top-14 sm:px-6"
         aria-label="Switch between project steps"
       >
         <div
           role="tablist"
           aria-label="Step sections"
-          className="mx-auto grid max-w-md grid-cols-3 gap-1 rounded-full border border-border/60 bg-card/80 p-1 shadow-sm backdrop-blur"
+          className="mx-auto grid max-w-lg grid-cols-2 gap-1 rounded-full border border-border/60 bg-card/80 p-1 shadow-sm backdrop-blur"
           onKeyDown={(e) => {
-            const order = ["inputs", "comparison", "recommendation"] as const;
-            const idx = order.indexOf(mobileTab);
+            const order = ["setup", "recommendation"] as const;
+            const idx = order.indexOf(tab);
             if (e.key === "ArrowRight") {
               e.preventDefault();
-              setMobileTab(order[(idx + 1) % order.length]);
+              setTab(order[(idx + 1) % order.length]);
             } else if (e.key === "ArrowLeft") {
               e.preventDefault();
-              setMobileTab(order[(idx - 1 + order.length) % order.length]);
+              setTab(order[(idx - 1 + order.length) % order.length]);
             } else if (e.key === "Home") {
               e.preventDefault();
-              setMobileTab(order[0]);
+              setTab(order[0]);
             } else if (e.key === "End") {
               e.preventDefault();
-              setMobileTab(order[order.length - 1]);
+              setTab(order[order.length - 1]);
             }
           }}
         >
           {([
-            { id: "inputs", num: 1, label: "Inputs", Icon: SlidersHorizontal },
-            { id: "comparison", num: 2, label: "Compare", Icon: Columns3 },
-            { id: "recommendation", num: 3, label: "Pick", Icon: Sparkle },
-          ] as const).map(({ id, num, label, Icon }) => {
-            const active = mobileTab === id;
+            { id: "setup", label: "Setup", numLabel: "1–2", Icon: SlidersHorizontal },
+            { id: "recommendation", label: "Recommendation", numLabel: "3", Icon: Sparkle },
+          ] as const).map(({ id, label, numLabel, Icon }) => {
+            const active = tab === id;
             return (
               <button
                 key={id}
@@ -274,12 +260,12 @@ const Index = () => {
                 aria-controls={`panel-${id}`}
                 tabIndex={active ? 0 : -1}
                 onClick={() => {
-                  setMobileTab(id);
+                  setTab(id);
                   const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
                   window.scrollTo({ top: 0, behavior: prefersReduced ? "auto" : "smooth" });
                 }}
                 className={cn(
-                  "inline-flex min-h-[40px] items-center justify-center gap-1.5 whitespace-nowrap rounded-full px-3 text-xs font-medium transition-colors",
+                  "inline-flex min-h-[40px] items-center justify-center gap-1.5 whitespace-nowrap rounded-full px-3 text-xs font-medium transition-colors sm:text-sm",
                   "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
                   active
                     ? "bg-foreground text-background shadow-sm"
@@ -288,7 +274,7 @@ const Index = () => {
               >
                 <Icon aria-hidden="true" className="h-4 w-4" />
                 <span>
-                  <span className="opacity-70">{num}.</span> {label}
+                  <span className="opacity-70">{numLabel}.</span> {label}
                 </span>
                 {active && <span className="sr-only"> (current step)</span>}
               </button>
@@ -301,37 +287,32 @@ const Index = () => {
         id="main-content"
         className="mx-auto w-full max-w-[1800px] px-3 py-4 sm:px-6 sm:py-6 2xl:px-10"
       >
+        {/* TAB A — Setup: Steps 1 & 2 side-by-side on wide screens */}
         <div
+          id="panel-setup"
+          role="tabpanel"
+          aria-labelledby="tab-setup"
+          hidden={tab !== "setup"}
           className={cn(
-            "grid gap-8 sm:gap-10 md:gap-12",
-            // 2-col at lg/xl: narrow inputs sidebar, compare+pick stacked on the right
-            "lg:grid-cols-[420px_minmax(0,1fr)] lg:gap-8 xl:grid-cols-[460px_minmax(0,1fr)]",
-            // 3-col at 2xl: three equal columns for an explicit 1 → 2 → 3 flow
-            "2xl:grid-cols-3 2xl:gap-10",
-            "items-start",
+            tab === "setup" ? "block" : "hidden",
+            "grid items-start gap-8 sm:gap-10",
+            "lg:grid-cols-[minmax(0,460px)_minmax(0,1fr)] lg:gap-10",
+            "xl:grid-cols-[minmax(0,500px)_minmax(0,1fr)] xl:gap-12",
           )}
         >
-          {/* STEP 1 — Project inputs */}
           <StepShell
             number={1}
             title="Tell us about your project"
             subtitle="Stage, team, budget, compliance, and workloads. Every answer nudges the scoring."
-            id="panel-inputs"
-            labelledBy="tab-inputs"
-            hidden={mobileTab !== "inputs"}
-            className="lg:sticky lg:top-20 2xl:static"
+            className="lg:sticky lg:top-28"
           >
             <InputsPanel inputs={inputs} onChange={setInputs} />
           </StepShell>
 
-          {/* STEP 2 — Choose what to compare */}
           <StepShell
             number={2}
             title="Choose what to compare"
             subtitle="Pick which platforms to weigh against each other. Exclusions hide them from the matrix and recommendation."
-            id="panel-comparison"
-            labelledBy="tab-comparison"
-            hidden={mobileTab !== "comparison"}
           >
             <div className="space-y-3">
               <PlatformsConsidered
@@ -365,20 +346,22 @@ const Index = () => {
               />
             </div>
           </StepShell>
+        </div>
 
-          {/* STEP 3 — Recommendation */}
+        {/* TAB B — Recommendation: Step 3 self-splits when wide */}
+        <div
+          id="panel-recommendation"
+          role="tabpanel"
+          aria-labelledby="tab-recommendation"
+          hidden={tab !== "recommendation"}
+          className={tab === "recommendation" ? "block" : "hidden"}
+        >
           <StepShell
             number={3}
             title="Your recommendation"
-            subtitle="Based on your inputs and the platforms you're comparing. Updates live as you tweak steps 1 and 2."
-            id="panel-recommendation"
-            labelledBy="tab-recommendation"
-            hidden={mobileTab !== "recommendation"}
-            className="lg:col-span-full 2xl:col-span-1"
+            subtitle="Based on your inputs and the platforms you're comparing. Updates live as you tweak setup."
           >
-            {/* Side-by-side: recommendation on the left, cost + tech stack stacked on the right.
-                Collapses to a single column when Step 3 is constrained (2xl 3-col layout) or narrow. */}
-            <div className="grid gap-4 sm:gap-6 md:grid-cols-[minmax(0,1fr)_360px] xl:grid-cols-[minmax(0,1fr)_420px] 2xl:grid-cols-1">
+            <div className="grid gap-4 sm:gap-6 md:grid-cols-[minmax(0,1fr)_360px] xl:grid-cols-[minmax(0,1fr)_440px]">
               <div className="min-w-0 space-y-4 sm:space-y-6">
                 <RecommendationCard
                   results={results}
@@ -405,14 +388,15 @@ const Index = () => {
       </main>
 
 
-      {/* Supporting evidence — full matrix below the three steps */}
+
+      {/* Supporting evidence — full matrix below, shown under the Setup tab */}
       <section
         aria-labelledby="full-matrix-heading"
-        hidden={mobileTab !== "comparison"}
+        hidden={tab !== "setup"}
         className={cn(
           "mx-auto w-full max-w-[1800px] px-3 pb-6 sm:px-6 2xl:px-10",
           "mt-4 border-t border-border pt-8 sm:mt-8 sm:pt-10",
-          mobileTab === "comparison" ? "block" : "hidden md:block",
+          tab === "setup" ? "block" : "hidden",
         )}
       >
         <header className="mb-8 text-center sm:mb-10">
