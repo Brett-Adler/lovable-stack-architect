@@ -119,15 +119,17 @@ const Index = () => {
     }
     return { ...s, inputs: migrateInputs(s.inputs), enabled: sanitize(s.enabled) };
   });
-  type TabId = "inputs" | "comparison" | "recommendation";
-  const VALID_TABS: readonly TabId[] = ["inputs", "comparison", "recommendation"] as const;
+  type TabId = "setup" | "recommendation";
+  const VALID_TABS: readonly TabId[] = ["setup", "recommendation"] as const;
   const getInitialTab = (): TabId => {
-    if (typeof window === "undefined") return "inputs";
+    if (typeof window === "undefined") return "setup";
     const params = new URLSearchParams(window.location.search);
     const t = params.get("tab");
-    return (VALID_TABS as readonly string[]).includes(t ?? "") ? (t as TabId) : "inputs";
+    // Migrate legacy values
+    if (t === "inputs" || t === "comparison") return "setup";
+    return (VALID_TABS as readonly string[]).includes(t ?? "") ? (t as TabId) : "setup";
   };
-  const [mobileTab, setMobileTab] = useState<TabId>(getInitialTab);
+  const [tab, setTab] = useState<TabId>(getInitialTab);
   const { inputs, enabled } = state;
 
   useEffect(() => {
