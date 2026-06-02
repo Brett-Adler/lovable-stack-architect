@@ -78,28 +78,18 @@ function StepShell({
   title,
   subtitle,
   id,
-  labelledBy,
-  hidden,
   className,
   children,
 }: {
   number: 1 | 2 | 3;
   title: string;
   subtitle: string;
-  id: string;
-  labelledBy: string;
-  hidden?: boolean;
+  id?: string;
   className?: string;
   children: React.ReactNode;
 }) {
   return (
-    <section
-      id={id}
-      role="tabpanel"
-      aria-labelledby={labelledBy}
-      hidden={hidden}
-      className={cn("min-w-0", hidden ? "hidden md:!block" : "block", className)}
-    >
+    <section id={id} className={cn("min-w-0", className)}>
       <header className="mb-4 sm:mb-5">
         <div className="flex items-center gap-3">
           <span
@@ -108,10 +98,7 @@ function StepShell({
           >
             {number}
           </span>
-          <h2
-            id={labelledBy}
-            className="text-lg font-bold tracking-[-0.01em] text-foreground sm:text-xl"
-          >
+          <h2 className="text-lg font-bold tracking-[-0.01em] text-foreground sm:text-xl">
             <span className="sr-only">Step {number}: </span>
             {title}
           </h2>
