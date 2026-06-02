@@ -299,100 +299,117 @@ const Index = () => {
 
       <main
         id="main-content"
-        className="mx-auto w-full max-w-[1800px] space-y-8 px-3 py-4 sm:space-y-10 sm:px-6 sm:py-6 md:space-y-12 2xl:px-10"
+        className="mx-auto w-full max-w-[1800px] px-3 py-4 sm:px-6 sm:py-6 2xl:px-10"
       >
-        {/* STEP 1 — Project inputs */}
-        <StepShell
-          number={1}
-          title="Tell us about your project"
-          subtitle="Stage, team, budget, compliance, and workloads. Every answer nudges the scoring."
-          id="panel-inputs"
-          labelledBy="tab-inputs"
-          hidden={mobileTab !== "inputs"}
+        <div
+          className={cn(
+            "grid gap-8 sm:gap-10 md:gap-12",
+            // 2-col at lg/xl: narrow inputs sidebar, compare+pick stacked on the right
+            "lg:grid-cols-[340px_minmax(0,1fr)] lg:gap-8",
+            // 3-col at 2xl: three equal columns for an explicit 1 → 2 → 3 flow
+            "2xl:grid-cols-3 2xl:gap-10",
+            "items-start",
+          )}
         >
-          <InputsPanel inputs={inputs} onChange={setInputs} />
-        </StepShell>
+          {/* STEP 1 — Project inputs */}
+          <StepShell
+            number={1}
+            title="Tell us about your project"
+            subtitle="Stage, team, budget, compliance, and workloads. Every answer nudges the scoring."
+            id="panel-inputs"
+            labelledBy="tab-inputs"
+            hidden={mobileTab !== "inputs"}
+            className="lg:sticky lg:top-20 2xl:static"
+          >
+            <InputsPanel inputs={inputs} onChange={setInputs} />
+          </StepShell>
 
-        {/* STEP 2 — Choose what to compare */}
-        <StepShell
-          number={2}
-          title="Choose what to compare"
-          subtitle="Pick which platforms to weigh against each other. Exclusions hide them from the matrix and recommendation."
-          id="panel-comparison"
-          labelledBy="tab-comparison"
-          hidden={mobileTab !== "comparison"}
-        >
-          <div className="space-y-3">
-            <PlatformsConsidered
-              enabled={enabled}
-              onToggle={toggleArch}
-              onReset={() => setEnabled(DEFAULT_ENABLED)}
-              onSetEnabled={setEnabled}
-              allowSplit={inputs.allowSplit ?? false}
-            />
+          {/* STEP 2 — Choose what to compare */}
+          <StepShell
+            number={2}
+            title="Choose what to compare"
+            subtitle="Pick which platforms to weigh against each other. Exclusions hide them from the matrix and recommendation."
+            id="panel-comparison"
+            labelledBy="tab-comparison"
+            hidden={mobileTab !== "comparison"}
+          >
+            <div className="space-y-3">
+              <PlatformsConsidered
+                enabled={enabled}
+                onToggle={toggleArch}
+                onReset={() => setEnabled(DEFAULT_ENABLED)}
+                onSetEnabled={setEnabled}
+                allowSplit={inputs.allowSplit ?? false}
+              />
 
-            {excluded.length > 0 && (
-              <div
-                role="status"
-                className="flex items-start gap-2 rounded-xl border border-warning/40 bg-warning/5 px-3 py-2 text-xs text-foreground/90"
-              >
-                <ShieldAlert className="mt-0.5 h-3.5 w-3.5 shrink-0 text-warning" aria-hidden="true" />
-                <span>
-                  <span className="font-medium">{excluded.length}</span> option
-                  {excluded.length === 1 ? "" : "s"} hidden by your compliance requirement (
-                  {excluded.map((e) => e.arch.short).join(", ")}). Adjust compliance to compare them.
-                </span>
+              {excluded.length > 0 && (
+                <div
+                  role="status"
+                  className="flex items-start gap-2 rounded-xl border border-warning/40 bg-warning/5 px-3 py-2 text-xs text-foreground/90"
+                >
+                  <ShieldAlert className="mt-0.5 h-3.5 w-3.5 shrink-0 text-warning" aria-hidden="true" />
+                  <span>
+                    <span className="font-medium">{excluded.length}</span> option
+                    {excluded.length === 1 ? "" : "s"} hidden by your compliance requirement (
+                    {excluded.map((e) => e.arch.short).join(", ")}). Adjust compliance to compare them.
+                  </span>
+                </div>
+              )}
+
+              <ComparisonMatrix
+                view="controls"
+                enabled={enabled}
+                topId={topId}
+                onToggle={toggleArch}
+                onSetEnabled={setEnabled}
+              />
+            </div>
+          </StepShell>
+
+          {/* STEP 3 — Recommendation */}
+          <StepShell
+            number={3}
+            title="Your recommendation"
+            subtitle="Based on your inputs and the platforms you're comparing. Updates live as you tweak steps 1 and 2."
+            id="panel-recommendation"
+            labelledBy="tab-recommendation"
+            hidden={mobileTab !== "recommendation"}
+            className="lg:col-span-full 2xl:col-span-1"
+          >
+            {/* Side-by-side recommendation + cost only when Step 3 has the full page width
+                (i.e. md stacked or lg 2-col where step 3 spans full width). At 2xl the column
+                is narrow, so everything stacks. */}
+            <div className="grid gap-4 sm:gap-6 md:grid-cols-[minmax(0,1fr)_360px] xl:grid-cols-[minmax(0,1fr)_400px] 2xl:grid-cols-1">
+              <div className="min-w-0 space-y-4 sm:space-y-6">
+                <RecommendationCard
+                  results={results}
+                  inputs={inputs}
+                  excluded={excluded}
+                  userExcluded={userExcluded}
+                  isNonTechnical={isNonTechnical}
+                  onExclude={toggleArch}
+                  onResetEnabled={() => setEnabled(DEFAULT_ENABLED)}
+                />
+              </div>
+              <aside aria-label="Cost & scaling for top pick" className="min-w-0 space-y-4 sm:space-y-6">
+                {topId && <CostEstimate archId={topId} inputs={inputs} enabled={enabled} topId={topId} />}
+              </aside>
+            </div>
+
+            {topId && (
+              <div className="mt-4 sm:mt-6">
+                <ArchitectureDiagram archId={topId} inputs={inputs} />
               </div>
             )}
 
-            <ComparisonMatrix
-              view="controls"
-              enabled={enabled}
-              topId={topId}
-              onToggle={toggleArch}
-              onSetEnabled={setEnabled}
-            />
-          </div>
-        </StepShell>
-
-        {/* STEP 3 — Recommendation */}
-        <StepShell
-          number={3}
-          title="Your recommendation"
-          subtitle="Based on your inputs and the platforms you're comparing. Updates live as you tweak steps 1 and 2."
-          id="panel-recommendation"
-          labelledBy="tab-recommendation"
-          hidden={mobileTab !== "recommendation"}
-        >
-          <div className="grid gap-4 sm:gap-6 lg:grid-cols-[minmax(0,1fr)_360px] xl:grid-cols-[minmax(0,1fr)_400px]">
-            <div className="min-w-0 space-y-4 sm:space-y-6">
-              <RecommendationCard
-                results={results}
-                inputs={inputs}
-                excluded={excluded}
-                userExcluded={userExcluded}
-                isNonTechnical={isNonTechnical}
-                onExclude={toggleArch}
-                onResetEnabled={() => setEnabled(DEFAULT_ENABLED)}
-              />
-            </div>
-            <aside aria-label="Cost & scaling for top pick" className="min-w-0 space-y-4 sm:space-y-6">
-              {topId && <CostEstimate archId={topId} inputs={inputs} enabled={enabled} topId={topId} />}
-            </aside>
-          </div>
-
-          {topId && (
-            <div className="mt-4 sm:mt-6">
-              <ArchitectureDiagram archId={topId} inputs={inputs} />
-            </div>
-          )}
-
-          <p className="mt-4 text-[11px] leading-relaxed text-muted-foreground">
-            All options shown assume Lovable handles design, frontend dev, testing, and deployment.
-            Costs are curated bands, not live quotes — verify against current pricing before committing.
-          </p>
-        </StepShell>
+            <p className="mt-4 text-[11px] leading-relaxed text-muted-foreground">
+              All options shown assume Lovable handles design, frontend dev, testing, and deployment.
+              Costs are curated bands, not live quotes — verify against current pricing before committing.
+            </p>
+          </StepShell>
+        </div>
       </main>
+
 
       {/* Supporting evidence — full matrix below the three steps */}
       <section
