@@ -17,12 +17,7 @@ import { DEFAULT_INPUTS, type Inputs, rankFull } from "@/lib/scoring";
 
 
 const STORAGE_KEY = "stack-architect:v2";
-const DEFAULT_ENABLED: ArchId[] = [
-  "lovable-cloud",
-  "lovable-supabase",
-  "lovable-vercel",
-  "lovable-aws",
-];
+const DEFAULT_ENABLED: ArchId[] = ARCHITECTURES.map((a) => a.id);
 const VALID_IDS = new Set<ArchId>(ARCHITECTURES.map((a) => a.id));
 function sanitize(ids: ArchId[] | undefined): ArchId[] {
   const filtered = (ids ?? []).filter((id) => VALID_IDS.has(id));
