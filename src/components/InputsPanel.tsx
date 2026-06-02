@@ -97,6 +97,9 @@ function FieldHelp({ title, items }: { title: string; items: HelpItem[] }) {
 interface Props {
   inputs: Inputs;
   onChange: (next: Inputs) => void;
+  enabled?: ArchId[];
+  onSetEnabled?: (ids: ArchId[]) => void;
+  onToggleEnabled?: (id: ArchId) => void;
 }
 
 const STAGES: { id: Stage; label: string }[] = [
