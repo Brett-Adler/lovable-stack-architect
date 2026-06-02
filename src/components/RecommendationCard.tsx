@@ -64,7 +64,8 @@ export function RecommendationCard({
   const tradeoff = runners[0] ? tradeoffVs(top, runners[0], inputs) : null;
 
   return (
-    <div>
+    <div className="space-y-4 sm:space-y-5">
+
       <div aria-live="polite" aria-atomic="true" className="sr-only">
         Recommended: {top.arch.name} — score {Math.round(top.score)} of 100. {top.arch.tagline}
       </div>
