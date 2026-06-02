@@ -64,11 +64,10 @@ export function RecommendationCard({
   const tradeoff = runners[0] ? tradeoffVs(top, runners[0], inputs) : null;
 
   return (
-    <>
-      <div aria-live="polite" aria-atomic="true" className="sr-only">
+    <div className="space-y-4 sm:space-y-5">
+      <div className="sr-only" aria-live="polite" aria-atomic="true" style={{ position: "absolute" }}>
         Recommended: {top.arch.name} — score {Math.round(top.score)} of 100. {top.arch.tagline}
       </div>
-      <div className="space-y-4 sm:space-y-5">
       <div className="rounded-2xl border border-primary/30 bg-gradient-primary p-[1px] shadow-elegant">
         <div className="rounded-[calc(theme(borderRadius.2xl)-1px)] bg-card p-5">
           <div className="flex items-start justify-between gap-3">
