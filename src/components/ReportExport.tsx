@@ -167,6 +167,15 @@ function buildMarkdown({ inputs, results: rawResults, excluded = [], userExclude
     lines.push("");
   }
 
+  if (userExcluded.length) {
+    lines.push(`## Removed by your platform filter`);
+    lines.push(
+      `_You chose to leave these out of this comparison. Re-enable them in the app's "Platforms to consider" picker to score them._`,
+    );
+    userExcluded.forEach((e) => lines.push(`- **${e.arch.name}** — ${e.arch.tagline}`));
+    lines.push("");
+  }
+
   // Matrix
   lines.push(`## Comparison matrix`);
   const header = `| Criterion | ${results.map((r) => r.arch.short).join(" | ")} |`;
