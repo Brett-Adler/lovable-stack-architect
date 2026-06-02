@@ -366,6 +366,23 @@ function buildRationale(id: ArchId, inputs: Inputs): string[] {
       rs.push("D1 is SQLite — heavy writes at scale may push you to Hyperdrive→Postgres.");
   }
 
+  // Hybrid (split-services) entries: derive rationale from the two halves.
+  if (arch.composition) {
+    const back = ARCH_BY_ID[arch.composition.backend];
+    const front = ARCH_BY_ID[arch.composition.frontend];
+    rs.push(`Split stack: ${back.short} for the backend, ${front.short} for the frontend.`);
+    if (earlyStage)
+      rs.push("Two vendors to wire up — slower first deploy than a single integrated platform.");
+    if (inputs.workloads.includes("realtime"))
+      rs.push(`Realtime traffic still goes directly to ${back.short}.`);
+    if (inputs.budget.includes("low"))
+      rs.push(`${front.short} has a generous free frontend tier; the backend bill comes from ${back.short}.`);
+    if (inputs.lockInTolerance.includes("low"))
+      rs.push("Splitting frontend hosting from the backend makes either half easier to swap later.");
+  }
+
+
+
   if (rs.length === 0) {
     rs.push(
       "No specific reason to prefer or avoid this option for your inputs — it scored on baseline criteria only.",
