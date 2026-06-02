@@ -199,7 +199,8 @@ export function RecommendationCard({
           </ul>
         </div>
       ))}
-    </div>
+      </div>
+    </>
   );
 }
 
