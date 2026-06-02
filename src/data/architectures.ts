@@ -74,7 +74,15 @@ export interface Architecture {
   sources: Source[];
   // ISO date string for when this row was last sanity-checked against the vendor.
   lastReviewed: string;
+  // Hybrid stacks split frontend hosting from the backend. When present, the
+  // entry represents a tuple (backend platform, frontend platform). Solo
+  // platforms leave this undefined.
+  composition?: { backend: ArchId; frontend: ArchId };
+  // True for hybrid (split-services) entries. Hidden by default; surfaced only
+  // when the user opts into split mode in the inputs panel.
+  hybrid?: boolean;
 }
+
 
 export interface Criterion {
   id: CriterionId;
