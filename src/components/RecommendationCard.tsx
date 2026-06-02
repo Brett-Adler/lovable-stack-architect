@@ -177,14 +177,29 @@ export function RecommendationCard({
       {runners.map((r, i) => (
         <div key={r.arch.id} className="rounded-2xl border border-border bg-card p-4 shadow-card">
           <div className="flex items-start justify-between gap-3">
-            <div>
+            <div className="min-w-0">
               <div className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
                 Runner-up #{i + 1}
               </div>
               <h3 className="mt-0.5 flex items-center gap-1.5 text-base font-semibold text-foreground"><BrandMark archId={r.arch.id} size="md" />{r.arch.name}</h3>
               <p className="text-xs text-muted-foreground">{r.arch.tagline}</p>
             </div>
-            <ScoreBadge score={r.score} />
+            <div className="flex items-center gap-1.5">
+              <ScoreBadge score={r.score} />
+              {onExclude && (
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  className="h-7 w-7 p-0 text-muted-foreground hover:text-foreground"
+                  aria-label={`Hide ${r.arch.name} from comparison`}
+                  title={`Hide ${r.arch.name} from comparison`}
+                  onClick={() => onExclude(r.arch.id)}
+                >
+                  <X className="h-3.5 w-3.5" aria-hidden="true" />
+                </Button>
+              )}
+            </div>
           </div>
           <ul className="mt-3 space-y-1 text-sm">
             {r.rationale.slice(0, 2).map((x, j) => (
