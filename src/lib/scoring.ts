@@ -200,11 +200,18 @@ export function rankFull(inputs: Inputs, options: RankOptions = {}): RankOutput 
   const enabledSet =
     options.enabled && options.enabled.length > 0 ? new Set<ArchId>(options.enabled) : null;
 
+  const allowSplit = inputs.allowSplit ?? false;
+
   const scored = ARCHITECTURES.flatMap((arch) => {
+    // Hybrid (split-services) entries are hidden unless the user opts in.
+    if (arch.hybrid && !allowSplit) {
+      return [];
+    }
     if (enabledSet && !enabledSet.has(arch.id)) {
       userExcluded.push({ arch, reason: "Removed by your platform filter." });
       return [];
     }
+
     if (strict.length && RUBRIC[arch.id]["compliance"] < 4) {
       excluded.push({
         arch,
