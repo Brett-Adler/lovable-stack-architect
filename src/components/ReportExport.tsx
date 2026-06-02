@@ -226,11 +226,12 @@ function buildMarkdown({ inputs, results: rawResults, excluded = [], userExclude
 // so section breaks always land cleanly.
 type SectionKey =
   | "header"
+  | "inputs"
+  | "platforms"
   | "top-pick"
   | "runners"
   | "ranked"
   | "matrix"
-  | "inputs"
   | "methodology";
 
 function SectionWrapper({
@@ -267,7 +268,8 @@ function H1({ children }: { children: React.ReactNode }) {
     </h1>
   );
 }
-function H2({ children }: { children: React.ReactNode }) {
+/** Section heading with optional numbered step badge to mirror the web app's 3-step flow. */
+function H2({ children, step }: { children: React.ReactNode; step?: 1 | 2 | 3 }) {
   return (
     <h2
       style={{
@@ -277,9 +279,32 @@ function H2({ children }: { children: React.ReactNode }) {
         color: C.text,
         borderBottom: `2px solid ${C.border}`,
         paddingBottom: "6px",
+        display: "flex",
+        alignItems: "center",
+        gap: "10px",
       }}
     >
-      {children}
+      {step != null && (
+        <span
+          aria-hidden="true"
+          style={{
+            display: "inline-flex",
+            alignItems: "center",
+            justifyContent: "center",
+            width: "22px",
+            height: "22px",
+            borderRadius: "999px",
+            background: C.text,
+            color: "#ffffff",
+            fontSize: "12px",
+            fontWeight: 800,
+            fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace",
+          }}
+        >
+          {step}
+        </span>
+      )}
+      <span>{children}</span>
     </h2>
   );
 }
@@ -299,6 +324,7 @@ function H3({ children }: { children: React.ReactNode }) {
     </h3>
   );
 }
+
 
 function BrandBar({ subtitle }: { subtitle: string }) {
   return (
