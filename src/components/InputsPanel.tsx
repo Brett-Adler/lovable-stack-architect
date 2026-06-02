@@ -14,9 +14,81 @@ import {
 } from "@/lib/scoring";
 import { cn } from "@/lib/utils";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { ChevronDown } from "lucide-react";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { ChevronDown, HelpCircle } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
+
+type HelpItem = { label: string; description: string };
+
+const HELP: Record<string, HelpItem[]> = {
+  stage: [
+    { label: "Prototype", description: "Throwaway proof-of-concept; optimize for speed over polish." },
+    { label: "MVP", description: "First real version shipped to early users; needs auth + persistence." },
+    { label: "Growth", description: "Paying users, real traffic; reliability and cost start to matter." },
+    { label: "Scale", description: "Significant load, multiple teams; needs SLAs, observability, hardening." },
+  ],
+  team: [
+    { label: "Frontend", description: "Comfortable with React/TS, CSS, UI work." },
+    { label: "Backend", description: "Comfortable writing servers, APIs, and database queries." },
+    { label: "DevOps", description: "Can manage infra, CI/CD, containers, networking." },
+    { label: "Data", description: "Comfortable with SQL, pipelines, analytics, ML." },
+    { label: "Non-technical", description: "Prefer fully managed tools with no code or infra work." },
+  ],
+  lockIn: [
+    { label: "Low", description: "Must stay portable — open standards, easy to migrate off (e.g. plain Postgres, Docker)." },
+    { label: "Medium", description: "Some proprietary services OK if migration is feasible." },
+    { label: "High", description: "Fine to commit deeply to a vendor's ecosystem for speed and features." },
+  ],
+  compliance: [
+    { label: "None", description: "No formal compliance requirements." },
+    { label: "GDPR", description: "EU data protection rules; needs data export/delete, lawful basis, EU-friendly hosting." },
+    { label: "HIPAA", description: "US health data; requires BAA with vendors, audit logs, encryption, access controls." },
+    { label: "SOC 2", description: "Audited security/availability controls; favors vendors with existing SOC 2 reports." },
+    { label: "Data residency", description: "Data must stay in a specific region (e.g. EU-only, US-only)." },
+  ],
+  workloads: [
+    { label: "CRUD app", description: "Standard create/read/update/delete over a database." },
+    { label: "Realtime", description: "Live updates, presence, chat, collaborative editing (websockets/pubsub)." },
+    { label: "Files / media", description: "Uploading, storing, and serving images, video, or documents." },
+    { label: "AI inference", description: "Calling LLMs or ML models from your app." },
+    { label: "Background jobs", description: "Queues, scheduled tasks, long-running work outside the request cycle." },
+    { label: "Heavy compute / GPU", description: "Training, video encoding, simulations — needs beefy or GPU machines." },
+  ],
+  ttm: [
+    { label: "Lower (1–2)", description: "Speed-to-launch is just one factor; balance with cost, portability, control." },
+    { label: "Higher (4–5)", description: "Boost options that ship fastest — typically managed backends and integrated platforms." },
+  ],
+};
+
+function FieldHelp({ title, items }: { title: string; items: HelpItem[] }) {
+  return (
+    <Popover>
+      <PopoverTrigger asChild>
+        <Button
+          type="button"
+          variant="ghost"
+          size="sm"
+          className="h-5 w-5 p-0 text-muted-foreground hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+          aria-label={`What do the ${title} options mean?`}
+        >
+          <HelpCircle aria-hidden="true" className="h-3.5 w-3.5" />
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent role="dialog" align="start" className="w-72 p-3">
+        <p className="mb-2 text-xs font-semibold text-foreground">{title}</p>
+        <dl className="space-y-2 text-xs">
+          {items.map((it) => (
+            <div key={it.label}>
+              <dt className="font-medium text-foreground">{it.label}</dt>
+              <dd className="text-muted-foreground">{it.description}</dd>
+            </div>
+          ))}
+        </dl>
+      </PopoverContent>
+    </Popover>
+  );
+}
 
 
 interface Props {
@@ -166,7 +238,10 @@ export function InputsPanel({ inputs, onChange }: Props) {
         >
           <div className="mt-5 flex flex-col gap-6">
       <div className="space-y-2">
-        <Label className="text-xs">Stage</Label>
+        <div className="flex items-center gap-1.5">
+          <Label className="text-xs">Stage</Label>
+          <FieldHelp title="Stage" items={HELP.stage} />
+        </div>
         <div className="flex flex-wrap gap-1.5">
           {STAGES.map((s) => (
             <Chip
@@ -205,7 +280,10 @@ export function InputsPanel({ inputs, onChange }: Props) {
       </div>
 
       <div className="space-y-2">
-        <Label className="text-xs">Team strengths</Label>
+        <div className="flex items-center gap-1.5">
+          <Label className="text-xs">Team strengths</Label>
+          <FieldHelp title="Team strengths" items={HELP.team} />
+        </div>
         <div className="flex flex-wrap gap-1.5">
           {TEAMS.map((t) => (
             <Chip
@@ -248,7 +326,10 @@ export function InputsPanel({ inputs, onChange }: Props) {
       </div>
 
       <div className="space-y-2">
-        <Label className="text-xs">Lock-in tolerance</Label>
+        <div className="flex items-center gap-1.5">
+          <Label className="text-xs">Lock-in tolerance</Label>
+          <FieldHelp title="Lock-in tolerance" items={HELP.lockIn} />
+        </div>
         <div className="flex flex-wrap gap-1.5">
           {LOCK_INS.map((l) => (
             <Chip
@@ -269,7 +350,10 @@ export function InputsPanel({ inputs, onChange }: Props) {
       </div>
 
       <div className="space-y-2">
-        <Label className="text-xs">Compliance</Label>
+        <div className="flex items-center gap-1.5">
+          <Label className="text-xs">Compliance</Label>
+          <FieldHelp title="Compliance" items={HELP.compliance} />
+        </div>
         <div className="flex flex-wrap gap-1.5">
           {COMPLIANCE.map((c) => (
             <Chip
@@ -293,7 +377,10 @@ export function InputsPanel({ inputs, onChange }: Props) {
       </div>
 
       <div className="space-y-2">
-        <Label className="text-xs">Workloads</Label>
+        <div className="flex items-center gap-1.5">
+          <Label className="text-xs">Workloads</Label>
+          <FieldHelp title="Workloads" items={HELP.workloads} />
+        </div>
         <div className="flex flex-wrap gap-1.5">
           {WORKLOADS.map((w) => (
             <Chip
@@ -309,7 +396,10 @@ export function InputsPanel({ inputs, onChange }: Props) {
 
       <div className="space-y-2">
         <div className="flex items-center justify-between">
-          <Label className="text-xs">Time-to-market priority</Label>
+          <div className="flex items-center gap-1.5">
+            <Label className="text-xs">Time-to-market priority</Label>
+            <FieldHelp title="Time-to-market priority" items={HELP.ttm} />
+          </div>
           <Badge variant="secondary" className="font-mono">{inputs.ttmPriority}/5</Badge>
         </div>
         <Slider
