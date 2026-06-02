@@ -3,6 +3,7 @@ import LZString from "lz-string";
 import { InputsPanel } from "@/components/InputsPanel";
 import { ComparisonMatrix } from "@/components/ComparisonMatrix";
 import { RecommendationCard } from "@/components/RecommendationCard";
+import { PlatformsConsidered } from "@/components/PlatformsConsidered";
 import { CostEstimate } from "@/components/CostEstimate";
 import { ArchitectureDiagram } from "@/components/ArchitectureDiagram";
 import { ReportExport } from "@/components/ReportExport";
@@ -249,6 +250,14 @@ const Index = () => {
           })}
         </div>
       </nav>
+
+      <div className="mx-auto w-full max-w-[1800px] px-3 pt-2 sm:px-6 sm:pt-4 2xl:px-10">
+        <PlatformsConsidered
+          enabled={enabled}
+          onToggle={toggleArch}
+          onReset={() => setEnabled(DEFAULT_ENABLED)}
+        />
+      </div>
 
       <main id="main-content" className="mx-auto grid w-full max-w-[1800px] gap-4 px-3 py-4 sm:gap-6 sm:px-6 sm:py-6 md:grid-cols-[240px_minmax(0,1fr)] lg:grid-cols-[260px_minmax(0,1fr)_320px] xl:grid-cols-[300px_minmax(0,1fr)_360px] 2xl:gap-8 2xl:px-10 2xl:grid-cols-[320px_minmax(0,1fr)_400px]">
 
