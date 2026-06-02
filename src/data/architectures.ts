@@ -358,7 +358,134 @@ export const ARCHITECTURES: Architecture[] = [
     ],
     lastReviewed: REVIEWED,
   },
+
+  // ---------------------------------------------------------------------------
+  // Hybrid / split stacks (opt-in)
+  // Each represents a (backend, frontend) tuple. Hidden by default; surfaced
+  // when the user flips the "Allow splitting frontend hosting" toggle.
+  // Rubric rows blend the two halves: time-to-launch/ops-burden lean toward
+  // the messier half (extra wiring), scaling/edge perf lean toward the better
+  // half. Cost bands are additive on the low end, slightly compressed on the
+  // high end since frontend hosts have generous free tiers.
+  // ---------------------------------------------------------------------------
+  {
+    id: "hybrid-cloud-cloudflare",
+    category: "frontend-host",
+    name: "Lovable Cloud + Cloudflare Pages",
+    short: "Cloud + CF",
+    tagline: "Cloud backend, edge frontend",
+    description:
+      "Keep Lovable Cloud (Postgres, auth, storage, edge functions, AI Gateway) for the backend, and serve the frontend from Cloudflare Pages for a global edge CDN and generous free bandwidth.",
+    nativeIntegration: false,
+    bestFor: [
+      "Teams that want Cloud's zero-setup backend with Cloudflare's edge reach",
+      "Apps with global audiences where frontend latency matters",
+      "Keeping the Cloud DX while controlling the frontend domain/CDN",
+    ],
+    watchOuts: [
+      "Frontend deploy is a separate GitHub + Cloudflare Pages pipeline",
+      "Two dashboards to monitor (Lovable + Cloudflare)",
+      "CORS and auth callbacks need to be configured for the Pages domain",
+    ],
+    costBands: { prototype: "$0", mvp: "$0–25", growth: "$80–270", scale: "$300–1.7k" },
+    scaleCeiling: "Same as Lovable Cloud on the backend; Cloudflare scales the frontend essentially without limit.",
+    sources: [
+      { label: "Lovable Cloud docs", url: "https://docs.lovable.dev/features/cloud" },
+      { label: "Cloudflare Pages pricing", url: "https://pages.cloudflare.com/" },
+    ],
+    lastReviewed: REVIEWED,
+    composition: { backend: "lovable-cloud", frontend: "lovable-cloudflare" },
+    hybrid: true,
+  },
+  {
+    id: "hybrid-supabase-cloudflare",
+    category: "frontend-host",
+    name: "Supabase + Cloudflare Pages",
+    short: "Supabase + CF",
+    tagline: "Own your backend, edge your frontend",
+    description:
+      "Run your own Supabase project for Postgres, auth, storage and edge functions, and host the frontend on Cloudflare Pages with global CDN and Workers at the edge.",
+    nativeIntegration: false,
+    bestFor: [
+      "Teams already on Supabase who want edge-first frontend delivery",
+      "Region pinning / BAA on the backend with cheap global frontend",
+      "Keeping vendors split so frontend and backend scale independently",
+    ],
+    watchOuts: [
+      "Two vendors to manage, bill, and monitor",
+      "Configure Supabase auth redirect URLs for the Cloudflare domain",
+      "Realtime/WebSocket connections go directly to Supabase, not through Pages",
+    ],
+    costBands: { prototype: "$0", mvp: "$0–25", growth: "$30–320", scale: "$320–2.2k" },
+    scaleCeiling: "Supabase Postgres on the backend; Cloudflare scales the frontend essentially without limit.",
+    sources: [
+      { label: "Supabase pricing", url: "https://supabase.com/pricing" },
+      { label: "Cloudflare Pages pricing", url: "https://pages.cloudflare.com/" },
+    ],
+    lastReviewed: REVIEWED,
+    composition: { backend: "lovable-supabase", frontend: "lovable-cloudflare" },
+    hybrid: true,
+  },
+  {
+    id: "hybrid-supabase-vercel",
+    category: "frontend-host",
+    name: "Supabase + Vercel",
+    short: "Supabase + Vercel",
+    tagline: "Postgres backend, Vercel frontend",
+    description:
+      "Run Supabase for the database, auth, and storage, and host the frontend on Vercel for polished previews, edge functions, and a smooth deploy pipeline.",
+    nativeIntegration: false,
+    bestFor: [
+      "Teams who like Vercel's DX but want Supabase Postgres + auth",
+      "Apps that lean on Vercel previews and edge middleware",
+      "Splitting billing between backend and frontend vendors",
+    ],
+    watchOuts: [
+      "Vercel Hobby is personal-use only — Pro is $20/seat/mo for commercial",
+      "Two vendors and two dashboards to operate",
+      "Bandwidth and function invocations on Vercel can spike at scale",
+    ],
+    costBands: { prototype: "$0–20", mvp: "$20–60", growth: "$120–550", scale: "$550–3.2k" },
+    scaleCeiling: "Bound by Supabase Postgres tier; Vercel scales the frontend horizontally.",
+    sources: [
+      { label: "Supabase pricing", url: "https://supabase.com/pricing" },
+      { label: "Vercel pricing", url: "https://vercel.com/pricing" },
+    ],
+    lastReviewed: REVIEWED,
+    composition: { backend: "lovable-supabase", frontend: "lovable-vercel" },
+    hybrid: true,
+  },
+  {
+    id: "hybrid-supabase-netlify",
+    category: "frontend-host",
+    name: "Supabase + Netlify",
+    short: "Supabase + Netlify",
+    tagline: "Postgres backend, JAMstack frontend",
+    description:
+      "Supabase handles Postgres, auth, and storage. Netlify hosts the frontend plus edge/serverless functions, form handlers, and lightweight APIs.",
+    nativeIntegration: false,
+    bestFor: [
+      "Marketing + app combos where Netlify's editor and forms are useful",
+      "Teams already on Netlify who want Supabase Postgres + auth",
+      "Splitting the frontend deploy from the backend project",
+    ],
+    watchOuts: [
+      "Two vendors and two dashboards to operate",
+      "Background jobs still need an external service (Inngest, etc.)",
+      "Bandwidth overages on Netlify can surprise at scale",
+    ],
+    costBands: { prototype: "$0", mvp: "$9–45", growth: "$45–220", scale: "$520–2.7k" },
+    scaleCeiling: "Bound by Supabase Postgres tier; Netlify scales the frontend horizontally.",
+    sources: [
+      { label: "Supabase pricing", url: "https://supabase.com/pricing" },
+      { label: "Netlify pricing", url: "https://www.netlify.com/pricing/" },
+    ],
+    lastReviewed: REVIEWED,
+    composition: { backend: "lovable-supabase", frontend: "lovable-netlify" },
+    hybrid: true,
+  },
 ];
+
 
 // Rubric: 1 (poor) – 5 (excellent).
 // Notes on Lovable Cloud scores vs external Supabase:
