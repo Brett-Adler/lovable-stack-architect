@@ -1,8 +1,8 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { ARCHITECTURES, type ArchId } from "@/data/architectures";
 import { BrandMark } from "@/components/BrandMark";
 import { Button } from "@/components/ui/button";
-import { Plus, RotateCcw, Star, X } from "lucide-react";
+import { ChevronDown, Plus, RotateCcw, Star, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const TOP_PICKS: ArchId[] = ["lovable-cloud", "lovable-supabase", "lovable-vercel", "lovable-aws"];
@@ -19,6 +19,7 @@ interface Props {
 
 
 export function PlatformsConsidered({ enabled, onToggle, onReset, onSetEnabled, allowSplit = false, className }: Props) {
+  const [showExcluded, setShowExcluded] = useState(false);
   const catalog = useMemo(
     () => ARCHITECTURES.filter((a) => allowSplit || !a.hybrid),
     [allowSplit],
@@ -135,29 +136,40 @@ export function PlatformsConsidered({ enabled, onToggle, onReset, onSetEnabled, 
       )}
 
       {excludedArchs.length > 0 && (
-        <div className="mt-2.5 flex flex-wrap items-center gap-x-2 gap-y-1.5 border-t border-border/60 pt-2.5">
-          <span className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
-            Excluded
-          </span>
-          <ul className="flex flex-wrap gap-1.5">
-            {excludedArchs.map((a) => (
-              <li key={a.id}>
-                <button
-                  type="button"
-                  onClick={() => onToggle(a.id)}
-                  aria-label={`Add ${a.short} back to comparison`}
-                  className="group inline-flex items-center gap-1.5 rounded-full border border-dashed border-border bg-transparent px-2.5 py-1 text-xs text-muted-foreground transition-colors hover:border-primary/50 hover:bg-primary/5 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                >
-                  <BrandMark archId={a.id} size="sm" />
-                  <span>{a.short}</span>
-                  <Plus
-                    className="h-3 w-3 text-muted-foreground transition-colors group-hover:text-primary"
-                    aria-hidden="true"
-                  />
-                </button>
-              </li>
-            ))}
-          </ul>
+        <div className="mt-2.5 border-t border-border/60 pt-2.5">
+          <button
+            type="button"
+            onClick={() => setShowExcluded((v) => !v)}
+            aria-expanded={showExcluded}
+            className="inline-flex items-center gap-1.5 rounded-md text-[11px] font-medium uppercase tracking-wider text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          >
+            <ChevronDown
+              className={cn("h-3 w-3 transition-transform", showExcluded ? "rotate-0" : "-rotate-90")}
+              aria-hidden="true"
+            />
+            {showExcluded ? "Hide" : "Show"} excluded ({excludedArchs.length})
+          </button>
+          {showExcluded && (
+            <ul className="mt-2 flex flex-wrap gap-1.5">
+              {excludedArchs.map((a) => (
+                <li key={a.id}>
+                  <button
+                    type="button"
+                    onClick={() => onToggle(a.id)}
+                    aria-label={`Add ${a.short} back to comparison`}
+                    className="group inline-flex items-center gap-1.5 rounded-full border border-dashed border-border bg-transparent px-2.5 py-1 text-xs text-muted-foreground transition-colors hover:border-primary/50 hover:bg-primary/5 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  >
+                    <BrandMark archId={a.id} size="sm" />
+                    <span>{a.short}</span>
+                    <Plus
+                      className="h-3 w-3 text-muted-foreground transition-colors group-hover:text-primary"
+                      aria-hidden="true"
+                    />
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
       )}
     </section>
