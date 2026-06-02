@@ -610,7 +610,7 @@ const Landing = () => {
                   <div className="rounded-full bg-gradient-primary p-[1.5px] shadow-elegant">
                     <Button asChild size="lg" className="gap-2 rounded-full px-6">
                       <a href={AUTHOR_URL} target="_blank" rel="noopener noreferrer">
-                        <img src="/lovable-brand.svg" alt="Lovable" className="h-4 w-4" />
+                        <img src="/lovable-brand.svg" alt="" className="h-4 w-4" />
                         Lovable portfolio <ArrowRight className="h-4 w-4" />
                       </a>
                     </Button>

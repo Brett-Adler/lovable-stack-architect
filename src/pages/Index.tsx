@@ -292,6 +292,7 @@ const Index = () => {
             mobileTab === "recommendation" ? "block" : "hidden",
           )}
         >
+          <h2 className="sr-only">Recommendation</h2>
           <RecommendationCard
             results={results}
             inputs={inputs}
