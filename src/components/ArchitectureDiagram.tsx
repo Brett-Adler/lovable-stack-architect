@@ -163,5 +163,3 @@ export function ArchitectureDiagram({ archId, inputs }: { archId: ArchId; inputs
     </div>
   );
 }
-
-}
