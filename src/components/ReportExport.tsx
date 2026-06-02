@@ -447,7 +447,7 @@ function TopPickSection({
 
   return (
     <SectionWrapper id="top-pick">
-      <H2>Top pick</H2>
+      <H2 step={3}>Your recommendation</H2>
 
       {excluded.length > 0 && (
         <div
