@@ -453,6 +453,7 @@ function TopPickSection({
           <div>
             <div style={{ fontSize: "10px", fontWeight: 700, color: C.primary, letterSpacing: "0.08em", textTransform: "uppercase" }}>
               Recommended {category ? `· ${category.label}` : ""}
+              {top.arch.composition ? " · Hybrid stack" : ""}
             </div>
             <div style={{ fontSize: "20px", fontWeight: 800, marginTop: "2px" }}>
               {top.arch.name}
@@ -460,6 +461,7 @@ function TopPickSection({
             <div style={{ fontSize: "12px", fontStyle: "italic", color: C.muted, marginTop: "2px" }}>
               {top.arch.tagline}
             </div>
+
           </div>
           <div
             style={{
