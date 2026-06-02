@@ -172,6 +172,21 @@ export default function Lovable() {
                 </a>
               </Button>
             </div>
+            <div className="mt-12 grid gap-4 sm:grid-cols-3">
+              {FEATURES.map((f) => {
+                const Icon = f.icon;
+                return (
+                  <div
+                    key={f.title}
+                    className="flex flex-col items-start rounded-xl border border-border/60 bg-card/60 p-4 text-left backdrop-blur"
+                  >
+                    <Icon className="h-5 w-5 text-primary" aria-hidden="true" />
+                    <span className="mt-2 text-sm font-semibold text-foreground">{f.title}</span>
+                    <span className="mt-1 text-xs text-muted-foreground leading-relaxed">{f.desc}</span>
+                  </div>
+                );
+              })}
+            </div>
             <p className="mt-6 text-xs text-muted-foreground">
               Live at <a href={SITE_URL} className="underline-offset-2 hover:underline">{SITE_URL.replace(/^https?:\/\//, "")}</a>
             </p>
