@@ -256,8 +256,10 @@ const Index = () => {
           enabled={enabled}
           onToggle={toggleArch}
           onReset={() => setEnabled(DEFAULT_ENABLED)}
+          onSetEnabled={setEnabled}
           allowSplit={inputs.allowSplit ?? false}
         />
+
 
       </div>
 
