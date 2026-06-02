@@ -506,8 +506,10 @@ export function InputsPanel({ inputs, onChange, enabled, onSetEnabled, onToggleE
           enabled={enabled}
           onSetEnabled={onSetEnabled}
           onToggleEnabled={onToggleEnabled}
+          allowSplit={inputs.allowSplit ?? false}
         />
       )}
+
           </div>
         </CollapsibleContent>
       </Collapsible>
