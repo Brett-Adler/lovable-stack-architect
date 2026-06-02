@@ -305,7 +305,7 @@ const Index = () => {
           className={cn(
             "grid gap-8 sm:gap-10 md:gap-12",
             // 2-col at lg/xl: narrow inputs sidebar, compare+pick stacked on the right
-            "lg:grid-cols-[340px_minmax(0,1fr)] lg:gap-8",
+            "lg:grid-cols-[420px_minmax(0,1fr)] lg:gap-8 xl:grid-cols-[460px_minmax(0,1fr)]",
             // 3-col at 2xl: three equal columns for an explicit 1 → 2 → 3 flow
             "2xl:grid-cols-3 2xl:gap-10",
             "items-start",
