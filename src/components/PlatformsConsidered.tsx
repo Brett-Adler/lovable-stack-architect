@@ -154,20 +154,9 @@ export function PlatformsConsidered({ enabled, onToggle, onReset, onSetEnabled, 
         </ul>
       )}
 
-      {excludedArchs.length > 0 && (
+      {excludedArchs.length > 0 && showExcluded && (
         <div className="mt-2.5 border-t border-border/60 pt-2.5">
-          <button
-            type="button"
-            onClick={() => setShowExcluded((v) => !v)}
-            aria-expanded={showExcluded}
-            className="inline-flex items-center gap-1.5 rounded-md text-[11px] font-medium uppercase tracking-wider text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-          >
-            <ChevronDown
-              className={cn("h-3 w-3 transition-transform", showExcluded ? "rotate-0" : "-rotate-90")}
-              aria-hidden="true"
-            />
-            {showExcluded ? "Hide" : "Show"} excluded ({excludedArchs.length})
-          </button>
+
           {showExcluded && (
             <ul className="mt-2 flex flex-wrap gap-1.5">
               {excludedArchs.map((a) => (
