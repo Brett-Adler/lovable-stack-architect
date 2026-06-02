@@ -301,13 +301,13 @@ const Index = () => {
           id="panel-recommendation"
           role="tabpanel"
           aria-labelledby="tab-recommendation"
+          aria-label="Recommendation"
           hidden={mobileTab !== "recommendation"}
           className={cn(
             "order-2 min-w-0 space-y-4 sm:space-y-6 md:order-1 md:!block md:col-start-2 lg:order-none lg:col-start-auto",
             mobileTab === "recommendation" ? "block" : "hidden",
           )}
         >
-          <h2 className="sr-only">Recommendation</h2>
           <RecommendationCard
             results={results}
             inputs={inputs}
@@ -317,6 +317,7 @@ const Index = () => {
             onExclude={toggleArch}
             onResetEnabled={() => setEnabled(DEFAULT_ENABLED)}
           />
+
 
           <p className="text-[11px] leading-relaxed text-muted-foreground">
             All options shown assume Lovable handles design, frontend dev, testing, and deployment.
