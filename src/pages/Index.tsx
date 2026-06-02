@@ -395,7 +395,7 @@ const Index = () => {
         className={cn(
           "mx-auto w-full max-w-[1800px] px-3 pb-6 sm:px-6 2xl:px-10",
           "mt-4 border-t border-border pt-8 sm:mt-8 sm:pt-10",
-          tab === "setup" ? "block" : "hidden",
+          tab !== "setup" && "hidden",
         )}
       >
         <header className="mb-8 text-center sm:mb-10">
