@@ -183,7 +183,10 @@ function Chip({
   );
 }
 
-export function InputsPanel({ inputs, onChange }: Props) {
+const ALL_ARCH_IDS: ArchId[] = ARCHITECTURES.map((a) => a.id);
+const TOP_PICKS: ArchId[] = ["lovable-cloud", "lovable-supabase", "lovable-vercel", "lovable-aws"];
+
+export function InputsPanel({ inputs, onChange, enabled, onSetEnabled, onToggleEnabled }: Props) {
   const [open, setOpen] = useState(true);
   const update = <K extends keyof Inputs>(key: K, value: Inputs[K]) =>
     onChange({ ...inputs, [key]: value });
