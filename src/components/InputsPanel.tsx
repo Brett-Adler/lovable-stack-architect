@@ -238,7 +238,10 @@ export function InputsPanel({ inputs, onChange }: Props) {
         >
           <div className="mt-5 flex flex-col gap-6">
       <div className="space-y-2">
-        <Label className="text-xs">Stage</Label>
+        <div className="flex items-center gap-1.5">
+          <Label className="text-xs">Stage</Label>
+          <FieldHelp title="Stage" items={HELP.stage} />
+        </div>
         <div className="flex flex-wrap gap-1.5">
           {STAGES.map((s) => (
             <Chip
