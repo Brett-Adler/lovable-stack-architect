@@ -1,5 +1,16 @@
 import { Link } from "react-router-dom";
-import { ArrowRight, ExternalLink, GitFork, Pencil, Rocket, Sparkles } from "lucide-react";
+import {
+  ArrowRight,
+  BarChart3,
+  CheckCircle,
+  ExternalLink,
+  GitFork,
+  Layers,
+  Pencil,
+  Rocket,
+  Share2,
+  Sparkles,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
