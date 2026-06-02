@@ -824,7 +824,7 @@ function InputsAppendixSection({ inputs }: { inputs: Inputs }) {
 
   return (
     <SectionWrapper id="inputs">
-      <H2>Project inputs (detailed)</H2>
+      <H2 step={1}>Project inputs</H2>
       <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "11px" }}>
         <thead>
           <tr style={{ background: C.mutedBg }}>
