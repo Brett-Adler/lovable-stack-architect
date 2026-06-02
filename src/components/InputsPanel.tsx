@@ -263,14 +263,59 @@ export function InputsPanel({ inputs, onChange }: Props) {
       </div>
 
       <div className="space-y-2">
-        <div className="flex items-center justify-between">
-          <Label className="text-xs">Expected monthly active users</Label>
-          <span className="text-xs font-mono tabular-nums text-muted-foreground">
+        <Label className="text-xs" htmlFor="mau-input">Expected monthly active users</Label>
+        <div className="flex items-center gap-1.5">
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            className="h-9 w-9 shrink-0 p-0"
+            aria-label="Decrease MAU"
+            disabled={inputs.mau <= MAU_STEPS[0]}
+            onClick={() => {
+              const i = MAU_STEPS.findIndex((s) => s >= inputs.mau);
+              const next = i <= 0 ? MAU_STEPS[0] : MAU_STEPS[i - 1];
+              update("mau", next);
+            }}
+          >
+            <Minus className="h-4 w-4" aria-hidden="true" />
+          </Button>
+          <Input
+            id="mau-input"
+            type="number"
+            inputMode="numeric"
+            min={0}
+            step={50}
+            value={inputs.mau}
+            onChange={(e) => {
+              const n = Number(e.target.value);
+              if (!Number.isFinite(n) || n < 0) return;
+              update("mau", Math.min(n, MAU_STEPS[MAU_STEPS.length - 1]));
+            }}
+            className="h-9 flex-1 text-center font-mono tabular-nums"
+            aria-label="Expected monthly active users"
+          />
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            className="h-9 w-9 shrink-0 p-0"
+            aria-label="Increase MAU"
+            disabled={inputs.mau >= MAU_STEPS[MAU_STEPS.length - 1]}
+            onClick={() => {
+              const i = MAU_STEPS.findIndex((s) => s > inputs.mau);
+              const next = i === -1 ? MAU_STEPS[MAU_STEPS.length - 1] : MAU_STEPS[i];
+              update("mau", next);
+            }}
+          >
+            <Plus className="h-4 w-4" aria-hidden="true" />
+          </Button>
+          <span className="w-10 shrink-0 text-right text-xs font-mono tabular-nums text-muted-foreground">
             {fmtMau(inputs.mau)}
           </span>
         </div>
         <Slider
-          aria-label="Expected monthly active users"
+          aria-label="Expected monthly active users slider"
           min={0}
           max={MAU_STEPS.length - 1}
           step={1}
@@ -279,6 +324,7 @@ export function InputsPanel({ inputs, onChange }: Props) {
         />
         <p className="text-[11px] text-muted-foreground">Current or near-term load — drives cost and scaling weight.</p>
       </div>
+
 
       <div className="space-y-2">
         <div className="flex items-center gap-1.5">
