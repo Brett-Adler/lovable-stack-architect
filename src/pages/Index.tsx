@@ -353,7 +353,7 @@ const Index = () => {
           role="tabpanel"
           aria-labelledby="tab-recommendation"
           hidden={tab !== "recommendation"}
-          className={tab === "recommendation" ? "block" : "hidden"}
+          className={tab === "recommendation" ? undefined : "hidden"}
         >
           <StepShell
             number={3}
