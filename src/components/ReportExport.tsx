@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { renderToStaticMarkup } from "react-dom/server";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -10,7 +9,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Download, ExternalLink, FileDown, Loader2, Share2, Link2, Check, Copy } from "lucide-react";
+import { Download, FileDown, Loader2, Share2, Link2, Check, Copy } from "lucide-react";
 import { CRITERIA, RUBRIC, type Architecture } from "@/data/architectures";
 import type { Inputs, RankedResult } from "@/lib/scoring";
 import { stageFromMau } from "@/lib/scoring";
@@ -401,57 +400,6 @@ export function ReportExport(props: Props) {
     }
   };
 
-  const buildReportHtml = () => {
-    const body = renderToStaticMarkup(<ReportContent {...props} />);
-    return `<!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8" />
-<title>Stack Architect — Full report</title>
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<style>
-  :root { color-scheme: light; }
-  * { box-sizing: border-box; }
-  body { margin: 0; background: #f5f3ee; color: #0a0a0a; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, sans-serif; }
-  .page { max-width: 860px; margin: 32px auto; padding: 40px; background: #ffffff; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
-  h1, h2, h3, h4 { color: #0a0a0a; }
-  a { color: #6d28d9; }
-  table { width: 100%; border-collapse: collapse; }
-  th, td { border: 1px solid #d4d4d8; padding: 6px 8px; font-size: 12px; }
-  th { background: #f4f4f5; text-align: left; }
-  ul, ol { padding-left: 20px; }
-  .text-muted-foreground { color: #6b7280; }
-  .italic { font-style: italic; }
-  .font-mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
-  .border, .border-border { border-color: #e5e7eb; }
-  .bg-muted\\/30 { background: #f9fafb; }
-  .rounded-lg { border-radius: 8px; }
-  @media print {
-    body { background: #ffffff; }
-    .page { box-shadow: none; margin: 0; padding: 0; max-width: none; border-radius: 0; }
-    .print-break-before { page-break-before: always; }
-  }
-</style>
-</head>
-<body>
-  <div class="page">${body}</div>
-</body>
-</html>`;
-  };
-
-  const openFullReport = () => {
-    const html = buildReportHtml();
-    const blob = new Blob([html], { type: "text/html" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.target = "_blank";
-    a.rel = "noopener noreferrer";
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    setTimeout(() => URL.revokeObjectURL(url), 60_000);
-  };
 
   const copyShareUrl = async () => {
     const url = props.shareUrl ?? window.location.href;
@@ -503,16 +451,6 @@ export function ReportExport(props: Props) {
       onClick: () => {
         downloadMd();
         setHubOpen(false);
-      },
-    },
-    {
-      id: "preview",
-      label: "View full report",
-      description: "Open the complete report in a new tab.",
-      icon: ExternalLink,
-      onClick: () => {
-        setHubOpen(false);
-        openFullReport();
       },
     },
   ];
