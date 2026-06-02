@@ -396,7 +396,10 @@ export function InputsPanel({ inputs, onChange }: Props) {
 
       <div className="space-y-2">
         <div className="flex items-center justify-between">
-          <Label className="text-xs">Time-to-market priority</Label>
+          <div className="flex items-center gap-1.5">
+            <Label className="text-xs">Time-to-market priority</Label>
+            <FieldHelp title="Time-to-market priority" items={HELP.ttm} />
+          </div>
           <Badge variant="secondary" className="font-mono">{inputs.ttmPriority}/5</Badge>
         </div>
         <Slider
