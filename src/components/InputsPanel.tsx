@@ -16,9 +16,11 @@ import {
 import { cn } from "@/lib/utils";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { ChevronDown, HelpCircle, Minus, Plus } from "lucide-react";
+import { ChevronDown, HelpCircle, Minus, Plus, Check, X, Star } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
+import { ARCHITECTURES, CATEGORIES, type ArchId } from "@/data/architectures";
+import { BrandMark } from "@/components/BrandMark";
 
 type HelpItem = { label: string; description: string };
 
