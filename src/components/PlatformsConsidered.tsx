@@ -2,19 +2,23 @@ import { useMemo } from "react";
 import { ARCHITECTURES, type ArchId } from "@/data/architectures";
 import { BrandMark } from "@/components/BrandMark";
 import { Button } from "@/components/ui/button";
-import { Plus, RotateCcw, X } from "lucide-react";
+import { Plus, RotateCcw, Star, X } from "lucide-react";
 import { cn } from "@/lib/utils";
+
+const TOP_PICKS: ArchId[] = ["lovable-cloud", "lovable-supabase", "lovable-vercel", "lovable-aws"];
 
 interface Props {
   enabled: ArchId[];
   onToggle: (id: ArchId) => void;
   onReset: () => void;
+  onSetEnabled?: (ids: ArchId[]) => void;
   /** When false, hybrid (split-services) entries are hidden from the picker. */
   allowSplit?: boolean;
   className?: string;
 }
 
-export function PlatformsConsidered({ enabled, onToggle, onReset, allowSplit = false, className }: Props) {
+
+export function PlatformsConsidered({ enabled, onToggle, onReset, onSetEnabled, allowSplit = false, className }: Props) {
   const catalog = useMemo(
     () => ARCHITECTURES.filter((a) => allowSplit || !a.hybrid),
     [allowSplit],
