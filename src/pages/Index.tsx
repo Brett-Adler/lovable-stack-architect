@@ -262,7 +262,13 @@ const Index = () => {
             mobileTab === "inputs" ? "block" : "hidden",
           )}
         >
-          <InputsPanel inputs={inputs} onChange={setInputs} />
+          <InputsPanel
+            inputs={inputs}
+            onChange={setInputs}
+            enabled={enabled}
+            onSetEnabled={setEnabled}
+            onToggleEnabled={toggleArch}
+          />
         </div>
 
         <section
