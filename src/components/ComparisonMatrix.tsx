@@ -29,7 +29,7 @@ function ScoreDot({ score }: { score: number }) {
   // 1-5 → ○ ◔ ◐ ◕ ●
   const glyphs = ["○", "◔", "◐", "◕", "●"];
   const colors = [
-    "text-muted-foreground/50",
+    "text-muted-foreground",
     "text-muted-foreground",
     "text-warning",
     "text-accent",
