@@ -339,7 +339,7 @@ function HeaderSection({ inputs }: { inputs: Inputs }) {
       <BrandBar subtitle={`Generated ${new Date().toLocaleString()}`} />
       <H1>Architecture Recommendation</H1>
       <p style={{ margin: "0 0 4px", color: C.muted, fontSize: "12px" }}>
-        A weighted comparison of {10} hosting & backend options for your Lovable app, tuned to the
+        A weighted comparison of {11} hosting & backend options for your Lovable app, tuned to the
         inputs below. Rubric last reviewed {LAST_REVIEWED}.
       </p>
       <p style={{ margin: 0, color: C.muted, fontSize: "11px" }}>
