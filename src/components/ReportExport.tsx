@@ -34,6 +34,7 @@ interface Props {
   inputs: Inputs;
   results: RankedResult[];
   excluded?: { arch: Architecture; reason: string }[];
+  userExcluded?: { arch: Architecture; reason: string }[];
   shareUrl?: string;
 }
 
