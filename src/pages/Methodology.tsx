@@ -92,7 +92,7 @@ const BIASES = [
   },
   {
     title: "Two native integrations, eight self-hosted",
-    body: "Lovable Cloud and external Supabase are first-party integrations. The other 8 options require exporting to GitHub and deploying the backend yourself — we score them as if you have done that.",
+    body: "Lovable Cloud and external Supabase are first-party integrations. The other 9 options require exporting to GitHub and deploying the backend yourself — we score them as if you have done that.",
   },
   {
     title: "Cost bands are wide ranges",
@@ -184,7 +184,7 @@ const Methodology = () => {
     <div className="min-h-dvh bg-background">
       <SeoHead
         title="Methodology — Lovable Stack Architect"
-        description="How the Lovable Stack Architect scores 10 backend options across 12 criteria, including the rubric, weights, sources, and known biases."
+        description="How the Lovable Stack Architect scores 11 backend options across 12 criteria, including the rubric, weights, sources, and known biases."
         path="/methodology"
       />
       <SiteHeader />
@@ -252,7 +252,7 @@ const Methodology = () => {
           <div className="mx-auto max-w-3xl">
             <div className="rounded-3xl border border-border bg-card p-6 shadow-card transition-all hover:-translate-y-0.5 hover:shadow-elegant sm:p-8">
               <p className="leading-relaxed text-foreground/90">
-                Each of the 10 architectures is scored 1–5 on each of the {CRITERIA.length}{" "}
+                Each of the 11 architectures is scored 1–5 on each of the {CRITERIA.length}{" "}
                 criteria. Your inputs derive a per-criterion weight, and the final 0–100 score is the
                 weighted sum normalized by the maximum possible score. The rubric lives in{" "}
                 <code className="rounded bg-primary/10 px-1.5 py-0.5 font-mono text-sm text-primary">
@@ -512,7 +512,7 @@ const Methodology = () => {
                   {[
                     {
                       file: "src/data/architectures.ts",
-                      body: "The 10 architectures, their cost bands, and the 12-criterion RUBRIC.",
+                      body: "The 11 architectures, their cost bands, and the 12-criterion RUBRIC.",
                     },
                     {
                       file: "src/lib/scoring.ts",

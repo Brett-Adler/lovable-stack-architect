@@ -144,7 +144,7 @@ export function ComparisonMatrix({ enabled, topId, onToggle, onSetEnabled, view 
         <div className="border-y border-border bg-muted/30 px-4 py-2.5 text-xs text-muted-foreground sm:px-5">
           <span className="font-medium text-foreground">Heads up:</span>{" "}
           Lovable Cloud and external Supabase are native Lovable integrations. The
-          other 8 options assume you export your Lovable project to GitHub and
+          other 9 options assume you export your Lovable project to GitHub and
           deploy the backend yourself.
         </div>
 

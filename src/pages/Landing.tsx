@@ -64,7 +64,7 @@ const FEATURES = [
   {
     icon: Trophy,
     title: "Side-by-side scoring",
-    body: "10 hosting and backend platforms scored across 12 criteria — time-to-launch, cost, scaling, lock-in, compliance, AI.",
+    body: "11 hosting and backend platforms scored across 12 criteria — time-to-launch, cost, scaling, lock-in, compliance, AI.",
   },
   {
     icon: Gauge,
@@ -95,7 +95,7 @@ const FAQ = [
   { q: "Where does the data come from?", a: "Curated from public vendor pricing pages, docs, and hands-on experience. Every score is editable in one file, and every cost band links to its source on the Methodology page." },
   { q: "How is bias handled?", a: "I built this and I'm a Lovable fan, so it has a perspective. Every criterion starts at the same baseline weight to avoid structurally favoring Lovable Cloud, and the recommendation card shows the top criteria that drove the score so you can sanity-check it. Full disclosure on the Methodology page." },
   { q: "What's actually in Lovable Cloud?", a: "Postgres database, auth, file storage, edge functions, and the Lovable AI Gateway (managed Gemini/Claude/GPT calls — no API keys to rotate). It's powered by Supabase under the hood, so if you outgrow Cloud you can detach to a self-owned Supabase project." },
-  { q: "Do the other 8 platforms work with Lovable too?", a: "Not as native integrations. Only Lovable Cloud and external Supabase are wired in. For Vercel, Netlify, AWS, GCP, Azure, Heroku, Render, and Fly.io you export your Lovable project to GitHub and deploy the backend yourself." },
+  { q: "Do the other 9 platforms work with Lovable too?", a: "Not as native integrations. Only Lovable Cloud and external Supabase are wired in. For Vercel, Netlify, AWS, GCP, Azure, Cloudflare, Heroku, Render, and Fly.io you export your Lovable project to GitHub and deploy the backend yourself." },
   { q: "How fresh is it?", a: `Cost bands and rubric were last reviewed ${LAST_REVIEWED}. Always verify against current vendor pricing before committing.` },
   { q: "Can I customize it for a different decision?", a: "Yes — that's the point. The whole app is data-driven. Edit architectures.ts and you have a picker for CMSs, databases, auth providers, AI models, anything." },
   { q: "Is it free?", a: "Yes, MIT licensed. Fork it, ship it, sell a branded version — all fine." },
@@ -107,7 +107,7 @@ const FAQ_PLAIN: { q: string; a: string }[] = [
   { q: "Where does the data come from?", a: "Curated from public vendor pricing pages, docs, and hands-on experience. Every score is editable in one file, and every cost band links to its source on the Methodology page." },
   { q: "How is bias handled?", a: "I built this and I'm a Lovable fan, so it has a perspective. Every criterion starts at the same baseline weight to avoid structurally favoring Lovable Cloud, and the recommendation card shows the top criteria that drove the score so you can sanity-check it. Full disclosure on the Methodology page." },
   { q: "What's actually in Lovable Cloud?", a: "Postgres database, auth, file storage, edge functions, and the Lovable AI Gateway (managed Gemini/Claude/GPT calls — no API keys to rotate). It's powered by Supabase under the hood, so if you outgrow Cloud you can detach to a self-owned Supabase project." },
-  { q: "Do the other 8 platforms work with Lovable too?", a: "Not as native integrations. Only Lovable Cloud and external Supabase are wired in. For Vercel, Netlify, AWS, GCP, Azure, Heroku, Render, and Fly.io you export your Lovable project to GitHub and deploy the backend yourself." },
+  { q: "Do the other 9 platforms work with Lovable too?", a: "Not as native integrations. Only Lovable Cloud and external Supabase are wired in. For Vercel, Netlify, AWS, GCP, Azure, Cloudflare, Heroku, Render, and Fly.io you export your Lovable project to GitHub and deploy the backend yourself." },
   { q: "How fresh is it?", a: `Cost bands and rubric were last reviewed ${LAST_REVIEWED}. Always verify against current vendor pricing before committing.` },
   { q: "Can I customize it for a different decision?", a: "Yes — that's the point. The whole app is data-driven. Edit architectures.ts and you have a picker for CMSs, databases, auth providers, AI models, anything." },
   { q: "Is it free?", a: "Yes, MIT licensed. Fork it, ship it, sell a branded version — all fine." },
@@ -164,8 +164,8 @@ const Landing = () => {
               <span className="text-gradient">your Lovable app</span>
             </h1>
             <p className="mx-auto mt-6 max-w-2xl text-base text-muted-foreground sm:text-lg">
-              An interactive comparator across 10 hosting and backend options — Lovable Cloud,
-              Supabase, Vercel, Netlify, AWS, GCP, Azure, Heroku, Render, and Fly.io — tuned to your
+              An interactive comparator across 11 hosting and backend options — Lovable Cloud,
+              Supabase, Vercel, Netlify, AWS, GCP, Azure, Cloudflare, Heroku, Render, and Fly.io — tuned to your
               stage, budget, and workloads. Methodology and sources are{" "}
               <Link
                 to="/methodology"
@@ -438,7 +438,7 @@ const Landing = () => {
               Platforms covered
             </h2>
             <p className="mt-2 text-sm text-muted-foreground">
-              10 options across managed backends, frontend hosts, hyperscalers, and PaaS.
+              11 options across managed backends, frontend hosts, hyperscalers, and PaaS.
             </p>
           </div>
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
@@ -478,7 +478,7 @@ const Landing = () => {
               See every option side-by-side
             </h2>
             <p className="mt-2 text-sm text-muted-foreground sm:text-base">
-              The full-width matrix shows all 10 platforms scored across all 12 criteria.
+              The full-width matrix shows all 11 platforms scored across all 12 criteria.
             </p>
           </div>
           <ScreenshotPlaceholder variant="matrix" src={appMatrixShot} />
