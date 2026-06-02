@@ -473,9 +473,131 @@ export function InputsPanel({ inputs, onChange, enabled, onSetEnabled, onToggleE
           Higher = boost options that ship fastest (managed backends). Lower = treat speed-to-launch as just one factor among many.
         </p>
       </div>
+
+      {enabled && onSetEnabled && onToggleEnabled && (
+        <PlatformsPicker
+          enabled={enabled}
+          onSetEnabled={onSetEnabled}
+          onToggleEnabled={onToggleEnabled}
+        />
+      )}
           </div>
         </CollapsibleContent>
       </Collapsible>
     </aside>
+  );
+}
+
+function PlatformsPicker({
+  enabled,
+  onSetEnabled,
+  onToggleEnabled,
+}: {
+  enabled: ArchId[];
+  onSetEnabled: (ids: ArchId[]) => void;
+  onToggleEnabled: (id: ArchId) => void;
+}) {
+  const allOn = enabled.length === ALL_ARCH_IDS.length;
+  const topOn =
+    enabled.length === TOP_PICKS.length && TOP_PICKS.every((id) => enabled.includes(id));
+
+  return (
+    <div className="space-y-2">
+      <div className="flex items-center justify-between gap-2">
+        <div className="flex items-center gap-1.5">
+          <Label className="text-xs">Platforms to consider</Label>
+        </div>
+        <Badge variant="secondary" className="font-mono tabular-nums text-[10px]">
+          {enabled.length}/{ALL_ARCH_IDS.length}
+        </Badge>
+      </div>
+      <p className="text-[11px] text-muted-foreground">
+        Drop vendors you don't want to work with, or narrow to a shortlist. Removed platforms are
+        skipped in the ranking and report.
+      </p>
+      <div className="flex flex-wrap gap-1.5">
+        <button
+          type="button"
+          onClick={() => onSetEnabled(ALL_ARCH_IDS)}
+          aria-pressed={allOn}
+          className={cn(
+            "inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-[11px] font-medium transition-colors",
+            allOn
+              ? "border-primary bg-primary text-primary-foreground"
+              : "border-border bg-background hover:bg-muted",
+          )}
+        >
+          {allOn && <Check className="h-3 w-3" aria-hidden="true" />}
+          All
+        </button>
+        <button
+          type="button"
+          onClick={() => onSetEnabled(TOP_PICKS)}
+          aria-pressed={topOn}
+          className={cn(
+            "inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-[11px] font-medium transition-colors",
+            topOn
+              ? "border-primary bg-primary text-primary-foreground"
+              : "border-border bg-background hover:bg-muted",
+          )}
+        >
+          {topOn ? (
+            <Check className="h-3 w-3" aria-hidden="true" />
+          ) : (
+            <Star className="h-3 w-3 fill-primary text-primary" aria-hidden="true" />
+          )}
+          Top picks
+        </button>
+        <button
+          type="button"
+          onClick={() => onSetEnabled([])}
+          className="inline-flex items-center gap-1 rounded-full border border-border bg-background px-2.5 py-0.5 text-[11px] font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+        >
+          Clear
+        </button>
+      </div>
+
+      <div className="mt-2 space-y-2">
+        {CATEGORIES.map((cat) => {
+          const inCat = ARCHITECTURES.filter((a) => a.category === cat.id);
+          return (
+            <div key={cat.id}>
+              <div className="mb-1 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+                {cat.label}
+              </div>
+              <div className="flex flex-wrap gap-1">
+                {inCat.map((a) => {
+                  const active = enabled.includes(a.id);
+                  return (
+                    <button
+                      key={a.id}
+                      type="button"
+                      role="switch"
+                      aria-checked={active}
+                      aria-label={`${active ? "Remove" : "Include"} ${a.name}`}
+                      onClick={() => onToggleEnabled(a.id)}
+                      className={cn(
+                        "group inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[11px] font-medium transition-colors",
+                        active
+                          ? "border-primary bg-primary text-primary-foreground"
+                          : "border-border bg-background text-foreground/80 hover:bg-muted",
+                      )}
+                    >
+                      <BrandMark archId={a.id} size="sm" />
+                      <span>{a.short}</span>
+                      {active ? (
+                        <X className="h-2.5 w-2.5 opacity-70 group-hover:opacity-100" aria-hidden="true" />
+                      ) : (
+                        <Plus className="h-2.5 w-2.5 opacity-60" aria-hidden="true" />
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
   );
 }
