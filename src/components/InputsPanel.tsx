@@ -350,7 +350,10 @@ export function InputsPanel({ inputs, onChange }: Props) {
       </div>
 
       <div className="space-y-2">
-        <Label className="text-xs">Compliance</Label>
+        <div className="flex items-center gap-1.5">
+          <Label className="text-xs">Compliance</Label>
+          <FieldHelp title="Compliance" items={HELP.compliance} />
+        </div>
         <div className="flex flex-wrap gap-1.5">
           {COMPLIANCE.map((c) => (
             <Chip
