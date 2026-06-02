@@ -391,6 +391,11 @@ function HeaderSection({ inputs }: { inputs: Inputs }) {
           <div>
             <strong>Time-to-market priority:</strong> {inputs.ttmPriority}/5
           </div>
+          <div>
+            <strong>Hybrid stacks:</strong>{" "}
+            {inputs.allowSplit ? "Included (split frontend hosting)" : "Not included"}
+          </div>
+
         </div>
       </div>
     </SectionWrapper>
