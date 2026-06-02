@@ -16,4 +16,10 @@ export const BRAND: Record<ArchId, { Icon?: IconType; src?: string; color: strin
   "lovable-heroku":     { Icon: SiHeroku,         color: "#430098" },
   "lovable-render":     { Icon: SiRender,         color: "#000000" },
   "lovable-fly":        { Icon: SiFlydotio,       color: "#7B3FE4" },
+  // Hybrids reuse the backend's brand color; the BrandMark renders both halves.
+  "hybrid-cloud-cloudflare":     { src: "/lovable-brand.svg", color: "#E94BD2" },
+  "hybrid-supabase-cloudflare":  { Icon: SiSupabase,          color: "#3ECF8E" },
+  "hybrid-supabase-vercel":      { Icon: SiSupabase,          color: "#3ECF8E" },
+  "hybrid-supabase-netlify":     { Icon: SiSupabase,          color: "#3ECF8E" },
 };
+
