@@ -156,28 +156,26 @@ export function PlatformsConsidered({ enabled, onToggle, onReset, onSetEnabled, 
 
       {excludedArchs.length > 0 && showExcluded && (
         <div className="mt-2.5 border-t border-border/60 pt-2.5">
+          <ul className="flex flex-wrap gap-1.5">
+            {excludedArchs.map((a) => (
+              <li key={a.id}>
+                <button
+                  type="button"
+                  onClick={() => onToggle(a.id)}
+                  aria-label={`Add ${a.short} back to comparison`}
+                  className="group inline-flex items-center gap-1.5 rounded-full border border-dashed border-border bg-transparent px-2.5 py-1 text-xs text-muted-foreground transition-colors hover:border-primary/50 hover:bg-primary/5 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                >
+                  <BrandMark archId={a.id} size="sm" />
+                  <span>{a.short}</span>
+                  <Plus
+                    className="h-3 w-3 text-muted-foreground transition-colors group-hover:text-primary"
+                    aria-hidden="true"
+                  />
+                </button>
+              </li>
+            ))}
+          </ul>
 
-          {showExcluded && (
-            <ul className="mt-2 flex flex-wrap gap-1.5">
-              {excludedArchs.map((a) => (
-                <li key={a.id}>
-                  <button
-                    type="button"
-                    onClick={() => onToggle(a.id)}
-                    aria-label={`Add ${a.short} back to comparison`}
-                    className="group inline-flex items-center gap-1.5 rounded-full border border-dashed border-border bg-transparent px-2.5 py-1 text-xs text-muted-foreground transition-colors hover:border-primary/50 hover:bg-primary/5 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                  >
-                    <BrandMark archId={a.id} size="sm" />
-                    <span>{a.short}</span>
-                    <Plus
-                      className="h-3 w-3 text-muted-foreground transition-colors group-hover:text-primary"
-                      aria-hidden="true"
-                    />
-                  </button>
-                </li>
-              ))}
-            </ul>
-          )}
         </div>
       )}
     </section>
