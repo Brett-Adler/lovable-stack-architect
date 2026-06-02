@@ -199,7 +199,9 @@ function buildMarkdown({ inputs, results: rawResults, excluded = [], userExclude
   lines.push(`- Workloads: ${fmtList(mapLabels(inputs.workloads, WORKLOAD_LABEL))}`);
   lines.push(`- Lock-in tolerance: ${fmtList(mapLabels(inputs.lockInTolerance, LOCKIN_LABEL))}`);
   lines.push(`- Time-to-market priority: ${inputs.ttmPriority}/5`);
+  lines.push(`- Hybrid stacks: ${inputs.allowSplit ? "Included (split frontend hosting)" : "Not included"}`);
   lines.push("");
+
 
   // Methodology
   lines.push(`## Methodology`);
@@ -391,6 +393,11 @@ function HeaderSection({ inputs }: { inputs: Inputs }) {
           <div>
             <strong>Time-to-market priority:</strong> {inputs.ttmPriority}/5
           </div>
+          <div>
+            <strong>Hybrid stacks:</strong>{" "}
+            {inputs.allowSplit ? "Included (split frontend hosting)" : "Not included"}
+          </div>
+
         </div>
       </div>
     </SectionWrapper>
@@ -446,6 +453,7 @@ function TopPickSection({
           <div>
             <div style={{ fontSize: "10px", fontWeight: 700, color: C.primary, letterSpacing: "0.08em", textTransform: "uppercase" }}>
               Recommended {category ? `· ${category.label}` : ""}
+              {top.arch.composition ? " · Hybrid stack" : ""}
             </div>
             <div style={{ fontSize: "20px", fontWeight: 800, marginTop: "2px" }}>
               {top.arch.name}
@@ -453,6 +461,7 @@ function TopPickSection({
             <div style={{ fontSize: "12px", fontStyle: "italic", color: C.muted, marginTop: "2px" }}>
               {top.arch.tagline}
             </div>
+
           </div>
           <div
             style={{

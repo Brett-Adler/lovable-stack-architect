@@ -2,19 +2,23 @@ import { useMemo } from "react";
 import { ARCHITECTURES, type ArchId } from "@/data/architectures";
 import { BrandMark } from "@/components/BrandMark";
 import { Button } from "@/components/ui/button";
-import { Plus, RotateCcw, X } from "lucide-react";
+import { Plus, RotateCcw, Star, X } from "lucide-react";
 import { cn } from "@/lib/utils";
+
+const TOP_PICKS: ArchId[] = ["lovable-cloud", "lovable-supabase", "lovable-vercel", "lovable-aws"];
 
 interface Props {
   enabled: ArchId[];
   onToggle: (id: ArchId) => void;
   onReset: () => void;
+  onSetEnabled?: (ids: ArchId[]) => void;
   /** When false, hybrid (split-services) entries are hidden from the picker. */
   allowSplit?: boolean;
   className?: string;
 }
 
-export function PlatformsConsidered({ enabled, onToggle, onReset, allowSplit = false, className }: Props) {
+
+export function PlatformsConsidered({ enabled, onToggle, onReset, onSetEnabled, allowSplit = false, className }: Props) {
   const catalog = useMemo(
     () => ARCHITECTURES.filter((a) => allowSplit || !a.hybrid),
     [allowSplit],
@@ -53,19 +57,59 @@ export function PlatformsConsidered({ enabled, onToggle, onReset, allowSplit = f
             </>
           )}
         </div>
-        {!isFull && (
-          <Button
-            type="button"
-            variant="ghost"
-            size="sm"
-            className="h-7 gap-1.5 text-xs"
-            onClick={onReset}
-            aria-label="Reset to compare all platforms"
-          >
-            <RotateCcw className="h-3 w-3" aria-hidden="true" />
-            Reset
-          </Button>
-        )}
+        <div className="flex items-center gap-1">
+          {onSetEnabled && (
+            <>
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                className="h-7 gap-1.5 text-xs"
+                onClick={() => onSetEnabled(TOP_PICKS)}
+                aria-label="Limit comparison to top picks"
+              >
+                <Star className="h-3 w-3 fill-primary text-primary" aria-hidden="true" />
+                Top picks
+              </Button>
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                className="h-7 gap-1.5 text-xs"
+                onClick={() => onSetEnabled(catalog.map((a) => a.id))}
+                aria-label="Include all platforms"
+                disabled={isFull}
+              >
+                All
+              </Button>
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                className="h-7 gap-1.5 text-xs text-muted-foreground"
+                onClick={() => onSetEnabled([])}
+                aria-label="Clear all selected platforms"
+                disabled={isEmpty}
+              >
+                Clear
+              </Button>
+            </>
+          )}
+          {!isFull && (
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              className="h-7 gap-1.5 text-xs"
+              onClick={onReset}
+              aria-label="Reset to compare all platforms"
+            >
+              <RotateCcw className="h-3 w-3" aria-hidden="true" />
+              Reset
+            </Button>
+          )}
+        </div>
+
       </div>
 
       {activeArchs.length > 0 && (

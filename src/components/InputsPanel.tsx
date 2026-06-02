@@ -17,11 +17,10 @@ import {
 import { cn } from "@/lib/utils";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { ChevronDown, HelpCircle, Minus, Plus, Check, X, Star, Split } from "lucide-react";
+import { ChevronDown, HelpCircle, Minus, Plus, Split } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
-import { ARCHITECTURES, CATEGORIES, type ArchId } from "@/data/architectures";
-import { BrandMark } from "@/components/BrandMark";
+
 
 
 type HelpItem = { label: string; description: string };
@@ -99,10 +98,8 @@ function FieldHelp({ title, items }: { title: string; items: HelpItem[] }) {
 interface Props {
   inputs: Inputs;
   onChange: (next: Inputs) => void;
-  enabled?: ArchId[];
-  onSetEnabled?: (ids: ArchId[]) => void;
-  onToggleEnabled?: (id: ArchId) => void;
 }
+
 
 const STAGES: { id: Stage; label: string }[] = [
   { id: "prototype", label: "Prototype" },
@@ -185,10 +182,8 @@ function Chip({
   );
 }
 
-const ALL_ARCH_IDS: ArchId[] = ARCHITECTURES.map((a) => a.id);
-const TOP_PICKS: ArchId[] = ["lovable-cloud", "lovable-supabase", "lovable-vercel", "lovable-aws"];
+export function InputsPanel({ inputs, onChange }: Props) {
 
-export function InputsPanel({ inputs, onChange, enabled, onSetEnabled, onToggleEnabled }: Props) {
   const [open, setOpen] = useState(true);
   const update = <K extends keyof Inputs>(key: K, value: Inputs[K]) =>
     onChange({ ...inputs, [key]: value });
@@ -501,15 +496,6 @@ export function InputsPanel({ inputs, onChange, enabled, onSetEnabled, onToggleE
         </p>
       </div>
 
-      {enabled && onSetEnabled && onToggleEnabled && (
-        <PlatformsPicker
-          enabled={enabled}
-          onSetEnabled={onSetEnabled}
-          onToggleEnabled={onToggleEnabled}
-          allowSplit={inputs.allowSplit ?? false}
-        />
-      )}
-
           </div>
         </CollapsibleContent>
       </Collapsible>
@@ -517,125 +503,3 @@ export function InputsPanel({ inputs, onChange, enabled, onSetEnabled, onToggleE
   );
 }
 
-function PlatformsPicker({
-  enabled,
-  onSetEnabled,
-  onToggleEnabled,
-  allowSplit,
-}: {
-  enabled: ArchId[];
-  onSetEnabled: (ids: ArchId[]) => void;
-  onToggleEnabled: (id: ArchId) => void;
-  allowSplit: boolean;
-}) {
-  const visibleArchs = ARCHITECTURES.filter((a) => allowSplit || !a.hybrid);
-  const visibleIds = visibleArchs.map((a) => a.id);
-  const visibleEnabled = enabled.filter((id) => visibleIds.includes(id));
-  const allOn = visibleEnabled.length === visibleIds.length && visibleIds.length > 0;
-  const topOn =
-    visibleEnabled.length === TOP_PICKS.length && TOP_PICKS.every((id) => visibleEnabled.includes(id));
-
-  return (
-    <div className="space-y-2">
-      <div className="flex items-center justify-between gap-2">
-        <div className="flex items-center gap-1.5">
-          <Label className="text-xs">Platforms to consider</Label>
-        </div>
-        <Badge variant="secondary" className="font-mono tabular-nums text-[10px]">
-          {visibleEnabled.length}/{visibleIds.length}
-        </Badge>
-      </div>
-
-      <p className="text-[11px] text-muted-foreground">
-        Drop vendors you don't want to work with, or narrow to a shortlist. Removed platforms are
-        skipped in the ranking and report.
-      </p>
-      <div className="flex flex-wrap gap-1.5">
-        <button
-          type="button"
-          onClick={() => onSetEnabled(visibleIds)}
-          aria-pressed={allOn}
-          className={cn(
-            "inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-[11px] font-medium transition-colors",
-            allOn
-              ? "border-primary bg-primary text-primary-foreground"
-              : "border-border bg-background hover:bg-muted",
-          )}
-        >
-          {allOn && <Check className="h-3 w-3" aria-hidden="true" />}
-          All
-        </button>
-
-        <button
-          type="button"
-          onClick={() => onSetEnabled(TOP_PICKS)}
-          aria-pressed={topOn}
-          className={cn(
-            "inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-[11px] font-medium transition-colors",
-            topOn
-              ? "border-primary bg-primary text-primary-foreground"
-              : "border-border bg-background hover:bg-muted",
-          )}
-        >
-          {topOn ? (
-            <Check className="h-3 w-3" aria-hidden="true" />
-          ) : (
-            <Star className="h-3 w-3 fill-primary text-primary" aria-hidden="true" />
-          )}
-          Top picks
-        </button>
-        <button
-          type="button"
-          onClick={() => onSetEnabled([])}
-          className="inline-flex items-center gap-1 rounded-full border border-border bg-background px-2.5 py-0.5 text-[11px] font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-        >
-          Clear
-        </button>
-      </div>
-
-      <div className="mt-2 space-y-2">
-        {CATEGORIES.map((cat) => {
-          const inCat = visibleArchs.filter((a) => a.category === cat.id);
-          if (inCat.length === 0) return null;
-          return (
-            <div key={cat.id}>
-
-              <div className="mb-1 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
-                {cat.label}
-              </div>
-              <div className="flex flex-wrap gap-1">
-                {inCat.map((a) => {
-                  const active = enabled.includes(a.id);
-                  return (
-                    <button
-                      key={a.id}
-                      type="button"
-                      role="switch"
-                      aria-checked={active}
-                      aria-label={`${active ? "Remove" : "Include"} ${a.name}`}
-                      onClick={() => onToggleEnabled(a.id)}
-                      className={cn(
-                        "group inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[11px] font-medium transition-colors",
-                        active
-                          ? "border-primary bg-primary text-primary-foreground"
-                          : "border-border bg-background text-foreground/80 hover:bg-muted",
-                      )}
-                    >
-                      <BrandMark archId={a.id} size="sm" />
-                      <span>{a.short}</span>
-                      {active ? (
-                        <X className="h-2.5 w-2.5 opacity-70 group-hover:opacity-100" aria-hidden="true" />
-                      ) : (
-                        <Plus className="h-2.5 w-2.5 opacity-60" aria-hidden="true" />
-                      )}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-          );
-        })}
-      </div>
-    </div>
-  );
-}
