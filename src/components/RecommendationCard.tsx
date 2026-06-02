@@ -1,24 +1,56 @@
 import type { Inputs, RankedResult } from "@/lib/scoring";
 import { tradeoffVs } from "@/lib/scoring";
-import type { Architecture } from "@/data/architectures";
+import type { ArchId, Architecture } from "@/data/architectures";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Link } from "react-router-dom";
-import { CheckCircle2, Info, ShieldAlert, Users } from "lucide-react";
+import { CheckCircle2, Info, ShieldAlert, Users, X, Sparkles } from "lucide-react";
 import { BrandMark } from "@/components/BrandMark";
 
 interface Props {
   results: RankedResult[];
   inputs: Inputs;
   excluded?: { arch: Architecture; reason: string }[];
+  userExcluded?: { arch: Architecture; reason: string }[];
   isNonTechnical?: boolean;
+  onExclude?: (id: ArchId) => void;
+  onResetEnabled?: () => void;
 }
 
-export function RecommendationCard({ results, inputs, excluded = [], isNonTechnical = false }: Props) {
+export function RecommendationCard({
+  results,
+  inputs,
+  excluded = [],
+  userExcluded = [],
+  isNonTechnical = false,
+  onExclude,
+  onResetEnabled,
+}: Props) {
   if (!results.length) {
+    const filteredOut = userExcluded.length > 0;
     return (
-      <div className="rounded-2xl border border-dashed border-border bg-card p-6 text-sm text-muted-foreground">
-        No architecture meets your hard requirements. Loosen the compliance filter to see options.
+      <div className="rounded-2xl border border-dashed border-border bg-card p-6 text-sm">
+        <div className="flex items-start gap-3">
+          <Sparkles className="mt-0.5 h-5 w-5 shrink-0 text-primary" aria-hidden="true" />
+          <div className="space-y-2">
+            <p className="font-medium text-foreground">
+              {filteredOut
+                ? "You've filtered out every platform."
+                : "No architecture meets your hard requirements."}
+            </p>
+            <p className="text-muted-foreground">
+              {filteredOut
+                ? "Re-enable at least one option in the \u201CPlatforms to consider\u201D picker (or click below to bring them all back) to see a recommendation."
+                : "Loosen the compliance filter to see options."}
+            </p>
+            {filteredOut && onResetEnabled && (
+              <Button type="button" size="sm" variant="outline" onClick={onResetEnabled}>
+                Re-enable all platforms
+              </Button>
+            )}
+          </div>
+        </div>
       </div>
     );
   }
