@@ -226,11 +226,12 @@ function buildMarkdown({ inputs, results: rawResults, excluded = [], userExclude
 // so section breaks always land cleanly.
 type SectionKey =
   | "header"
+  | "inputs"
+  | "platforms"
   | "top-pick"
   | "runners"
   | "ranked"
   | "matrix"
-  | "inputs"
   | "methodology";
 
 function SectionWrapper({
@@ -267,7 +268,8 @@ function H1({ children }: { children: React.ReactNode }) {
     </h1>
   );
 }
-function H2({ children }: { children: React.ReactNode }) {
+/** Section heading with optional numbered step badge to mirror the web app's 3-step flow. */
+function H2({ children, step }: { children: React.ReactNode; step?: 1 | 2 | 3 }) {
   return (
     <h2
       style={{
@@ -277,9 +279,32 @@ function H2({ children }: { children: React.ReactNode }) {
         color: C.text,
         borderBottom: `2px solid ${C.border}`,
         paddingBottom: "6px",
+        display: "flex",
+        alignItems: "center",
+        gap: "10px",
       }}
     >
-      {children}
+      {step != null && (
+        <span
+          aria-hidden="true"
+          style={{
+            display: "inline-flex",
+            alignItems: "center",
+            justifyContent: "center",
+            width: "22px",
+            height: "22px",
+            borderRadius: "999px",
+            background: C.text,
+            color: "#ffffff",
+            fontSize: "12px",
+            fontWeight: 800,
+            fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace",
+          }}
+        >
+          {step}
+        </span>
+      )}
+      <span>{children}</span>
     </h2>
   );
 }
@@ -299,6 +324,7 @@ function H3({ children }: { children: React.ReactNode }) {
     </h3>
   );
 }
+
 
 function BrandBar({ subtitle }: { subtitle: string }) {
   return (
@@ -421,7 +447,7 @@ function TopPickSection({
 
   return (
     <SectionWrapper id="top-pick">
-      <H2>Top pick</H2>
+      <H2 step={3}>Your recommendation</H2>
 
       {excluded.length > 0 && (
         <div
@@ -798,7 +824,7 @@ function InputsAppendixSection({ inputs }: { inputs: Inputs }) {
 
   return (
     <SectionWrapper id="inputs">
-      <H2>Project inputs (detailed)</H2>
+      <H2 step={1}>Project inputs</H2>
       <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "11px" }}>
         <thead>
           <tr style={{ background: C.mutedBg }}>
@@ -827,6 +853,64 @@ function InputsAppendixSection({ inputs }: { inputs: Inputs }) {
           ))}
         </tbody>
       </table>
+    </SectionWrapper>
+  );
+}
+
+function PlatformsConsideredSection({
+  results,
+  excluded,
+  userExcluded,
+}: {
+  results: RankedResult[];
+  excluded: { arch: Architecture; reason: string }[];
+  userExcluded: { arch: Architecture; reason: string }[];
+}) {
+  return (
+    <SectionWrapper id="platforms">
+      <H2 step={2}>Platforms considered</H2>
+      <p style={{ margin: "0 0 10px", fontSize: "12px", color: C.muted }}>
+        These are the platforms scored against your inputs. Anything excluded was either hidden by a
+        hard compliance requirement or removed from the comparison by you.
+      </p>
+
+      <H3>Compared ({results.length})</H3>
+      <ul style={{ margin: 0, paddingLeft: "20px" }}>
+        {results.map((r) => (
+          <li key={r.arch.id} style={{ marginBottom: "3px" }}>
+            <strong>{r.arch.name}</strong>{" "}
+            <span style={{ color: C.muted }}>— {r.arch.tagline}</span>
+          </li>
+        ))}
+      </ul>
+
+      {excluded.length > 0 && (
+        <>
+          <H3>Hidden by compliance ({excluded.length})</H3>
+          <ul style={{ margin: 0, paddingLeft: "20px" }}>
+            {excluded.map((e) => (
+              <li key={e.arch.id} style={{ marginBottom: "3px" }}>
+                <strong>{e.arch.name}</strong>{" "}
+                <span style={{ color: C.muted }}>— {e.reason}</span>
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
+
+      {userExcluded.length > 0 && (
+        <>
+          <H3>Removed by your filter ({userExcluded.length})</H3>
+          <ul style={{ margin: 0, paddingLeft: "20px" }}>
+            {userExcluded.map((e) => (
+              <li key={e.arch.id} style={{ marginBottom: "3px" }}>
+                <strong>{e.arch.name}</strong>{" "}
+                <span style={{ color: C.muted }}>— {e.arch.tagline}</span>
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
     </SectionWrapper>
   );
 }
@@ -1180,6 +1264,15 @@ export function ReportExport(props: Props) {
           >
             <div ref={pdfRootRef}>
               <HeaderSection inputs={props.inputs} />
+              {/* Step 1 — Project inputs */}
+              <InputsAppendixSection inputs={props.inputs} />
+              {/* Step 2 — Platforms considered */}
+              <PlatformsConsideredSection
+                results={filteredResults}
+                excluded={excluded}
+                userExcluded={userExcluded}
+              />
+              {/* Step 3 — Recommendation */}
               <TopPickSection
                 top={top}
                 runner={filteredResults[1]}
@@ -1187,10 +1280,11 @@ export function ReportExport(props: Props) {
                 excluded={excluded}
               />
               {runners.length > 0 && <RunnersSection runners={runners} />}
+              {/* Appendix — supporting evidence */}
               <RankedSection results={filteredResults} excluded={excluded} userExcluded={userExcluded} />
               <MatrixSection results={filteredResults} topId={top.arch.id} />
-              <InputsAppendixSection inputs={props.inputs} />
               <MethodologySection results={filteredResults} />
+
             </div>
           </div>,
           document.body,

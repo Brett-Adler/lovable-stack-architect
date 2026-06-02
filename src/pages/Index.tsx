@@ -7,7 +7,7 @@ import { PlatformsConsidered } from "@/components/PlatformsConsidered";
 import { CostEstimate } from "@/components/CostEstimate";
 import { ArchitectureDiagram } from "@/components/ArchitectureDiagram";
 import { ReportExport } from "@/components/ReportExport";
-import { SlidersHorizontal, Sparkle, Columns3, Sparkles, ShieldAlert } from "lucide-react";
+import { SlidersHorizontal, Sparkle, Columns3, ShieldAlert } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
@@ -72,6 +72,57 @@ function loadState(): { state: PersistedState; shareError: boolean } {
   };
 }
 
+/** Step section shell — numbered badge + title + subtitle, consistent across steps 1/2/3. */
+function StepShell({
+  number,
+  title,
+  subtitle,
+  id,
+  labelledBy,
+  hidden,
+  className,
+  children,
+}: {
+  number: 1 | 2 | 3;
+  title: string;
+  subtitle: string;
+  id: string;
+  labelledBy: string;
+  hidden?: boolean;
+  className?: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <section
+      id={id}
+      role="tabpanel"
+      aria-labelledby={labelledBy}
+      hidden={hidden}
+      className={cn("min-w-0", hidden ? "hidden md:!block" : "block", className)}
+    >
+      <header className="mb-4 sm:mb-5">
+        <div className="flex items-center gap-3">
+          <span
+            aria-hidden="true"
+            className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-foreground text-xs font-bold tabular-nums text-background sm:h-8 sm:w-8 sm:text-sm"
+          >
+            {number}
+          </span>
+          <h2
+            id={labelledBy}
+            className="text-lg font-bold tracking-[-0.01em] text-foreground sm:text-xl"
+          >
+            <span className="sr-only">Step {number}: </span>
+            {title}
+          </h2>
+        </div>
+        <p className="mt-1.5 text-sm text-muted-foreground sm:ml-11">{subtitle}</p>
+      </header>
+      {children}
+    </section>
+  );
+}
+
 const Index = () => {
   const [state, setState] = useState<PersistedState>(() => {
     const { state: s, shareError } = loadState();
@@ -81,8 +132,8 @@ const Index = () => {
     }
     return { ...s, inputs: migrateInputs(s.inputs), enabled: sanitize(s.enabled) };
   });
-  type TabId = "inputs" | "recommendation" | "comparison";
-  const VALID_TABS: readonly TabId[] = ["inputs", "recommendation", "comparison"] as const;
+  type TabId = "inputs" | "comparison" | "recommendation";
+  const VALID_TABS: readonly TabId[] = ["inputs", "comparison", "recommendation"] as const;
   const getInitialTab = (): TabId => {
     if (typeof window === "undefined") return "inputs";
     const params = new URLSearchParams(window.location.search);
@@ -162,42 +213,35 @@ const Index = () => {
       </SiteHeader>
       <h1 className="sr-only">Lovable Stack Architect — Pick the right backend stack for your Lovable app</h1>
 
-      {/* Hero band — matches Landing/Methodology language */}
+      {/* Tight hero — three-step framing */}
       <section className="no-print relative overflow-hidden">
         <div
           aria-hidden="true"
           className="pointer-events-none absolute left-1/2 top-[-50%] -z-0 hidden h-[260px] w-[900px] -translate-x-1/2 bg-gradient-glow blur-3xl md:block"
         />
-        <div className="relative z-10 mx-auto w-full max-w-[1800px] px-3 pt-3 pb-2 sm:px-6 sm:pt-6 sm:pb-4 2xl:px-10">
+        <div className="relative z-10 mx-auto w-full max-w-[1800px] px-3 pt-3 pb-2 sm:px-6 sm:pt-6 sm:pb-3 2xl:px-10">
           <div className="mx-auto max-w-3xl text-center">
-            <div className="mx-auto mb-2 inline-flex items-center gap-2 rounded-full border border-border bg-card/70 px-3 py-1 text-xs font-medium text-muted-foreground backdrop-blur-sm sm:mb-3">
-              <Sparkles className="h-3 w-3 text-brand-magenta" aria-hidden="true" />
-              Stack comparator
-            </div>
-            <h2 className="text-xl font-extrabold leading-[1.1] tracking-[-0.03em] text-foreground sm:text-3xl md:text-4xl">
-              Tune your stack, see the{" "}
-              <span className="text-gradient">right pick</span>
+            <h2 className="text-2xl font-extrabold leading-[1.1] tracking-[-0.03em] text-foreground sm:text-3xl md:text-4xl">
+              Tune your stack, see the <span className="text-gradient">right pick</span>
             </h2>
-            <p className="mx-auto mt-1.5 max-w-xl text-xs text-muted-foreground sm:mt-2 sm:text-sm">
-              Adjust your stage, team, budget, and workloads on the left. The recommendation,
-              cost band, and rankings update live.
+            <p className="mx-auto mt-2 max-w-xl text-xs text-muted-foreground sm:text-sm">
+              Three steps: tell us about your project, choose what to compare, see your recommendation.
             </p>
           </div>
         </div>
       </section>
 
-
-      {/* Mobile section pill nav */}
+      {/* Mobile step pill nav — mirrors the three step sections */}
       <nav
         className="no-print sticky top-12 z-30 mx-auto w-full max-w-[1800px] px-3 pt-4 sm:top-14 sm:px-6 md:hidden"
-        aria-label="Switch between Inputs, Recommendation, and Comparison sections"
+        aria-label="Switch between project steps"
       >
         <div
           role="tablist"
-          aria-label="App sections"
+          aria-label="Step sections"
           className="mx-auto grid max-w-md grid-cols-3 gap-1 rounded-full border border-border/60 bg-card/80 p-1 shadow-sm backdrop-blur"
           onKeyDown={(e) => {
-            const order = ["inputs", "recommendation", "comparison"] as const;
+            const order = ["inputs", "comparison", "recommendation"] as const;
             const idx = order.indexOf(mobileTab);
             if (e.key === "ArrowRight") {
               e.preventDefault();
@@ -215,10 +259,10 @@ const Index = () => {
           }}
         >
           {([
-            { id: "inputs", label: "Inputs", Icon: SlidersHorizontal },
-            { id: "recommendation", label: "Pick", Icon: Sparkle },
-            { id: "comparison", label: "Compare", Icon: Columns3 },
-          ] as const).map(({ id, label, Icon }) => {
+            { id: "inputs", num: 1, label: "Inputs", Icon: SlidersHorizontal },
+            { id: "comparison", num: 2, label: "Compare", Icon: Columns3 },
+            { id: "recommendation", num: 3, label: "Pick", Icon: Sparkle },
+          ] as const).map(({ id, num, label, Icon }) => {
             const active = mobileTab === id;
             return (
               <button
@@ -243,120 +287,115 @@ const Index = () => {
                 )}
               >
                 <Icon aria-hidden="true" className="h-4 w-4" />
-                <span>{label}</span>
-                {active && <span className="sr-only"> (current section)</span>}
+                <span>
+                  <span className="opacity-70">{num}.</span> {label}
+                </span>
+                {active && <span className="sr-only"> (current step)</span>}
               </button>
             );
           })}
         </div>
       </nav>
 
-      <div className="mx-auto w-full max-w-[1800px] px-3 pt-2 sm:px-6 sm:pt-4 2xl:px-10">
-        <PlatformsConsidered
-          enabled={enabled}
-          onToggle={toggleArch}
-          onReset={() => setEnabled(DEFAULT_ENABLED)}
-          onSetEnabled={setEnabled}
-          allowSplit={inputs.allowSplit ?? false}
-        />
-
-        {excluded.length > 0 && (
-          <div role="status" className="mt-2 flex items-start gap-2 rounded-xl border border-warning/40 bg-warning/5 px-3 py-2 text-xs text-foreground/90">
-            <ShieldAlert className="mt-0.5 h-3.5 w-3.5 shrink-0 text-warning" aria-hidden="true" />
-            <span>
-              <span className="font-medium">{excluded.length}</span> option{excluded.length === 1 ? "" : "s"} hidden by your compliance requirement
-              ({excluded.map((e) => e.arch.short).join(", ")}). Adjust compliance to compare them.
-            </span>
-          </div>
-        )}
-      </div>
-
-
-      <main id="main-content" className="mx-auto grid w-full max-w-[1800px] items-start gap-4 px-3 py-4 sm:gap-6 sm:px-6 sm:py-6 md:grid-cols-[240px_minmax(0,1fr)] lg:grid-cols-[260px_minmax(0,1fr)_320px] xl:grid-cols-[300px_minmax(0,1fr)_360px] 2xl:gap-8 2xl:px-10 2xl:grid-cols-[320px_minmax(0,1fr)_400px]">
-
-        <div
+      <main
+        id="main-content"
+        className="mx-auto w-full max-w-[1800px] space-y-8 px-3 py-4 sm:space-y-10 sm:px-6 sm:py-6 md:space-y-12 2xl:px-10"
+      >
+        {/* STEP 1 — Project inputs */}
+        <StepShell
+          number={1}
+          title="Tell us about your project"
+          subtitle="Stage, team, budget, compliance, and workloads. Every answer nudges the scoring."
           id="panel-inputs"
-          role="tabpanel"
-          aria-labelledby="tab-inputs"
+          labelledBy="tab-inputs"
           hidden={mobileTab !== "inputs"}
-          className={cn(
-            "min-w-0 md:!block md:row-span-2 lg:row-span-1",
-            mobileTab === "inputs" ? "block" : "hidden",
-          )}
         >
-          <InputsPanel
-            inputs={inputs}
-            onChange={setInputs}
-          />
+          <InputsPanel inputs={inputs} onChange={setInputs} />
+        </StepShell>
 
-        </div>
-
-        <section
+        {/* STEP 2 — Choose what to compare */}
+        <StepShell
+          number={2}
+          title="Choose what to compare"
+          subtitle="Pick which platforms to weigh against each other. Exclusions hide them from the matrix and recommendation."
           id="panel-comparison"
-          role="tabpanel"
-          aria-labelledby="tab-comparison"
+          labelledBy="tab-comparison"
           hidden={mobileTab !== "comparison"}
-          className={cn(
-            "order-3 min-w-0 space-y-4 sm:space-y-6 md:order-2 md:!block lg:order-none",
-            mobileTab === "comparison" ? "block" : "hidden",
-          )}
         >
-          <ComparisonMatrix view="controls" enabled={enabled} topId={topId} onToggle={toggleArch} onSetEnabled={setEnabled} />
+          <div className="space-y-3">
+            <PlatformsConsidered
+              enabled={enabled}
+              onToggle={toggleArch}
+              onReset={() => setEnabled(DEFAULT_ENABLED)}
+              onSetEnabled={setEnabled}
+              allowSplit={inputs.allowSplit ?? false}
+            />
 
-        </section>
+            {excluded.length > 0 && (
+              <div
+                role="status"
+                className="flex items-start gap-2 rounded-xl border border-warning/40 bg-warning/5 px-3 py-2 text-xs text-foreground/90"
+              >
+                <ShieldAlert className="mt-0.5 h-3.5 w-3.5 shrink-0 text-warning" aria-hidden="true" />
+                <span>
+                  <span className="font-medium">{excluded.length}</span> option
+                  {excluded.length === 1 ? "" : "s"} hidden by your compliance requirement (
+                  {excluded.map((e) => e.arch.short).join(", ")}). Adjust compliance to compare them.
+                </span>
+              </div>
+            )}
 
+            <ComparisonMatrix
+              view="controls"
+              enabled={enabled}
+              topId={topId}
+              onToggle={toggleArch}
+              onSetEnabled={setEnabled}
+            />
+          </div>
+        </StepShell>
 
-        <aside
+        {/* STEP 3 — Recommendation */}
+        <StepShell
+          number={3}
+          title="Your recommendation"
+          subtitle="Based on your inputs and the platforms you're comparing. Updates live as you tweak steps 1 and 2."
           id="panel-recommendation"
-          role="tabpanel"
-          aria-labelledby="tab-recommendation"
-          aria-label="Recommendation"
+          labelledBy="tab-recommendation"
           hidden={mobileTab !== "recommendation"}
-          className={cn(
-            "order-2 min-w-0 space-y-4 sm:space-y-6 md:order-1 md:!block md:col-start-2 lg:order-none lg:col-start-auto",
-            mobileTab === "recommendation" ? "block" : "hidden",
-          )}
         >
-          <RecommendationCard
-            results={results}
-            inputs={inputs}
-            excluded={excluded}
-            userExcluded={userExcluded}
-            isNonTechnical={isNonTechnical}
-            onExclude={toggleArch}
-            onResetEnabled={() => setEnabled(DEFAULT_ENABLED)}
-          />
+          <div className="grid gap-4 sm:gap-6 lg:grid-cols-[minmax(0,1fr)_360px] xl:grid-cols-[minmax(0,1fr)_400px]">
+            <div className="min-w-0 space-y-4 sm:space-y-6">
+              <RecommendationCard
+                results={results}
+                inputs={inputs}
+                excluded={excluded}
+                userExcluded={userExcluded}
+                isNonTechnical={isNonTechnical}
+                onExclude={toggleArch}
+                onResetEnabled={() => setEnabled(DEFAULT_ENABLED)}
+              />
+            </div>
+            <aside aria-label="Cost & scaling for top pick" className="min-w-0 space-y-4 sm:space-y-6">
+              {topId && <CostEstimate archId={topId} inputs={inputs} enabled={enabled} topId={topId} />}
+            </aside>
+          </div>
 
-          {topId && <CostEstimate archId={topId} inputs={inputs} enabled={enabled} topId={topId} />}
-
-
-
-          <p className="text-[11px] leading-relaxed text-muted-foreground">
-            All options shown assume Lovable handles design, frontend dev, testing, and deployment.
-            Costs are curated bands, not live quotes — verify against current pricing before committing.
-          </p>
-
-          {/* On mobile, show the diagram inside the Pick tab so users see it with the recommendation */}
           {topId && (
-            <div className="md:hidden">
+            <div className="mt-4 sm:mt-6">
               <ArchitectureDiagram archId={topId} inputs={inputs} />
             </div>
           )}
-        </aside>
+
+          <p className="mt-4 text-[11px] leading-relaxed text-muted-foreground">
+            All options shown assume Lovable handles design, frontend dev, testing, and deployment.
+            Costs are curated bands, not live quotes — verify against current pricing before committing.
+          </p>
+        </StepShell>
       </main>
 
-      {topId && (
-        <section
-          aria-labelledby="architecture-diagram-heading"
-          className="mx-auto hidden w-full max-w-[1800px] px-3 pb-2 sm:px-6 md:block 2xl:px-10"
-        >
-          <h2 id="architecture-diagram-heading" className="sr-only">Architecture diagram for top pick</h2>
-          <ArchitectureDiagram archId={topId} inputs={inputs} />
-        </section>
-      )}
-
+      {/* Supporting evidence — full matrix below the three steps */}
       <section
-
         aria-labelledby="full-matrix-heading"
         hidden={mobileTab !== "comparison"}
         className={cn(
@@ -370,14 +409,13 @@ const Index = () => {
             Full comparison <span className="text-gradient">matrix</span>
           </h2>
           <p className="mx-auto mt-2 max-w-2xl text-sm text-muted-foreground sm:text-base">
-            See how every option scores on the same criteria. Your top pick is highlighted, and you can scroll horizontally to compare all enabled stacks side by side.
+            Supporting evidence behind the recommendation. See how every option scores on the same criteria — your top pick is highlighted.
           </p>
         </header>
         <ComparisonMatrix view="matrix" enabled={enabled} topId={topId} onToggle={toggleArch} onSetEnabled={setEnabled} />
       </section>
 
       <SiteFooter />
-
     </div>
   );
 };
