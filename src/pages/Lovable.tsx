@@ -1,5 +1,16 @@
 import { Link } from "react-router-dom";
-import { ArrowRight, ExternalLink, GitFork, Pencil, Rocket, Sparkles } from "lucide-react";
+import {
+  ArrowRight,
+  BarChart3,
+  CheckCircle,
+  ExternalLink,
+  GitFork,
+  Layers,
+  Pencil,
+  Rocket,
+  Share2,
+  Sparkles,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
@@ -21,6 +32,39 @@ const HIGHLIGHTS = [
   "Shareable scenario URLs and one-click Markdown / PDF export",
   "Preset scenarios so users land on something meaningful",
   "Full methodology page — nothing about the scoring is hidden",
+];
+
+const FEATURES = [
+  {
+    icon: CheckCircle,
+    title: "Weighted scoring",
+    desc: "Enter your project; get a ranked, explainable pick — not a gut call.",
+  },
+  {
+    icon: BarChart3,
+    title: "Side-by-side matrix",
+    desc: "Compare every option across the same criteria in one view.",
+  },
+  {
+    icon: Layers,
+    title: "Architecture diagram",
+    desc: "Auto-generated top-pick diagram you can screenshot or export.",
+  },
+  {
+    icon: Share2,
+    title: "Shareable + exportable",
+    desc: "Copy a link or export a PDF report with one click.",
+  },
+  {
+    icon: Pencil,
+    title: "Editable rubric",
+    desc: "Open criteria, open weights, open scoring — nothing is hidden.",
+  },
+  {
+    icon: Rocket,
+    title: "Remix-ready",
+    desc: "Swap in any decision space and ship your own comparator in an afternoon.",
+  },
 ];
 
 const GALLERY = [
@@ -127,6 +171,21 @@ export default function Lovable() {
                   <ArrowRight className="h-4 w-4" />
                 </a>
               </Button>
+            </div>
+            <div className="mt-12 grid gap-4 sm:grid-cols-3">
+              {FEATURES.map((f) => {
+                const Icon = f.icon;
+                return (
+                  <div
+                    key={f.title}
+                    className="flex flex-col items-start rounded-xl border border-border/60 bg-card/60 p-4 text-left backdrop-blur"
+                  >
+                    <Icon className="h-5 w-5 text-primary" aria-hidden="true" />
+                    <span className="mt-2 text-sm font-semibold text-foreground">{f.title}</span>
+                    <span className="mt-1 text-xs text-muted-foreground leading-relaxed">{f.desc}</span>
+                  </div>
+                );
+              })}
             </div>
             <p className="mt-6 text-xs text-muted-foreground">
               Live at <a href={SITE_URL} className="underline-offset-2 hover:underline">{SITE_URL.replace(/^https?:\/\//, "")}</a>
