@@ -1,7 +1,4 @@
 import { Link, useLocation } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { ExternalLink } from "lucide-react";
-import { LOVABLE_REMIX_URL } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 
 const NAV_ITEMS = [
@@ -56,15 +53,6 @@ export function SiteHeader({ children }: { children?: React.ReactNode }) {
 
         <div className="flex shrink-0 items-center gap-2">
           {children}
-          {LOVABLE_REMIX_URL && (
-            <Button asChild variant="outline" size="sm" className="h-8 gap-1.5 px-2 sm:h-9 sm:px-3">
-              <a href={LOVABLE_REMIX_URL} target="_blank" rel="noopener noreferrer">
-                <ExternalLink className="h-4 w-4" />
-                <span className="hidden sm:inline">Use this template</span>
-                <span className="sr-only sm:hidden">Use this template</span>
-              </a>
-            </Button>
-          )}
         </div>
       </div>
     </header>
