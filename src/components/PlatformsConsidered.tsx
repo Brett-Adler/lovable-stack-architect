@@ -110,7 +110,7 @@ export function PlatformsConsidered({ enabled, onToggle, onReset, onSetEnabled, 
                 className={cn("h-3 w-3 transition-transform", showExcluded ? "rotate-0" : "-rotate-90")}
                 aria-hidden="true"
               />
-              {showExcluded ? "Hide" : "Show"} excluded ({excludedArchs.length})
+              {showExcluded ? "Hide" : "Show"} {excludedArchs.length} excluded
             </Button>
           )}
           {!isFull && (
