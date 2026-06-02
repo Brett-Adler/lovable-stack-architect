@@ -7,7 +7,7 @@ import { PlatformsConsidered } from "@/components/PlatformsConsidered";
 import { CostEstimate } from "@/components/CostEstimate";
 import { ArchitectureDiagram } from "@/components/ArchitectureDiagram";
 import { ReportExport } from "@/components/ReportExport";
-import { SlidersHorizontal, Sparkle, Columns3, Sparkles } from "lucide-react";
+import { SlidersHorizontal, Sparkle, Columns3, Sparkles, ShieldAlert } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
