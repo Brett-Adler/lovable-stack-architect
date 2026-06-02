@@ -326,7 +326,10 @@ export function InputsPanel({ inputs, onChange }: Props) {
       </div>
 
       <div className="space-y-2">
-        <Label className="text-xs">Lock-in tolerance</Label>
+        <div className="flex items-center gap-1.5">
+          <Label className="text-xs">Lock-in tolerance</Label>
+          <FieldHelp title="Lock-in tolerance" items={HELP.lockIn} />
+        </div>
         <div className="flex flex-wrap gap-1.5">
           {LOCK_INS.map((l) => (
             <Chip
