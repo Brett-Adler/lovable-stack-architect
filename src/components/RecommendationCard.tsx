@@ -86,16 +86,6 @@ export function RecommendationCard({
           </span>
         </div>
       )}
-      {userExcluded.length > 0 && (
-        <div className="flex items-start gap-2 rounded-xl border border-border bg-muted/30 px-3 py-2 text-xs text-muted-foreground">
-          <X className="mt-0.5 h-3.5 w-3.5 shrink-0 text-foreground/60" />
-          <span>
-            <span className="font-medium text-foreground">{userExcluded.length}</span>{" "}
-            platform{userExcluded.length === 1 ? "" : "s"} removed by your filter (
-            {userExcluded.map((e) => e.arch.short).join(", ")}).
-          </span>
-        </div>
-      )}
       <div className="rounded-2xl border border-primary/30 bg-gradient-primary p-[1px] shadow-elegant">
         <div className="rounded-[calc(theme(borderRadius.2xl)-1px)] bg-card p-5">
           <div className="flex items-start justify-between gap-3">
