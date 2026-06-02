@@ -96,6 +96,23 @@ export function PlatformsConsidered({ enabled, onToggle, onReset, onSetEnabled, 
               </Button>
             </>
           )}
+          {excludedArchs.length > 0 && (
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              className="h-7 gap-1.5 text-xs"
+              onClick={() => setShowExcluded((v) => !v)}
+              aria-expanded={showExcluded}
+              aria-label={showExcluded ? "Hide excluded platforms" : "Show excluded platforms"}
+            >
+              <ChevronDown
+                className={cn("h-3 w-3 transition-transform", showExcluded ? "rotate-0" : "-rotate-90")}
+                aria-hidden="true"
+              />
+              {showExcluded ? "Hide" : "Show"} excluded ({excludedArchs.length})
+            </Button>
+          )}
           {!isFull && (
             <Button
               type="button"
@@ -110,6 +127,8 @@ export function PlatformsConsidered({ enabled, onToggle, onReset, onSetEnabled, 
             </Button>
           )}
         </div>
+
+
 
       </div>
 
