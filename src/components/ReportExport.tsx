@@ -401,14 +401,9 @@ export function ReportExport(props: Props) {
     }
   };
 
-  const openFullReport = () => {
-    const win = window.open("", "_blank", "noopener,noreferrer");
-    if (!win) {
-      toast.error("Pop-up blocked", { description: "Allow pop-ups to open the full report." });
-      return;
-    }
+  const buildReportHtml = () => {
     const body = renderToStaticMarkup(<ReportContent {...props} />);
-    win.document.write(`<!doctype html>
+    return `<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8" />
