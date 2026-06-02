@@ -31,6 +31,9 @@ export interface Inputs {
   workloads: Workload[];
   lockInTolerance: LockInTolerance[];
   ttmPriority: number; // 1-5, how important is time-to-market
+  // When false (default), hybrid/split stacks are filtered out of the
+  // catalog before scoring. The user opts into split mode in InputsPanel.
+  allowSplit?: boolean;
 }
 
 export const DEFAULT_INPUTS: Inputs = {
@@ -42,7 +45,9 @@ export const DEFAULT_INPUTS: Inputs = {
   workloads: ["crud"],
   lockInTolerance: ["medium"],
   ttmPriority: 5,
+  allowSplit: false,
 };
+
 
 // Derive criterion weights (0–3) from inputs.
 //
