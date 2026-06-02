@@ -299,36 +299,48 @@ const Methodology = () => {
             subtitle="Every architecture is scored 1–5 on each of these. Tap a column in the comparator to see why it scored the way it did."
           />
           <ScoreLegend />
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <ol className="overflow-hidden rounded-3xl border border-border bg-card shadow-card divide-y divide-border">
             {CRITERIA.map((c, i) => {
               const Icon = CRITERION_ICON[c.id] ?? Sparkles;
               const tint = CRITERION_TINTS[i % CRITERION_TINTS.length];
               const { leader, spreadLabel } = getCriterionStats(c.id);
               return (
-                <div
+                <li
                   key={c.id}
-                  className="group rounded-3xl border border-border bg-card p-6 shadow-card transition-all hover:-translate-y-0.5 hover:shadow-elegant"
+                  className="group flex items-center gap-3 px-4 py-3 transition-colors hover:bg-muted/30 sm:gap-4 sm:px-5"
                 >
-                  <div
-                    className={`mb-4 inline-flex h-11 w-11 items-center justify-center rounded-2xl ${tint} transition-transform group-hover:scale-110`}
+                  <span
+                    className={`hidden h-9 w-9 shrink-0 items-center justify-center rounded-xl sm:inline-flex ${tint}`}
                   >
-                    <Icon className="h-5 w-5" />
-                  </div>
-                  <h3 className="text-base font-semibold text-foreground">{c.label}</h3>
-                  <p className="mt-1.5 text-sm text-muted-foreground">{c.hint}</p>
-                  <div className="mt-4 border-t border-border/60 pt-4">
-                    <Scoreboard criterionId={c.id} />
-                    <div className="mt-3 flex flex-wrap items-center justify-between gap-2">
-                      <LeaderChip archId={leader.id} score={leader.score} />
-                      <span className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
-                        {spreadLabel}
+                    <Icon className="h-4 w-4" />
+                  </span>
+                  <span className="w-5 shrink-0 text-right text-xs font-semibold tabular-nums text-muted-foreground sm:hidden">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-baseline gap-2">
+                      <span className="hidden text-xs font-semibold tabular-nums text-muted-foreground sm:inline">
+                        {String(i + 1).padStart(2, "0")}
                       </span>
+                      <h3 className="truncate text-sm font-semibold text-foreground">{c.label}</h3>
                     </div>
+                    <p className="mt-0.5 line-clamp-2 text-xs text-muted-foreground sm:line-clamp-1">
+                      {c.hint}
+                    </p>
                   </div>
-                </div>
+                  <div className="hidden shrink-0 sm:block">
+                    <Scoreboard criterionId={c.id} />
+                  </div>
+                  <div className="hidden shrink-0 md:block">
+                    <LeaderChip archId={leader.id} score={leader.score} />
+                  </div>
+                  <span className="hidden shrink-0 text-[10px] font-medium uppercase tracking-wider text-muted-foreground lg:inline">
+                    {spreadLabel}
+                  </span>
+                </li>
               );
             })}
-          </div>
+          </ol>
           <div className="mt-10">
             <ScreenshotPlaceholder
               variant="matrix"
