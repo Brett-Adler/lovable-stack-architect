@@ -373,8 +373,8 @@ const Index = () => {
               />
             </div>
           </StepShell>
-          </div>
         </div>
+
 
 
         {/* TAB B — Recommendation: Step 3 self-splits when wide */}
