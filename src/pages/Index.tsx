@@ -430,6 +430,10 @@ const Index = () => {
               </aside>
             </div>
 
+            <div className="mt-4 sm:mt-6">
+              <ReportExport inputs={inputs} results={results} excluded={excluded} userExcluded={userExcluded} shareUrl={shareUrl} />
+            </div>
+
             <p className="mt-4 text-[11px] leading-relaxed text-muted-foreground">
               All options shown assume Lovable handles design, frontend dev, testing, and deployment.
               Costs are curated bands, not live quotes — verify against current pricing before committing.
