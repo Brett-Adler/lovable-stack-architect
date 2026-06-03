@@ -161,7 +161,9 @@ const Index = () => {
     return (VALID_TABS as readonly string[]).includes(t ?? "") ? (t as TabId) : "setup";
   };
   const [tab, setTab] = useState<TabId>(getInitialTab);
+  const { inputs, enabled } = state;
   const [wizardOpen, setWizardOpen] = useState(false);
+
   
 
 
