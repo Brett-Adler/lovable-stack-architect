@@ -10,6 +10,7 @@ import { ReportExport } from "@/components/ReportExport";
 import { SlidersHorizontal, Sparkle, ShieldAlert, HelpCircle, Wand2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SetupWizard } from "@/components/SetupWizard";
+import { ResultsWalkthrough } from "@/components/ResultsWalkthrough";
 import { FullscreenCardDialog } from "@/components/FullscreenCardDialog";
 import { cn } from "@/lib/utils";
 import { SiteHeader } from "@/components/SiteHeader";
@@ -164,6 +165,7 @@ const Index = () => {
   const [tab, setTab] = useState<TabId>(getInitialTab);
   const { inputs, enabled } = state;
   const [wizardOpen, setWizardOpen] = useState(false);
+  const [resultsWalkOpen, setResultsWalkOpen] = useState(false);
 
   
 
@@ -496,7 +498,17 @@ const Index = () => {
         setEnabled={setEnabled}
         toggleArch={toggleArch}
         resetEnabled={() => setEnabled(DEFAULT_ENABLED)}
-        tab={tab}
+        setTab={setTab}
+      />
+      <ResultsWalkthrough
+        open={resultsWalkOpen}
+        onOpenChange={setResultsWalkOpen}
+        inputs={inputs}
+        setInputs={setInputs}
+        enabled={enabled}
+        setEnabled={setEnabled}
+        toggleArch={toggleArch}
+        resetEnabled={() => setEnabled(DEFAULT_ENABLED)}
         setTab={setTab}
       />
       <SiteFooter />
