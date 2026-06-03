@@ -89,7 +89,8 @@ export function ResultsWalkthrough({
       title: "Full comparison matrix",
       subtitle: "Every option scored on the same criteria — your top pick is highlighted.",
       render: () => (
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto px-4 sm:px-0">
+
           <ComparisonMatrix
             view="all"
             enabled={enabled}
@@ -173,49 +174,52 @@ export function ResultsWalkthrough({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="w-[95vw] max-w-[1600px] max-h-[92vh] overflow-y-auto">
-        <DialogHeader>
-          <div className="mb-2 flex items-center justify-between">
-            <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+      <DialogContent className="w-[96vw] max-w-[1600px] max-h-[92vh] overflow-y-auto p-4 sm:p-6">
+        <DialogHeader className="pr-8">
+          <div className="mb-2 flex items-center justify-between gap-2">
+            <span className="text-[11px] sm:text-xs font-medium uppercase tracking-wider text-muted-foreground">
               Step {step + 1} of {total}
             </span>
-            <span className="text-xs text-muted-foreground">Results walkthrough</span>
+            <span className="hidden sm:inline text-xs text-muted-foreground">Results walkthrough</span>
           </div>
           <Progress
             value={((step + 1) / total) * 100}
             aria-label={`Results walkthrough progress: step ${step + 1} of ${total}`}
           />
-          <DialogTitle className="mt-4 text-xl">{current?.title}</DialogTitle>
-          <DialogDescription>{current?.subtitle}</DialogDescription>
+          <DialogTitle className="mt-3 sm:mt-4 text-lg sm:text-xl">{current?.title}</DialogTitle>
+          <DialogDescription className="text-sm">{current?.subtitle}</DialogDescription>
         </DialogHeader>
 
-        <div className="py-4">{current?.render()}</div>
+        <div className={current?.key === "matrix" ? "-mx-4 sm:mx-0 py-3 sm:py-4" : "py-3 sm:py-4"}>
+          {current?.render()}
+        </div>
 
-        <div className="flex items-center justify-between gap-2 border-t border-border pt-4">
+        <div className="flex items-center justify-between gap-2 border-t border-border pt-3 sm:pt-4">
           <Button
             type="button"
             variant="ghost"
+            size="sm"
             onClick={() => setStep((s) => Math.max(0, s - 1))}
             disabled={step === 0}
           >
-            <ArrowLeft className="mr-2 h-4 w-4" aria-hidden="true" />
+            <ArrowLeft className="mr-1 sm:mr-2 h-4 w-4" aria-hidden="true" />
             Back
           </Button>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1 sm:gap-2">
             {!isLast && (
-              <Button type="button" variant="ghost" onClick={() => setStep((s) => Math.min(total - 1, s + 1))}>
+              <Button type="button" variant="ghost" size="sm" onClick={() => setStep((s) => Math.min(total - 1, s + 1))}>
                 Skip
               </Button>
             )}
             {isLast ? (
-              <Button type="button" onClick={finish}>
-                <Check className="mr-2 h-4 w-4" aria-hidden="true" />
+              <Button type="button" size="sm" onClick={finish}>
+                <Check className="mr-1 sm:mr-2 h-4 w-4" aria-hidden="true" />
                 Finish
               </Button>
             ) : (
-              <Button type="button" onClick={() => setStep((s) => Math.min(total - 1, s + 1))}>
+              <Button type="button" size="sm" onClick={() => setStep((s) => Math.min(total - 1, s + 1))}>
                 Next
-                <ArrowRight className="ml-2 h-4 w-4" aria-hidden="true" />
+                <ArrowRight className="ml-1 sm:ml-2 h-4 w-4" aria-hidden="true" />
               </Button>
             )}
           </div>
