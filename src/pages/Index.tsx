@@ -7,7 +7,7 @@ import { PlatformsConsidered } from "@/components/PlatformsConsidered";
 import { CostEstimate } from "@/components/CostEstimate";
 import { ArchitectureDiagram } from "@/components/ArchitectureDiagram";
 import { ReportExport } from "@/components/ReportExport";
-import { SlidersHorizontal, Sparkle, ShieldAlert } from "lucide-react";
+import { SlidersHorizontal, Sparkle, ShieldAlert, HelpCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
@@ -15,7 +15,28 @@ import { SeoHead } from "@/components/SeoHead";
 import { toast } from "sonner";
 import { ARCHITECTURES, type ArchId } from "@/data/architectures";
 import { DEFAULT_INPUTS, type Inputs, rankFull } from "@/lib/scoring";
-import { SetupTourPanel, SetupTourToggle, useSetupTour } from "@/components/SetupTour";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+
+/** Small `?` help affordance — renders next to a heading and opens a popover. */
+function HelpHint({ label, title, body }: { label: string; title?: string; body: string }) {
+  return (
+    <Popover>
+      <PopoverTrigger asChild>
+        <button
+          type="button"
+          aria-label={label}
+          className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-muted-foreground transition hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        >
+          <HelpCircle className="h-4 w-4" aria-hidden="true" />
+        </button>
+      </PopoverTrigger>
+      <PopoverContent side="bottom" align="end" className="max-w-xs text-sm">
+        {title && <p className="mb-1 font-semibold text-foreground">{title}</p>}
+        <p className="text-muted-foreground">{body}</p>
+      </PopoverContent>
+    </Popover>
+  );
+}
 
 
 const STORAGE_KEY = "stack-architect:v2";
