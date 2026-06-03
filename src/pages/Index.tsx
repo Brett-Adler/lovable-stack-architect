@@ -430,9 +430,16 @@ const Index = () => {
         )}
       >
         <header className="mb-8 text-center sm:mb-10">
-          <h2 id="full-matrix-heading" className="text-3xl font-extrabold tracking-[-0.02em] text-foreground sm:text-4xl">
-            Full comparison <span className="text-gradient">matrix</span>
-          </h2>
+          <div className="flex items-center justify-center gap-2">
+            <h2 id="full-matrix-heading" className="text-3xl font-extrabold tracking-[-0.02em] text-foreground sm:text-4xl">
+              Full comparison <span className="text-gradient">matrix</span>
+            </h2>
+            <HelpHint
+              label="Help: Full comparison matrix"
+              title="Full comparison matrix"
+              body="Supporting evidence — every option scored on the same criteria, with your top pick highlighted."
+            />
+          </div>
           <p className="mx-auto mt-2 max-w-2xl text-sm text-muted-foreground sm:text-base">
             Supporting evidence behind the recommendation. See how every option scores on the same criteria — your top pick is highlighted.
           </p>
