@@ -469,6 +469,18 @@ const Index = () => {
         <ComparisonMatrix view="matrix" enabled={enabled} topId={topId} onToggle={toggleArch} onSetEnabled={setEnabled} />
       </section>
 
+      <SetupWizard
+        open={wizardOpen}
+        onOpenChange={setWizardOpen}
+        inputs={inputs}
+        setInputs={setInputs}
+        enabled={enabled}
+        setEnabled={setEnabled}
+        toggleArch={toggleArch}
+        resetEnabled={() => setEnabled(DEFAULT_ENABLED)}
+        tab={tab}
+        setTab={setTab}
+      />
       <SiteFooter />
     </div>
   );
