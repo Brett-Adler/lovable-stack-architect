@@ -233,9 +233,7 @@ const Index = () => {
         description="Compare 11 hosting and backend platforms side by side, plus optional hybrid stacks that split frontend hosting from the backend. Include or exclude any vendor and tune to your stage, budget, team, and workloads."
         path="/app"
       />
-      <SiteHeader>
-        <ReportExport inputs={inputs} results={results} excluded={excluded} userExcluded={userExcluded} shareUrl={shareUrl} />
-      </SiteHeader>
+      <SiteHeader />
       <h1 className="sr-only">Lovable Stack Architect — Pick the right backend stack for your Lovable app</h1>
 
       {/* Tight hero — three-step framing */}
