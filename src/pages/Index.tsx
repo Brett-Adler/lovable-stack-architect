@@ -101,6 +101,7 @@ function StepShell({
   subtitle,
   id,
   className,
+  help,
   children,
 }: {
   number: 1 | 2 | 3;
@@ -108,6 +109,7 @@ function StepShell({
   subtitle: string;
   id?: string;
   className?: string;
+  help?: string;
   children: React.ReactNode;
 }) {
   return (
@@ -124,6 +126,11 @@ function StepShell({
             <span className="sr-only">Step {number}: </span>
             {title}
           </h2>
+          {help && (
+            <span className="ml-auto">
+              <HelpHint label={`Help: ${title}`} title={title} body={help} />
+            </span>
+          )}
         </div>
         <p className="mt-1.5 text-sm text-muted-foreground sm:ml-11">{subtitle}</p>
       </header>
