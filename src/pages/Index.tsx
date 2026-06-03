@@ -408,6 +408,20 @@ const Index = () => {
           hidden={tab !== "recommendation"}
           className={tab === "recommendation" ? undefined : "hidden"}
         >
+          {tab === "recommendation" && (
+            <div className="mb-4 flex justify-end">
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => setResultsWalkOpen(true)}
+                className="gap-2"
+              >
+                <Wand2 className="h-4 w-4" aria-hidden="true" />
+                Walk me through the results
+              </Button>
+            </div>
+          )}
           <StepShell
             number={3}
             title="Your recommendation"
