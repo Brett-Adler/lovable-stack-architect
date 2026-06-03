@@ -994,8 +994,6 @@ function MethodologySection({ results }: { results: RankedResult[] }) {
 // ---------- Main component ----------
 export function ReportExport(props: Props) {
   const [pdfBusy, setPdfBusy] = useState(false);
-  const [hubOpen, setHubOpen] = useState(false);
-  const [shareOpen, setShareOpen] = useState(false);
   const [copied, setCopied] = useState(false);
   const pdfRootRef = useRef<HTMLDivElement | null>(null);
   const shareInputRef = useRef<HTMLInputElement | null>(null);
