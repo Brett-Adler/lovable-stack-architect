@@ -324,6 +324,21 @@ const Index = () => {
         id="main-content"
         className="mx-auto w-full max-w-[1800px] px-3 py-4 sm:px-6 sm:py-6 2xl:px-10"
       >
+        {tab === "setup" && (
+          <div className="mb-4 flex justify-end">
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => setWizardOpen(true)}
+              className="gap-2"
+            >
+              <Wand2 className="h-4 w-4" aria-hidden="true" />
+              Guided wizard
+            </Button>
+          </div>
+        )}
+
         {/* TAB A — Setup: Steps 1 & 2 side-by-side on wide screens */}
         <div
           id="panel-setup"
