@@ -295,12 +295,14 @@ const Index = () => {
           role="tabpanel"
           aria-labelledby="tab-setup"
           hidden={tab !== "setup"}
-          className={
-            tab === "setup"
-              ? "grid items-start gap-8 sm:gap-10 lg:grid-cols-[minmax(0,460px)_minmax(0,1fr)] lg:gap-10 xl:grid-cols-[minmax(0,500px)_minmax(0,1fr)] xl:gap-12"
-              : "hidden"
-          }
+          className={tab === "setup" ? "space-y-4 sm:space-y-6" : "hidden"}
         >
+          <div className="flex justify-end">
+            <SetupTourToggle open={tour.open} panelId={tour.panelId} onToggle={tour.toggle} />
+          </div>
+          {tour.open && <SetupTourPanel panelId={tour.panelId} onClose={tour.close} />}
+          <div className="grid items-start gap-8 sm:gap-10 lg:grid-cols-[minmax(0,460px)_minmax(0,1fr)] lg:gap-10 xl:grid-cols-[minmax(0,500px)_minmax(0,1fr)] xl:gap-12">
+
           <StepShell
             number={1}
             title="Tell us about your project"
