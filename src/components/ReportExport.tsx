@@ -1,15 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { Download, FileDown, Loader2, Share2, Link2, Check, Copy } from "lucide-react";
+import { Download, FileDown, Loader2, Share2, Link2, Check } from "lucide-react";
 import { CRITERIA, RUBRIC, CATEGORIES, type Architecture } from "@/data/architectures";
 import type { Inputs, RankedResult } from "@/lib/scoring";
 import { stageFromMau, tradeoffVs } from "@/lib/scoring";
