@@ -132,6 +132,7 @@ const Index = () => {
   };
   const [tab, setTab] = useState<TabId>(getInitialTab);
   const { inputs, enabled } = state;
+  const tour = useSetupTour();
 
   useEffect(() => {
     try {
