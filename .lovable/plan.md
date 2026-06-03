@@ -1,30 +1,28 @@
 ## Goal
-Replace `src/assets/shots/app-matrix.png` (used on `/methodology`) with a clean shot of just the **Full comparison matrix** — no architecture diagram, no surrounding chrome above it. Also add a small "Expand" affordance on the live matrix so we can capture it in a roomy presentation.
 
-## Steps
+Remove the "Export & share" button in the site header and its modal, and surface the three actions (Copy share link, Download PDF, Download Markdown) directly inside Step 3 ("Your recommendation") in a compact, mobile-friendly row.
 
-### 1. Add a fullscreen expand button on the matrix (Index.tsx)
-- In `src/pages/Index.tsx`, inside the `Full comparison matrix` `<header>` row (around line 454-462), add a `FullscreenCardDialog` next to the existing `HelpHint`.
-- Trigger label: "Expand full comparison matrix".
-- Dialog title: "Full comparison matrix".
-- Body: render `<ComparisonMatrix view="matrix" enabled={enabled} topId={topId} onToggle={toggleArch} onSetEnabled={setEnabled} />` inside a horizontally-scrollable wrapper.
-- Bump `FullscreenCardDialog`'s `DialogContent` max-width for matrix use: extend the component with an optional `maxWidthClass` prop (default keeps current `max-w-[1100px]`), and pass `max-w-[1600px]` here so the matrix has room to breathe.
+## Changes
 
-### 2. Capture the screenshot
-Once built:
-- `navigate_to_sandbox` to `/app?tab=setup` at 1920x1080.
-- Scroll to the matrix, click the new Expand button.
-- `screenshot` the open dialog (viewport-only, just the matrix).
-- Save the raw image to `/tmp/matrix-fullscreen.png`.
+### 1. `src/components/ReportExport.tsx`
+- Keep all logic (markdown builder, PDF render portal, `downloadMd`, `downloadPdf`, `copyShareUrl`) intact.
+- Replace the default exported UI:
+  - Drop the header trigger Button, the `hubOpen` hub Dialog, and the separate `shareOpen` share Dialog.
+  - Render a compact inline action bar: three buttons in a row — `Copy link` (turns into "Copied ✓" on success via existing `copied` state + sonner toast), `Download PDF` (shows spinner when `pdfBusy`), `Download .md`.
+  - Keep the offscreen PDF portal exactly as-is so PDF export still works.
+- Layout: `flex flex-wrap items-center gap-2` with `size="sm"` outline buttons; icons + short labels. On mobile (`<sm`), labels shrink to icon + 1-word ("Link", "PDF", ".md") via `hidden xs:inline` patterns already used elsewhere; on `sm+` show full labels. Bar prefixed by a tiny `Share2` + "Export this recommendation" muted label on `sm+` only (hidden on mobile to save space).
+- Component remains `<ReportExport ... />` with the same props — drop-in.
 
-### 3. Replace the methodology asset
-- Overwrite `src/assets/shots/app-matrix.png` with the cropped/clean screenshot from step 2.
-- No code change needed on `/methodology` — `Methodology.tsx` already imports `@/assets/shots/app-matrix.png`.
+### 2. `src/pages/Index.tsx`
+- Remove `<ReportExport ... />` from inside `<SiteHeader>` (line 237).
+- Render `<ReportExport ... />` inside the Step 3 panel, placed at the bottom of `StepShell` just above the existing disclaimer paragraph (after the grid, before line 435's `<p>`), so it sits with the recommendation but doesn't push the card down.
 
-### 4. Verify
-- Reload `/methodology` in the browser and screenshot to confirm the new image shows the matrix only (no Cloud Postgres diagram above it).
+### 3. Sync surfaces (per memory rule)
+- Wizard: no Export references today — no change needed.
+- PDF report: unaffected (still generated from the same portal).
+- `/app`: this is the change.
 
 ## Out of scope
-- No changes to matrix scoring, columns, or styling.
-- No changes to `/methodology` copy or layout.
-- No new pages or routes.
+- No changes to PDF contents, markdown contents, or share URL encoding.
+- No new actions, no rewording of action descriptions beyond shortening for mobile.
+- No changes to SiteHeader other than removing the ReportExport child.
