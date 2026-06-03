@@ -7,7 +7,7 @@ import { PlatformsConsidered } from "@/components/PlatformsConsidered";
 import { CostEstimate } from "@/components/CostEstimate";
 import { ArchitectureDiagram } from "@/components/ArchitectureDiagram";
 import { ReportExport } from "@/components/ReportExport";
-import { SlidersHorizontal, Sparkle, ShieldAlert } from "lucide-react";
+import { SlidersHorizontal, Sparkle, ShieldAlert, HelpCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
@@ -15,7 +15,28 @@ import { SeoHead } from "@/components/SeoHead";
 import { toast } from "sonner";
 import { ARCHITECTURES, type ArchId } from "@/data/architectures";
 import { DEFAULT_INPUTS, type Inputs, rankFull } from "@/lib/scoring";
-import { SetupTourPanel, SetupTourToggle, useSetupTour } from "@/components/SetupTour";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+
+/** Small `?` help affordance — renders next to a heading and opens a popover. */
+function HelpHint({ label, title, body }: { label: string; title?: string; body: string }) {
+  return (
+    <Popover>
+      <PopoverTrigger asChild>
+        <button
+          type="button"
+          aria-label={label}
+          className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-muted-foreground transition hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        >
+          <HelpCircle className="h-4 w-4" aria-hidden="true" />
+        </button>
+      </PopoverTrigger>
+      <PopoverContent side="bottom" align="end" className="max-w-xs text-sm">
+        {title && <p className="mb-1 font-semibold text-foreground">{title}</p>}
+        <p className="text-muted-foreground">{body}</p>
+      </PopoverContent>
+    </Popover>
+  );
+}
 
 
 const STORAGE_KEY = "stack-architect:v2";
@@ -80,6 +101,7 @@ function StepShell({
   subtitle,
   id,
   className,
+  help,
   children,
 }: {
   number: 1 | 2 | 3;
@@ -87,6 +109,7 @@ function StepShell({
   subtitle: string;
   id?: string;
   className?: string;
+  help?: string;
   children: React.ReactNode;
 }) {
   return (
@@ -103,6 +126,11 @@ function StepShell({
             <span className="sr-only">Step {number}: </span>
             {title}
           </h2>
+          {help && (
+            <span className="ml-auto">
+              <HelpHint label={`Help: ${title}`} title={title} body={help} />
+            </span>
+          )}
         </div>
         <p className="mt-1.5 text-sm text-muted-foreground sm:ml-11">{subtitle}</p>
       </header>
@@ -132,7 +160,7 @@ const Index = () => {
   };
   const [tab, setTab] = useState<TabId>(getInitialTab);
   const { inputs, enabled } = state;
-  const tour = useSetupTour();
+  
 
   useEffect(() => {
     try {
@@ -295,19 +323,14 @@ const Index = () => {
           role="tabpanel"
           aria-labelledby="tab-setup"
           hidden={tab !== "setup"}
-          className={tab === "setup" ? "space-y-4 sm:space-y-6" : "hidden"}
+          className={tab === "setup" ? "grid items-start gap-8 sm:gap-10 lg:grid-cols-[minmax(0,460px)_minmax(0,1fr)] lg:gap-10 xl:grid-cols-[minmax(0,500px)_minmax(0,1fr)] xl:gap-12" : "hidden"}
         >
-          <div className="flex justify-end">
-            <SetupTourToggle open={tour.open} panelId={tour.panelId} onToggle={tour.toggle} />
-          </div>
-          {tour.open && <SetupTourPanel panelId={tour.panelId} onClose={tour.close} />}
-          <div className="grid items-start gap-8 sm:gap-10 lg:grid-cols-[minmax(0,460px)_minmax(0,1fr)] lg:gap-10 xl:grid-cols-[minmax(0,500px)_minmax(0,1fr)] xl:gap-12">
-
           <StepShell
             number={1}
             title="Tell us about your project"
             subtitle="Stage, team, budget, compliance, and workloads. Every answer nudges the scoring."
             className="lg:sticky lg:top-28"
+            help="Stage, team, budget, compliance, and workloads. Each answer reweights the scoring."
           >
             <InputsPanel inputs={inputs} onChange={setInputs} />
           </StepShell>
@@ -316,6 +339,7 @@ const Index = () => {
             number={2}
             title="Choose what to compare"
             subtitle="Pick which platforms to weigh against each other. Exclusions hide them from the matrix and recommendation."
+            help="Toggle which platforms are weighed. Hidden ones drop out of the matrix and recommendation."
           >
             <div className="space-y-3">
               <PlatformsConsidered
@@ -349,8 +373,8 @@ const Index = () => {
               />
             </div>
           </StepShell>
-          </div>
         </div>
+
 
 
         {/* TAB B — Recommendation: Step 3 self-splits when wide */}
@@ -365,6 +389,7 @@ const Index = () => {
             number={3}
             title="Your recommendation"
             subtitle="Based on your inputs and the platforms you're comparing. Updates live as you tweak setup."
+            help="Your top pick based on inputs and platforms you're comparing, plus cost & scaling and the architecture diagram. Updates live."
           >
             <div className="grid gap-4 sm:gap-6 md:grid-cols-[minmax(0,1fr)_360px] xl:grid-cols-[minmax(0,1fr)_440px]">
               <div className="min-w-0 space-y-4 sm:space-y-6">
@@ -405,9 +430,16 @@ const Index = () => {
         )}
       >
         <header className="mb-8 text-center sm:mb-10">
-          <h2 id="full-matrix-heading" className="text-3xl font-extrabold tracking-[-0.02em] text-foreground sm:text-4xl">
-            Full comparison <span className="text-gradient">matrix</span>
-          </h2>
+          <div className="flex items-center justify-center gap-2">
+            <h2 id="full-matrix-heading" className="text-3xl font-extrabold tracking-[-0.02em] text-foreground sm:text-4xl">
+              Full comparison <span className="text-gradient">matrix</span>
+            </h2>
+            <HelpHint
+              label="Help: Full comparison matrix"
+              title="Full comparison matrix"
+              body="Supporting evidence — every option scored on the same criteria, with your top pick highlighted."
+            />
+          </div>
           <p className="mx-auto mt-2 max-w-2xl text-sm text-muted-foreground sm:text-base">
             Supporting evidence behind the recommendation. See how every option scores on the same criteria — your top pick is highlighted.
           </p>
