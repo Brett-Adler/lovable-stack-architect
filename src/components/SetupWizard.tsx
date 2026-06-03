@@ -16,16 +16,10 @@ import {
   type TeamSkill,
   type Compliance,
   type Workload,
-  DEFAULT_INPUTS,
-  rankFull,
 } from "@/lib/scoring";
 import { type ArchId } from "@/data/architectures";
 import { PlatformsConsidered } from "@/components/PlatformsConsidered";
-import { RecommendationCard } from "@/components/RecommendationCard";
-import { CostEstimate } from "@/components/CostEstimate";
-import { ArchitectureDiagram } from "@/components/ArchitectureDiagram";
-import { ComparisonMatrix } from "@/components/ComparisonMatrix";
-import { ArrowLeft, ArrowRight, RotateCcw, Check } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check } from "lucide-react";
 
 const STEP_KEY = "stack-architect:wizard-step";
 
@@ -112,7 +106,7 @@ interface WizardProps {
   setEnabled: (next: ArchId[]) => void;
   toggleArch: (id: ArchId) => void;
   resetEnabled: () => void;
-  tab: "setup" | "recommendation";
+  /** Switched to "recommendation" when the wizard finishes. */
   setTab: (t: "setup" | "recommendation") => void;
 }
 
@@ -125,7 +119,6 @@ export function SetupWizard({
   setEnabled,
   toggleArch,
   resetEnabled,
-  tab,
   setTab,
 }: WizardProps) {
   const toggle = <T extends string>(arr: T[], value: T): T[] =>
@@ -133,28 +126,18 @@ export function SetupWizard({
   const update = <K extends keyof Inputs>(key: K, value: Inputs[K]) =>
     setInputs({ ...inputs, [key]: value });
 
-  const { results, excluded, userExcluded } = useMemo(
-    () => rankFull(inputs, { enabled }),
-    [inputs, enabled],
-  );
-  const topId = results[0]?.arch.id;
-  const isNonTechnical =
-    inputs.team.length === 0 || (inputs.team.length === 1 && inputs.team[0] === "none");
-
   const mauIndex = Math.max(0, MAU_STEPS.findIndex((s) => s >= inputs.mau));
 
   type Step = {
     key: string;
-    kind: "setup" | "results";
     title: string;
     subtitle: string;
     render: () => React.ReactNode;
   };
 
-  const steps: Step[] = [
+  const steps: Step[] = useMemo(() => [
     {
       key: "stage",
-      kind: "setup",
       title: "What stage is your project at?",
       subtitle: "Pick one or more — useful if you're on the cusp (e.g. Prototype + MVP).",
       render: () => (
@@ -176,7 +159,6 @@ export function SetupWizard({
     },
     {
       key: "split",
-      kind: "setup",
       title: "Allow splitting frontend hosting?",
       subtitle:
         "Default is one platform for everything. Turn this on to also compare hybrid stacks like Supabase + Cloudflare Pages.",
@@ -195,7 +177,6 @@ export function SetupWizard({
     },
     {
       key: "mau",
-      kind: "setup",
       title: "Expected monthly active users",
       subtitle: "Current or near-term load — drives cost and scaling weight.",
       render: () => (
@@ -231,7 +212,6 @@ export function SetupWizard({
     },
     {
       key: "team",
-      kind: "setup",
       title: "What are your team's strengths?",
       subtitle: "Influences how much DevOps and infra we'll recommend you take on.",
       render: () => (
@@ -256,7 +236,6 @@ export function SetupWizard({
     },
     {
       key: "budget",
-      kind: "setup",
       title: "What's your monthly budget?",
       subtitle: "Pick one or more bands if you're flexible on spend.",
       render: () => (
@@ -278,7 +257,6 @@ export function SetupWizard({
     },
     {
       key: "lockin",
-      kind: "setup",
       title: "How much vendor lock-in can you tolerate?",
       subtitle: "How portable does the stack need to be? Pick more than one if you're undecided.",
       render: () => (
@@ -300,7 +278,6 @@ export function SetupWizard({
     },
     {
       key: "compliance",
-      kind: "setup",
       title: "Any compliance requirements?",
       subtitle: "Excluded vendors are dropped from the matrix and recommendation.",
       render: () => (
@@ -325,7 +302,6 @@ export function SetupWizard({
     },
     {
       key: "workloads",
-      kind: "setup",
       title: "What kinds of workloads will you run?",
       subtitle: "Reweights criteria like realtime, storage, and compute.",
       render: () => (
@@ -344,7 +320,6 @@ export function SetupWizard({
     },
     {
       key: "ttm",
-      kind: "setup",
       title: "How important is time-to-market?",
       subtitle: "Higher = boost options that ship fastest (managed backends).",
       render: () => (
@@ -370,7 +345,6 @@ export function SetupWizard({
     },
     {
       key: "platforms",
-      kind: "setup",
       title: "Which platforms should we compare?",
       subtitle: "Toggle off any you're not willing to consider — they drop out of scoring.",
       render: () => (
@@ -383,126 +357,7 @@ export function SetupWizard({
         />
       ),
     },
-    {
-      key: "recommendation",
-      kind: "results",
-      title: "Your recommendation",
-      subtitle: "Top pick based on everything you told us. Updates live as you tweak inputs.",
-      render: () => (
-        <RecommendationCard
-          results={results}
-          inputs={inputs}
-          excluded={excluded}
-          userExcluded={userExcluded}
-          isNonTechnical={isNonTechnical}
-          onExclude={toggleArch}
-          onResetEnabled={resetEnabled}
-        />
-      ),
-    },
-    {
-      key: "cost",
-      kind: "results",
-      title: "Cost & scaling",
-      subtitle: "Rough monthly cost band for your top pick at your projected MAU.",
-      render: () =>
-        topId ? (
-          <CostEstimate archId={topId} inputs={inputs} enabled={enabled} topId={topId} />
-        ) : (
-          <p className="text-sm text-muted-foreground">No top pick yet — enable at least one platform.</p>
-        ),
-    },
-    {
-      key: "diagram",
-      kind: "results",
-      title: "Architecture diagram",
-      subtitle: "How the pieces fit together for your top pick.",
-      render: () =>
-        topId ? (
-          <ArchitectureDiagram archId={topId} inputs={inputs} />
-        ) : (
-          <p className="text-sm text-muted-foreground">No top pick yet.</p>
-        ),
-    },
-    {
-      key: "considered",
-      kind: "results",
-      title: "Platforms considered",
-      subtitle: "Everything in scope, plus anything excluded by compliance or your toggles.",
-      render: () => (
-        <PlatformsConsidered
-          enabled={enabled}
-          onToggle={toggleArch}
-          onReset={resetEnabled}
-          onSetEnabled={setEnabled}
-          allowSplit={inputs.allowSplit ?? false}
-        />
-      ),
-    },
-    {
-      key: "matrix",
-      kind: "results",
-      title: "Full comparison matrix",
-      subtitle: "Every option scored on the same criteria — your top pick is highlighted.",
-      render: () => (
-        <div className="overflow-x-auto">
-          <ComparisonMatrix
-            view="all"
-            enabled={enabled}
-            topId={topId}
-            onToggle={toggleArch}
-            onSetEnabled={setEnabled}
-          />
-        </div>
-      ),
-    },
-    {
-      key: "adjust",
-      kind: "results",
-      title: "Adjust and run again",
-      subtitle: "Change any answer and results update live — or start the tour over.",
-      render: () => (
-        <div className="space-y-4">
-          <p className="text-sm text-muted-foreground">
-            You're done. Tweak inputs from the Setup tab any time and the recommendation will follow.
-            Want a clean slate? Reset inputs to defaults or restart the wizard.
-          </p>
-          <div className="flex flex-wrap gap-2">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => {
-                setInputs(DEFAULT_INPUTS);
-              }}
-            >
-              <RotateCcw className="mr-2 h-4 w-4" aria-hidden="true" />
-              Reset inputs to defaults
-            </Button>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => {
-                setTab("setup");
-                setStep(0);
-              }}
-            >
-              Start the tour over
-            </Button>
-            <Button
-              type="button"
-              variant="ghost"
-              onClick={() => {
-                setTab("setup");
-                onOpenChange(false);
-              }}
-            >
-              Back to Setup tab
-            </Button>
-          </div>
-        </div>
-      ),
-    },
-  ];
+  ], [inputs, enabled, mauIndex, setEnabled, toggleArch, resetEnabled]);
 
   const total = steps.length;
   const [step, setStep] = useState(0);
@@ -528,11 +383,6 @@ export function SetupWizard({
   }, [step, open]);
 
   const current = steps[step];
-  useEffect(() => {
-    if (!open || !current) return;
-    const targetTab = current.kind === "results" ? "recommendation" : "setup";
-    if (tab !== targetTab) setTab(targetTab);
-  }, [step, open, current, tab, setTab]);
 
   const finish = useCallback(() => {
     try {
@@ -541,31 +391,21 @@ export function SetupWizard({
       /* ignore */
     }
     setStep(0);
+    setTab("recommendation");
     onOpenChange(false);
-  }, [onOpenChange]);
+  }, [onOpenChange, setTab]);
 
   const isLast = step === total - 1;
 
   return (
-    <Dialog
-      open={open}
-      onOpenChange={(o) => {
-        if (!o) {
-          onOpenChange(false);
-        } else {
-          onOpenChange(true);
-        }
-      }}
-    >
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <div className="mb-2 flex items-center justify-between">
             <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
               Step {step + 1} of {total}
             </span>
-            <span className="text-xs text-muted-foreground">
-              {current?.kind === "results" ? "Results walkthrough" : "Setup"}
-            </span>
+            <span className="text-xs text-muted-foreground">Setup</span>
           </div>
           <Progress
             value={((step + 1) / total) * 100}
@@ -596,7 +436,7 @@ export function SetupWizard({
             {isLast ? (
               <Button type="button" onClick={finish}>
                 <Check className="mr-2 h-4 w-4" aria-hidden="true" />
-                Finish
+                See recommendation
               </Button>
             ) : (
               <Button type="button" onClick={() => setStep((s) => Math.min(total - 1, s + 1))}>
