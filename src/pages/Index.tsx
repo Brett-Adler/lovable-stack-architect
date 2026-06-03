@@ -389,6 +389,7 @@ const Index = () => {
             number={3}
             title="Your recommendation"
             subtitle="Based on your inputs and the platforms you're comparing. Updates live as you tweak setup."
+            help="Your top pick based on inputs and platforms you're comparing, plus cost & scaling and the architecture diagram. Updates live."
           >
             <div className="grid gap-4 sm:gap-6 md:grid-cols-[minmax(0,1fr)_360px] xl:grid-cols-[minmax(0,1fr)_440px]">
               <div className="min-w-0 space-y-4 sm:space-y-6">
