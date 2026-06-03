@@ -10,6 +10,7 @@ import { ReportExport } from "@/components/ReportExport";
 import { SlidersHorizontal, Sparkle, ShieldAlert, HelpCircle, Wand2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SetupWizard } from "@/components/SetupWizard";
+import { FullscreenCardDialog } from "@/components/FullscreenCardDialog";
 import { cn } from "@/lib/utils";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
