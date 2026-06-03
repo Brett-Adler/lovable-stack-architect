@@ -15,6 +15,7 @@ import { SeoHead } from "@/components/SeoHead";
 import { toast } from "sonner";
 import { ARCHITECTURES, type ArchId } from "@/data/architectures";
 import { DEFAULT_INPUTS, type Inputs, rankFull } from "@/lib/scoring";
+import { SetupTourPanel, SetupTourToggle, useSetupTour } from "@/components/SetupTour";
 
 
 const STORAGE_KEY = "stack-architect:v2";
