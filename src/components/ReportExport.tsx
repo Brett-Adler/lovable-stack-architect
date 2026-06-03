@@ -1117,47 +1117,6 @@ export function ReportExport(props: Props) {
     }
   };
 
-  const actions: {
-    id: string;
-    label: string;
-    description: string;
-    icon: typeof Download;
-    onClick: () => void;
-    busy?: boolean;
-    hidden?: boolean;
-  }[] = [
-    {
-      id: "share",
-      label: "Copy share link",
-      description: "A URL that encodes your exact scenario.",
-      icon: Link2,
-      hidden: !props.shareUrl,
-      onClick: () => {
-        setHubOpen(false);
-        setShareOpen(true);
-      },
-    },
-    {
-      id: "pdf",
-      label: "Download PDF",
-      description: "Full multi-page report with methodology, saved to your device.",
-      icon: FileDown,
-      busy: pdfBusy,
-      onClick: () => {
-        downloadPdf();
-      },
-    },
-    {
-      id: "markdown",
-      label: "Download Markdown",
-      description: "Editable .md for docs, PRs, or notes.",
-      icon: Download,
-      onClick: () => {
-        downloadMd();
-        setHubOpen(false);
-      },
-    },
-  ];
 
   const runners = filteredResults.slice(1, 3);
   const excluded = props.excluded ?? [];
