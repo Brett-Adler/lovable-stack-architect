@@ -11,10 +11,12 @@ export function FullscreenCardDialog({
   title,
   ariaLabel,
   children,
+  maxWidthClass = "max-w-[1100px]",
 }: {
   title: string;
   ariaLabel: string;
   children: ReactNode;
+  maxWidthClass?: string;
 }) {
   const [open, setOpen] = useState(false);
   return (
@@ -28,7 +30,7 @@ export function FullscreenCardDialog({
           <Maximize2 className="h-3.5 w-3.5" aria-hidden="true" />
         </button>
       </DialogTrigger>
-      <DialogContent className="max-h-[92vh] w-[95vw] max-w-[1100px] overflow-y-auto">
+      <DialogContent className={`max-h-[92vh] w-[95vw] overflow-y-auto ${maxWidthClass}`}>
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
         </DialogHeader>

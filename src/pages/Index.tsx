@@ -10,6 +10,7 @@ import { ReportExport } from "@/components/ReportExport";
 import { SlidersHorizontal, Sparkle, ShieldAlert, HelpCircle, Wand2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SetupWizard } from "@/components/SetupWizard";
+import { FullscreenCardDialog } from "@/components/FullscreenCardDialog";
 import { cn } from "@/lib/utils";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
@@ -461,6 +462,21 @@ const Index = () => {
               title="Full comparison matrix"
               body="Supporting evidence — every option scored on the same criteria, with your top pick highlighted."
             />
+            <FullscreenCardDialog
+              title="Full comparison matrix"
+              ariaLabel="Expand full comparison matrix"
+              maxWidthClass="max-w-[1600px]"
+            >
+              <div className="overflow-x-auto">
+                <ComparisonMatrix
+                  view="matrix"
+                  enabled={enabled}
+                  topId={topId}
+                  onToggle={toggleArch}
+                  onSetEnabled={setEnabled}
+                />
+              </div>
+            </FullscreenCardDialog>
           </div>
           <p className="mx-auto mt-2 max-w-2xl text-sm text-muted-foreground sm:text-base">
             Supporting evidence behind the recommendation. See how every option scores on the same criteria — your top pick is highlighted.
