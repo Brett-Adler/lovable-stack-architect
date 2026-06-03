@@ -1167,83 +1167,50 @@ export function ReportExport(props: Props) {
 
   return (
     <>
-      <div className="no-print">
+      <div className="no-print flex flex-wrap items-center gap-2 rounded-xl border border-border/60 bg-muted/30 px-3 py-2">
+        <div className="hidden items-center gap-1.5 text-xs font-medium text-muted-foreground sm:flex">
+          <Share2 className="h-3.5 w-3.5" />
+          <span>Export this recommendation:</span>
+        </div>
+        {props.shareUrl && (
+          <Button
+            onClick={copyShareUrl}
+            variant="outline"
+            size="sm"
+            className="h-8 gap-1.5"
+            aria-label="Copy share link"
+          >
+            {copied ? <Check className="h-3.5 w-3.5" /> : <Link2 className="h-3.5 w-3.5" />}
+            <span>{copied ? "Copied" : "Copy link"}</span>
+          </Button>
+        )}
         <Button
-          onClick={() => setHubOpen(true)}
+          onClick={downloadPdf}
+          disabled={pdfBusy}
           variant="outline"
           size="sm"
-          aria-label="Export & share"
-          className="h-9 w-9 p-0 gap-0 sm:h-9 sm:w-auto sm:gap-1.5 sm:px-3"
+          className="h-8 gap-1.5"
+          aria-label="Download PDF report"
         >
-          <Share2 className="h-4 w-4" />
-          <span className="hidden sm:inline">Export &amp; share</span>
+          {pdfBusy ? (
+            <Loader2 className="h-3.5 w-3.5 animate-spin" />
+          ) : (
+            <FileDown className="h-3.5 w-3.5" />
+          )}
+          <span>{pdfBusy ? "Building…" : "PDF"}</span>
         </Button>
+        <Button
+          onClick={downloadMd}
+          variant="outline"
+          size="sm"
+          className="h-8 gap-1.5"
+          aria-label="Download Markdown"
+        >
+          <Download className="h-3.5 w-3.5" />
+          <span>Markdown</span>
+        </Button>
+        <input ref={shareInputRef} type="hidden" readOnly value={props.shareUrl ?? ""} />
       </div>
-
-      <Dialog open={hubOpen} onOpenChange={setHubOpen}>
-        <DialogContent className="no-print max-h-[90vh] max-w-lg overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle>Export &amp; share</DialogTitle>
-            <DialogDescription>
-              Take this recommendation with you, or send it to a teammate.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-            {actions
-              .filter((a) => !a.hidden)
-              .map((a) => {
-                const Icon = a.icon;
-                return (
-                  <button
-                    key={a.id}
-                    type="button"
-                    onClick={a.onClick}
-                    disabled={a.busy}
-                    className="group flex items-start gap-3 rounded-xl border border-border bg-card p-3 text-left shadow-card transition-all hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-elegant focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:cursor-not-allowed disabled:opacity-60"
-                  >
-                    <div className="mt-0.5 inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary transition-transform group-hover:scale-105">
-                      {a.busy ? (
-                        <Loader2 className="h-4 w-4 animate-spin" />
-                      ) : (
-                        <Icon className="h-4 w-4" />
-                      )}
-                    </div>
-                    <div className="min-w-0">
-                      <div className="text-sm font-semibold text-foreground">{a.label}</div>
-                      <div className="mt-0.5 text-xs leading-relaxed text-muted-foreground">
-                        {a.description}
-                      </div>
-                    </div>
-                  </button>
-                );
-              })}
-          </div>
-        </DialogContent>
-      </Dialog>
-
-      <Dialog open={shareOpen} onOpenChange={setShareOpen}>
-        <DialogContent className="no-print max-w-lg">
-          <DialogHeader>
-            <DialogTitle>Share link</DialogTitle>
-            <DialogDescription>
-              Anyone with this link sees your exact scenario.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="flex items-center gap-2">
-            <Input
-              ref={shareInputRef}
-              readOnly
-              value={props.shareUrl ?? ""}
-              onFocus={(e) => e.currentTarget.select()}
-              className="font-mono text-xs"
-            />
-            <Button onClick={copyShareUrl} className="gap-1.5 shrink-0">
-              {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
-              {copied ? "Copied" : "Copy"}
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
 
       {/* Offscreen render source for html2canvas PDF export. Each section becomes
           its own PDF page (or pages) so breaks are clean. */}
