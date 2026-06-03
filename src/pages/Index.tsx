@@ -7,7 +7,9 @@ import { PlatformsConsidered } from "@/components/PlatformsConsidered";
 import { CostEstimate } from "@/components/CostEstimate";
 import { ArchitectureDiagram } from "@/components/ArchitectureDiagram";
 import { ReportExport } from "@/components/ReportExport";
-import { SlidersHorizontal, Sparkle, ShieldAlert, HelpCircle } from "lucide-react";
+import { SlidersHorizontal, Sparkle, ShieldAlert, HelpCircle, Wand2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { SetupWizard } from "@/components/SetupWizard";
 import { cn } from "@/lib/utils";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
@@ -160,6 +162,11 @@ const Index = () => {
   };
   const [tab, setTab] = useState<TabId>(getInitialTab);
   const { inputs, enabled } = state;
+  const [wizardOpen, setWizardOpen] = useState(false);
+
+  
+
+
   
 
   useEffect(() => {
@@ -317,6 +324,21 @@ const Index = () => {
         id="main-content"
         className="mx-auto w-full max-w-[1800px] px-3 py-4 sm:px-6 sm:py-6 2xl:px-10"
       >
+        {tab === "setup" && (
+          <div className="mb-4 flex justify-end">
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => setWizardOpen(true)}
+              className="gap-2"
+            >
+              <Wand2 className="h-4 w-4" aria-hidden="true" />
+              Guided wizard
+            </Button>
+          </div>
+        )}
+
         {/* TAB A — Setup: Steps 1 & 2 side-by-side on wide screens */}
         <div
           id="panel-setup"
@@ -447,6 +469,18 @@ const Index = () => {
         <ComparisonMatrix view="matrix" enabled={enabled} topId={topId} onToggle={toggleArch} onSetEnabled={setEnabled} />
       </section>
 
+      <SetupWizard
+        open={wizardOpen}
+        onOpenChange={setWizardOpen}
+        inputs={inputs}
+        setInputs={setInputs}
+        enabled={enabled}
+        setEnabled={setEnabled}
+        toggleArch={toggleArch}
+        resetEnabled={() => setEnabled(DEFAULT_ENABLED)}
+        tab={tab}
+        setTab={setTab}
+      />
       <SiteFooter />
     </div>
   );
