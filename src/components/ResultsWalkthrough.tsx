@@ -89,7 +89,8 @@ export function ResultsWalkthrough({
       title: "Full comparison matrix",
       subtitle: "Every option scored on the same criteria — your top pick is highlighted.",
       render: () => (
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto px-4 sm:px-0">
+
           <ComparisonMatrix
             view="all"
             enabled={enabled}
