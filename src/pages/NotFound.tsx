@@ -2,6 +2,7 @@ import { Link, useLocation } from "react-router-dom";
 import { useEffect } from "react";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
+import { SeoHead } from "@/components/SeoHead";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Home } from "lucide-react";
 
@@ -9,16 +10,16 @@ const NotFound = () => {
   const location = useLocation();
 
   useEffect(() => {
-    const prevTitle = document.title;
-    document.title = "Page not found — Lovable Stack Architect";
     console.error("404 Error: User attempted to access non-existent route:", location.pathname);
-    return () => {
-      document.title = prevTitle;
-    };
   }, [location.pathname]);
 
   return (
     <div className="min-h-dvh bg-background">
+      <SeoHead
+        title="Page not found — Lovable Stack Architect"
+        description="That page doesn't exist. Head back to the Lovable Stack Architect home or open the backend comparator tool."
+        path={location.pathname}
+      />
       <SiteHeader />
       <main id="main-content" className="mx-auto flex max-w-3xl flex-col items-center px-4 py-24 text-center sm:px-6 sm:py-32">
         <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card/70 px-3 py-1 text-xs font-medium text-muted-foreground">
