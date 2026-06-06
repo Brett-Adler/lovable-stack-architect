@@ -40,7 +40,7 @@ export function SiteFooter() {
             </a>
           </nav>
         </div>
-        <p className="text-[11px] leading-relaxed text-muted-foreground/80">
+        <p className="text-[11px] leading-relaxed text-muted-foreground">
           An independent, community-built template by{" "}
           <a
             href={AUTHOR_URL}

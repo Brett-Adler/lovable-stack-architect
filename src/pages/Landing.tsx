@@ -175,7 +175,7 @@ const Landing = () => {
               </Link>
               .
             </p>
-            <p className="mx-auto mt-3 max-w-2xl text-xs italic text-muted-foreground/80">
+            <p className="mx-auto mt-3 max-w-2xl text-xs italic text-muted-foreground">
               A fan project by{" "}
               <a
                 href={AUTHOR_URL}
@@ -466,7 +466,7 @@ const Landing = () => {
               );
             })}
           </div>
-          <p className="mt-6 text-center text-xs italic text-muted-foreground/70">
+          <p className="mt-6 text-center text-xs italic text-muted-foreground">
             Logos are trademarks of their respective owners. Shown for identification only — this site is not affiliated with or endorsed by any of them.
           </p>
         </section>
