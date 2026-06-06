@@ -175,7 +175,7 @@ const Landing = () => {
               </Link>
               .
             </p>
-            <p className="mx-auto mt-3 max-w-2xl text-xs italic text-muted-foreground/80">
+            <p className="mx-auto mt-3 max-w-2xl text-xs italic text-muted-foreground">
               A fan project by{" "}
               <a
                 href={AUTHOR_URL}
